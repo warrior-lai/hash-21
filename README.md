@@ -1,2 +1,2 @@
 # hash-21
-Landig de Arte bitcoiner
+Landing de Arte bitcoiner
