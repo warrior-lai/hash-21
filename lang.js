@@ -40,7 +40,19 @@ const translations = {
     footer_nav: "Navegación",
     footer_social: "Redes",
     footer_contact: "Contacto",
-    contact_community: "Sumate a la comunidad"
+    contact_community: "Sumate a la comunidad",
+    obra1_code: "Block 0 — #001",
+    obra1_name: "The Rabbit",
+    obra1_tech: "Acrílico y texturas sobre lienzo",
+    obra2_code: "Block 0 — #002",
+    obra2_name: "The Hole",
+    obra2_tech: "Acrílico y texturas sobre lienzo",
+    obra3_code: "Block 0 — #003",
+    obra3_name: "Libertad",
+    obra3_tech: "Acrílico y texturas sobre lienzo",
+    obra4_code: "Block 0 — #004",
+    obra4_name: "Horizonte Temporal",
+    obra4_tech: "Acrílico y texturas sobre lienzo"
   },
   en: {
     nav_collabs: "Collaborations",
@@ -83,7 +95,19 @@ const translations = {
     footer_nav: "Navigation",
     footer_social: "Social",
     footer_contact: "Contact",
-    contact_community: "Join the community"
+    contact_community: "Join the community",
+    obra1_code: "Block 0 — #001",
+    obra1_name: "The Rabbit",
+    obra1_tech: "Acrylic and textures on canvas",
+    obra2_code: "Block 0 — #002",
+    obra2_name: "The Hole",
+    obra2_tech: "Acrylic and textures on canvas",
+    obra3_code: "Block 0 — #003",
+    obra3_name: "Freedom",
+    obra3_tech: "Acrylic and textures on canvas",
+    obra4_code: "Block 0 — #004",
+    obra4_name: "Time Horizon",
+    obra4_tech: "Acrylic and textures on canvas"
   }
 };
 
