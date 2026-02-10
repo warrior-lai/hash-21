@@ -250,6 +250,42 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
   position: relative;
   overflow: hidden;
 }
+.collection-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.collection-item:hover img { transform: scale(1.03); }
+.collection-item .overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 25px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.7));
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.collection-item:hover .overlay { opacity: 1; }
+.collection-item .overlay h4 {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.collection-item .overlay p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  color: #fff;
+  font-weight: 300;
+}
+.collection-item .overlay span {
+  font-size: 10px;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 1px;
+}
 .collection-item .coming {
   font-size: 9px;
   letter-spacing: 4px;
@@ -449,11 +485,24 @@ footer {
 <section id="collection">
   <span class="section-label" data-i18n="collection_label">Obras originales</span>
   <h2 class="section-title" data-i18n="collection_title">Colección</h2>
-  <p class="section-text" data-i18n="collection_text">Acrílico sobre lienzo. Texturas, capas, decisiones irreversibles. Cada pieza es única — finita por diseño.</p>
+  <p class="section-text" data-i18n="collection_text">Serie Block 0. Cada obra registra un estado de consciencia irrepetible. Así como Bitcoin registra valor en el tiempo, mi obra registra momentos. Próximamente certificadas on-chain.</p>
   <div class="collection-grid">
-    <div class="collection-item"><img src="img/obra1.jpg" alt="Abstract Lightning"></div>
-    <div class="collection-item"><img src="img/obra2.jpg" alt="Abstract Landscape"></div>
-    <div class="collection-item"><img src="img/obra3.jpg" alt="Abstract Spiral Texture"></div>
+    <div class="collection-item">
+      <img src="img/obra1.jpg" alt="Libertad">
+      <div class="overlay"><h4>Block 0 — #001</h4><p>Libertad</p><span>Acrílico y texturas sobre lienzo</span></div>
+    </div>
+    <div class="collection-item">
+      <img src="img/obra2.jpg" alt="Horizonte Temporal">
+      <div class="overlay"><h4>Block 0 — #002</h4><p>Horizonte Temporal</p><span>Acrílico y texturas sobre lienzo</span></div>
+    </div>
+    <div class="collection-item">
+      <img src="img/obra3.jpg" alt="The Rabbit Hole">
+      <div class="overlay"><h4>Block 0 — #003</h4><p>The Rabbit Hole</p><span>Acrílico y texturas sobre lienzo</span></div>
+    </div>
+    <div class="collection-item">
+      <img src="img/obra4.jpg" alt="The Rabbit">
+      <div class="overlay"><h4>Block 0 — #004</h4><p>The Rabbit</p><span>Acrílico y texturas sobre lienzo</span></div>
+    </div>
   </div>
 </section>
 
