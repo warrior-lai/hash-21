@@ -39,7 +39,8 @@ const translations = {
     footer_desc: "Sovereign art for sovereign minds",
     footer_nav: "Navegación",
     footer_social: "Redes",
-    footer_contact: "Contacto"
+    footer_contact: "Contacto",
+    contact_community: "Sumate a la comunidad"
   },
   en: {
     nav_collabs: "Collaborations",
@@ -81,7 +82,8 @@ const translations = {
     footer_desc: "Sovereign art for sovereign minds",
     footer_nav: "Navigation",
     footer_social: "Social",
-    footer_contact: "Contact"
+    footer_contact: "Contact",
+    contact_community: "Join the community"
   }
 };
 
