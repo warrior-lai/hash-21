@@ -64,6 +64,54 @@ nav ul a {
 }
 nav ul a:hover { color: var(--text); }
 
+/* HAMBURGER MENU */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  padding: 5px;
+}
+.hamburger span {
+  width: 20px;
+  height: 2px;
+  background: var(--text);
+  margin: 2px 0;
+  transition: 0.3s;
+}
+.hamburger.active span:nth-child(1) {
+  transform: rotate(-45deg) translate(-4px, 5px);
+}
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.active span:nth-child(3) {
+  transform: rotate(45deg) translate(-4px, -5px);
+}
+.nav-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: var(--bg);
+  z-index: 99;
+  display: none;
+  padding-top: 80px;
+}
+.nav-overlay.active {
+  display: block;
+}
+.nav-overlay ul {
+  flex-direction: column;
+  gap: 30px;
+  padding: 40px;
+  text-align: center;
+}
+.nav-overlay ul a {
+  font-size: 14px;
+  letter-spacing: 4px;
+}
+
 /* LANG SWITCH */
 .lang-switch { display: flex; gap: 4px; align-items: center; }
 .lang-btn {
@@ -544,20 +592,193 @@ footer {
   font-weight: 400;
 }
 
+/* BLOG */
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+}
+.blog-card {
+  border: 1px solid var(--border);
+  padding: 30px;
+  background: var(--bg);
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+.blog-card:hover {
+  box-shadow: 0 8px 40px rgba(176,141,87,0.1);
+  transform: translateY(-2px);
+}
+.blog-date {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+.blog-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 400;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.blog-excerpt {
+  color: var(--text-dim);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+.blog-link {
+  color: var(--text-mid);
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: color 0.3s;
+  font-weight: 400;
+}
+.blog-link:hover { color: var(--gold); }
+
+/* EVENTS */
+.events-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+.event-card {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+  border: 1px solid var(--border);
+  padding: 30px;
+  background: var(--bg);
+  transition: box-shadow 0.3s;
+}
+.event-card:hover {
+  box-shadow: 0 8px 40px rgba(176,141,87,0.1);
+}
+.event-date {
+  background: var(--gold);
+  color: white;
+  text-align: center;
+  min-width: 60px;
+  height: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+.event-day {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1;
+}
+.event-month {
+  font-size: 10px;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+.event-info h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 400;
+  margin-bottom: 8px;
+}
+.event-location {
+  color: var(--gold);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+.event-desc {
+  color: var(--text-dim);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
 /* MOBILE */
 @media (max-width: 768px) {
   nav { padding: 18px 24px; }
-  nav ul { gap: 18px; }
-  nav ul a { font-size: 9px; letter-spacing: 2px; }
+  nav ul { display: none; }
+  .hamburger { display: flex; }
   .logo { font-size: 18px; letter-spacing: 4px; }
-  .hero h1 { font-size: 40px; letter-spacing: 8px; }
-  section { padding: 80px 24px; }
+  
+  /* Hero responsive */
+  .hero { padding: 0 20px; }
+  .hero h1 { font-size: 48px; letter-spacing: 8px; }
+  
+  /* Sections responsive */
+  section { padding: 80px 20px; }
   .section-title { font-size: 28px; }
+  .section-text { font-size: 13px; margin-bottom: 40px; }
+  
+  /* Pillars single column */
   .pillars { grid-template-columns: 1fr; }
+  .pillar { padding: 40px 30px; }
+  
+  /* Collection responsive */
   .collection-grid { grid-template-columns: 1fr; gap: 20px; }
+  .collection-item { min-width: 260px; }
+  .collection-item img { height: 300px; }
+  
+  /* Carousel touch-swipeable */
   .carousel-item { min-width: 260px; }
-  .artist-card { grid-template-columns: 1fr; gap: 30px; }
+  .collection-carousel {
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+  
+  /* Artist card single column, centered */
+  .artist-card { 
+    grid-template-columns: 1fr; 
+    gap: 30px; 
+    text-align: center;
+  }
+  .artist-img { 
+    width: 200px; 
+    height: 200px; 
+    margin: 0 auto;
+  }
+  
+  /* Blog and Events responsive */
+  .blog-grid { grid-template-columns: 1fr; gap: 20px; }
+  .blog-card, .event-card { padding: 25px; }
+  .event-card { 
+    flex-direction: column; 
+    gap: 20px; 
+    text-align: center;
+  }
+  .event-date { align-self: center; }
+  
+  /* Footer responsive */
+  .footer-grid { 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 30px; 
+  }
+  .footer-grid .footer-col:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 390px) {
+  .hero h1 { font-size: 36px; letter-spacing: 6px; }
+  section { padding: 60px 16px; }
+  .collection-item { min-width: 240px; }
+  .collection-item img { height: 280px; }
   .artist-img { width: 160px; height: 160px; }
+  
+  /* Footer single column on very small screens */
+  .footer-grid { 
+    grid-template-columns: 1fr; 
+    gap: 25px; 
+  }
+  .footer-grid .footer-col:first-child {
+    grid-column: auto;
+  }
 }
 </style>
 </head>
@@ -568,11 +789,35 @@ footer {
   <ul>
     <li><a href="#philosophy" data-i18n="nav_philosophy">Filosofía</a></li>
     <li><a href="#collection" data-i18n="nav_collection">Colección</a></li>
-    <li><a href="#collaborations" data-i18n="nav_collabs">Colaboraciones</a></li>
     <li><a href="#artists" data-i18n="nav_artists">Artistas</a></li>
+    <li><a href="#collaborations" data-i18n="nav_collabs">Colaboraciones</a></li>
+    <li><a href="#blog" data-i18n="nav_blog">Blog</a></li>
+    <li><a href="#events" data-i18n="nav_events">Eventos</a></li>
     <li><a href="#contact" data-i18n="nav_contact">Contacto</a></li>
     <li class="lang-switch"><button class="lang-btn active" data-lang="es" onclick="setLang('es')">ES</button><button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button></li>
   </ul>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</nav>
+
+<div class="nav-overlay" id="navOverlay">
+  <ul>
+    <li><a href="#philosophy" data-i18n="nav_philosophy" onclick="closeMenu()">Filosofía</a></li>
+    <li><a href="#collection" data-i18n="nav_collection" onclick="closeMenu()">Colección</a></li>
+    <li><a href="#artists" data-i18n="nav_artists" onclick="closeMenu()">Artistas</a></li>
+    <li><a href="#collaborations" data-i18n="nav_collabs" onclick="closeMenu()">Colaboraciones</a></li>
+    <li><a href="#blog" data-i18n="nav_blog" onclick="closeMenu()">Blog</a></li>
+    <li><a href="#events" data-i18n="nav_events" onclick="closeMenu()">Eventos</a></li>
+    <li><a href="#contact" data-i18n="nav_contact" onclick="closeMenu()">Contacto</a></li>
+    <li class="lang-switch">
+      <button class="lang-btn active" data-lang="es" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </li>
+  </ul>
+</div>
 </nav>
 
 <canvas id="dust" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.4;"></canvas>
@@ -705,6 +950,62 @@ footer {
   </div>
 </section>
 
+<section id="blog">
+  <span class="section-label" data-i18n="blog_label">Blog</span>
+  <h2 class="section-title" data-i18n="blog_title">Noticias & Reflexiones</h2>
+  <p class="section-text" data-i18n="blog_text">Reflexiones sobre Bitcoin, arte y soberanía. Explorando la intersección entre creatividad y libertad financiera.</p>
+  <div class="blog-grid">
+    <article class="blog-card">
+      <div class="blog-date" data-i18n="blog_date1">15 Feb 2026</div>
+      <h3 data-i18n="blog_title1">Bitcoin y el Arte: Una Revolución Silenciosa</h3>
+      <p class="blog-excerpt" data-i18n="blog_excerpt1">Explorando cómo la filosofía de Bitcoin está transformando el mundo del arte y la creatividad.</p>
+      <a href="#" class="blog-link" data-i18n="blog_read_more">Leer más →</a>
+    </article>
+    <article class="blog-card">
+      <div class="blog-date" data-i18n="blog_date2">12 Feb 2026</div>
+      <h3 data-i18n="blog_title2">Proof of Work en el Lienzo</h3>
+      <p class="blog-excerpt" data-i18n="blog_excerpt2">Cada pincelada es irreversible. Reflexiones sobre el trabajo real en el arte físico.</p>
+      <a href="#" class="blog-link" data-i18n="blog_read_more">Leer más →</a>
+    </article>
+    <article class="blog-card">
+      <div class="blog-date" data-i18n="blog_date3">08 Feb 2026</div>
+      <h3 data-i18n="blog_title3">La Escasez Digital vs La Escasez Física</h3>
+      <p class="blog-excerpt" data-i18n="blog_excerpt3">¿Qué hace que algo sea verdaderamente único en la era digital?</p>
+      <a href="#" class="blog-link" data-i18n="blog_read_more">Leer más →</a>
+    </article>
+  </div>
+</section>
+
+<section id="events">
+  <span class="section-label" data-i18n="events_label">Eventos</span>
+  <h2 class="section-title" data-i18n="events_title">Próximos Eventos</h2>
+  <p class="section-text" data-i18n="events_text">Únete a nosotros en exposiciones, charlas y eventos sobre arte y Bitcoin.</p>
+  <div class="events-timeline">
+    <div class="event-card">
+      <div class="event-date">
+        <span class="event-day">24</span>
+        <span class="event-month" data-i18n="event_month1">MAR</span>
+      </div>
+      <div class="event-info">
+        <h3 data-i18n="event_title1">Exposición "Block 0"</h3>
+        <p class="event-location" data-i18n="event_location1">Galería Bitcoin Buenos Aires</p>
+        <p class="event-desc" data-i18n="event_desc1">Primera exposición individual de la serie Block 0. Arte físico meets filosofía Bitcoin.</p>
+      </div>
+    </div>
+    <div class="event-card">
+      <div class="event-date">
+        <span class="event-day">15</span>
+        <span class="event-month" data-i18n="event_month2">ABR</span>
+      </div>
+      <div class="event-info">
+        <h3 data-i18n="event_title2">Charla: "Arte y Soberanía"</h3>
+        <p class="event-location" data-i18n="event_location2">Virtual · Hash21 Studio</p>
+        <p class="event-desc" data-i18n="event_desc2">Conversación sobre creatividad, libertad financiera y el futuro del arte.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="contact" id="contact">
   <span class="section-label" data-i18n="contact_community">Sumate a la comunidad</span>
   <h2 class="section-title" data-i18n="contact_title">Conectemos</h2>
@@ -734,9 +1035,12 @@ footer {
     </div>
     <div class="footer-col">
       <h4 class="footer-title" data-i18n="footer_nav">Navegación</h4>
-      <a href="#collection" data-i18n="nav_collection">Colección</a>
       <a href="#philosophy" data-i18n="nav_philosophy">Filosofía</a>
+      <a href="#collection" data-i18n="nav_collection">Colección</a>
       <a href="#artists" data-i18n="nav_artists">Artistas</a>
+      <a href="#collaborations" data-i18n="nav_collabs">Colaboraciones</a>
+      <a href="#blog" data-i18n="nav_blog">Blog</a>
+      <a href="#events" data-i18n="nav_events">Eventos</a>
       <a href="#contact" data-i18n="nav_contact">Contacto</a>
     </div>
     <div class="footer-col">
@@ -851,6 +1155,23 @@ function toggleCollection() {
     gridEl.classList.remove('hidden');
     title.classList.add('expanded');
   }
+}
+
+/* Hamburger menu toggle */
+function toggleMenu() {
+  const hamburger = document.querySelector('.hamburger');
+  const navOverlay = document.getElementById('navOverlay');
+  hamburger.classList.toggle('active');
+  navOverlay.classList.toggle('active');
+  document.body.style.overflow = navOverlay.classList.contains('active') ? 'hidden' : '';
+}
+
+function closeMenu() {
+  const hamburger = document.querySelector('.hamburger');
+  const navOverlay = document.getElementById('navOverlay');
+  hamburger.classList.remove('active');
+  navOverlay.classList.remove('active');
+  document.body.style.overflow = '';
 }
 </script>
 
