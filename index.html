@@ -641,6 +641,20 @@ footer {
 .blog-link:hover { color: var(--gold); }
 
 /* EVENTS */
+.events-section {
+  margin-bottom: 50px;
+}
+.events-section:last-child {
+  margin-bottom: 0;
+}
+.events-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 300;
+  margin-bottom: 30px;
+  letter-spacing: 1px;
+  color: var(--text);
+}
 .events-timeline {
   display: flex;
   flex-direction: column;
@@ -680,6 +694,12 @@ footer {
   letter-spacing: 1px;
   margin-top: 2px;
 }
+.event-year {
+  font-size: 8px;
+  letter-spacing: 0.5px;
+  margin-top: 1px;
+  opacity: 0.8;
+}
 .event-info h3 {
   font-family: 'Cormorant Garamond', serif;
   font-size: 24px;
@@ -698,6 +718,32 @@ footer {
   color: var(--text-dim);
   font-size: 14px;
   line-height: 1.6;
+}
+
+/* PAST EVENTS */
+.past-event {
+  opacity: 0.8;
+  background: var(--bg2);
+}
+.past-event:hover {
+  opacity: 1;
+  box-shadow: 0 8px 40px rgba(176,141,87,0.08);
+}
+.past-date {
+  background: var(--text-mid);
+  height: 70px;
+  min-width: 70px;
+}
+.past-event-badge {
+  display: inline-block;
+  background: var(--text-dim);
+  color: white;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  margin-bottom: 8px;
+  font-weight: 500;
 }
 
 /* MOBILE */
@@ -978,29 +1024,68 @@ footer {
 
 <section id="events">
   <span class="section-label" data-i18n="events_label">Eventos</span>
-  <h2 class="section-title" data-i18n="events_title">Próximos Eventos</h2>
+  <h2 class="section-title" data-i18n="events_main_title">Eventos</h2>
   <p class="section-text" data-i18n="events_text">Únete a nosotros en exposiciones, charlas y eventos sobre arte y Bitcoin.</p>
-  <div class="events-timeline">
-    <div class="event-card">
-      <div class="event-date">
-        <span class="event-day">24</span>
-        <span class="event-month" data-i18n="event_month1">MAR</span>
+  
+  <!-- Upcoming Events -->
+  <div class="events-section">
+    <h3 class="events-subtitle" data-i18n="events_upcoming">Próximos Eventos</h3>
+    <div class="events-timeline">
+      <div class="event-card">
+        <div class="event-date">
+          <span class="event-day">24</span>
+          <span class="event-month" data-i18n="event_month1">MAR</span>
+        </div>
+        <div class="event-info">
+          <h3 data-i18n="event_title1">Exposición "Block 0"</h3>
+          <p class="event-location" data-i18n="event_location1">Galería Bitcoin Buenos Aires</p>
+          <p class="event-desc" data-i18n="event_desc1">Primera exposición individual de la serie Block 0. Arte físico meets filosofía Bitcoin.</p>
+        </div>
       </div>
-      <div class="event-info">
-        <h3 data-i18n="event_title1">Exposición "Block 0"</h3>
-        <p class="event-location" data-i18n="event_location1">Galería Bitcoin Buenos Aires</p>
-        <p class="event-desc" data-i18n="event_desc1">Primera exposición individual de la serie Block 0. Arte físico meets filosofía Bitcoin.</p>
+      <div class="event-card">
+        <div class="event-date">
+          <span class="event-day">15</span>
+          <span class="event-month" data-i18n="event_month2">ABR</span>
+        </div>
+        <div class="event-info">
+          <h3 data-i18n="event_title2">Charla: "Arte y Soberanía"</h3>
+          <p class="event-location" data-i18n="event_location2">Virtual · Hash21 Studio</p>
+          <p class="event-desc" data-i18n="event_desc2">Conversación sobre creatividad, libertad financiera y el futuro del arte.</p>
+        </div>
       </div>
     </div>
-    <div class="event-card">
+  </div>
+
+  <!-- Past Events -->
+  <div class="events-section">
+    <h3 class="events-subtitle" data-i18n="events_past">Eventos Pasados</h3>
+    <div class="events-timeline">
+      <div class="event-card past-event">
+        <div class="event-date past-date">
+          <span class="event-day">16</span>
+          <span class="event-month" data-i18n="past_event_month1">NOV</span>
+          <span class="event-year">2025</span>
+        </div>
+        <div class="event-info">
+          <div class="past-event-badge" data-i18n="past_event_badge">Evento pasado</div>
+          <h3 data-i18n="past_event_title1">La Bitconf Buenos Aires 2025</h3>
+          <p class="event-location" data-i18n="past_event_location1">Buenos Aires, Argentina</p>
+          <p class="event-desc" data-i18n="past_event_desc1">Dinámica de arte en vivo en el espacio de 21 LAT. Abstract Lai creando en tiempo real frente al público bitcoiner.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h3 class="events-past-title" data-i18n="events_past_title" style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-top:60px;margin-bottom:30px;letter-spacing:1px;">Eventos Pasados</h3>
+  <div class="events-timeline">
+    <div class="event-card" style="opacity:0.85;">
       <div class="event-date">
-        <span class="event-day">15</span>
-        <span class="event-month" data-i18n="event_month2">ABR</span>
+        <span class="event-day">DIC</span>
+        <span class="event-month">2025</span>
       </div>
       <div class="event-info">
-        <h3 data-i18n="event_title2">Charla: "Arte y Soberanía"</h3>
-        <p class="event-location" data-i18n="event_location2">Virtual · Hash21 Studio</p>
-        <p class="event-desc" data-i18n="event_desc2">Conversación sobre creatividad, libertad financiera y el futuro del arte.</p>
+        <h3 data-i18n="event_title_past1">La Bitconf Buenos Aires 2025</h3>
+        <p class="event-location" data-i18n="event_location_past1">Buenos Aires, Argentina</p>
+        <p class="event-desc" data-i18n="event_desc_past1">Dinámica de arte en vivo en el espacio de 21 LAT. Abstract Lai creando en tiempo real frente al público bitcoiner.</p>
       </div>
     </div>
   </div>

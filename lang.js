@@ -79,6 +79,10 @@ const translations = {
     event_title2: "Charla: \"Arte y Soberanía\"",
     event_location2: "Virtual · Hash21 Studio",
     event_desc2: "Conversación sobre creatividad, libertad financiera y el futuro del arte."
+    events_past_title: "Eventos Pasados",
+    event_title_past1: "La Bitconf Buenos Aires 2025",
+    event_location_past1: "Buenos Aires, Argentina",
+    event_desc_past1: "Dinámica de arte en vivo en el espacio de 21 LAT. Abstract Lai creando en tiempo real frente al público bitcoiner.",
   },
   en: {
     nav_collabs: "Collaborations",
@@ -160,6 +164,10 @@ const translations = {
     event_title2: "Talk: \"Art and Sovereignty\"",
     event_location2: "Virtual · Hash21 Studio",
     event_desc2: "Conversation about creativity, financial freedom and the future of art."
+    events_past_title: "Past Events",
+    event_title_past1: "La Bitconf Buenos Aires 2025",
+    event_location_past1: "Buenos Aires, Argentina",
+    event_desc_past1: "Live art dynamic at the 21 LAT booth. Abstract Lai creating in real time in front of the Bitcoin audience.",
   }
 };
 
