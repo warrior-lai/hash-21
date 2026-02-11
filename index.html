@@ -4,7 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hash21 — Galería de Arte Virtual · Bitcoin & Arte</title>
-<meta name="description" content="Galería de arte virtual — Bitcoin & Arte. Obras originales, joyería y colaboraciones.">
+<meta name="description" content="Hash21: galería de arte físico único inspirado en Bitcoin. Descubre obras irrepetibles certificadas on-chain y únete a la comunidad del arte soberano.">
+
+<!-- Open Graph Meta Tags -->
+<meta property="og:title" content="Hash21 - Galería de arte físico único inspirado en Bitcoin">
+<meta property="og:description" content="Descubre obras irrepetibles certificadas on-chain y únete a la comunidad del arte soberano.">
+<meta property="og:image" content="https://hash21.studio/img/obra1.jpg">
+<meta property="og:url" content="https://hash21.studio">
+<meta property="og:type" content="website">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Hash21",
+  "url": "https://hash21.studio",
+  "description": "Galería de arte físico único inspirado en Bitcoin. Descubre obras irrepetibles certificadas on-chain y únete a la comunidad del arte soberano."
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -31,7 +50,7 @@ body {
 }
 
 /* NAV */
-nav {
+header {
   position: fixed;
   top: 0;
   width: 100%;
@@ -52,8 +71,8 @@ nav {
   text-transform: uppercase;
 }
 .logo span { color: var(--gold); }
-nav ul { display: flex; list-style: none; gap: 40px; align-items: center; }
-nav ul a {
+header ul { display: flex; list-style: none; gap: 40px; align-items: center; }
+header ul a {
   color: var(--text-dim);
   text-decoration: none;
   font-size: 10px;
@@ -62,7 +81,7 @@ nav ul a {
   transition: color 0.3s;
   font-weight: 400;
 }
-nav ul a:hover { color: var(--text); }
+header ul a:hover { color: var(--text); }
 
 /* HAMBURGER MENU */
 .hamburger {
@@ -185,6 +204,23 @@ nav ul a:hover { color: var(--text); }
   0% { width: 0; opacity: 0; }
   100% { width: 50px; opacity: 1; }
 }
+.hero .hero-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--text);
+  margin-bottom: 15px;
+  animation: fadeUp 1.8s ease-out;
+  letter-spacing: 1px;
+}
+.hero .hero-description {
+  font-size: 16px;
+  color: var(--text-mid);
+  margin-bottom: 25px;
+  animation: fadeUp 2s ease-out;
+  max-width: 600px;
+  line-height: 1.5;
+}
 .hero .tagline {
   font-size: 11px;
   color: var(--text-dim);
@@ -195,12 +231,31 @@ nav ul a:hover { color: var(--text); }
 }
 .hero .pow {
   margin-top: 10px;
+  margin-bottom: 30px;
   font-family: 'Cormorant Garamond', serif;
   font-style: italic;
-  font-size: 17px;
+  font-size: 14px;
   color: var(--text-mid);
   font-weight: 300;
   animation: fadeUp 2.3s ease-out;
+}
+.hero .cta-button {
+  display: inline-block;
+  padding: 15px 35px;
+  border: 2px solid var(--gold);
+  background: transparent;
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  transition: all 0.3s;
+  font-weight: 400;
+  animation: fadeUp 2.5s ease-out;
+}
+.hero .cta-button:hover {
+  background: var(--gold);
+  color: white;
 }
 .scroll-arrow {
   position: absolute;
@@ -215,6 +270,7 @@ nav ul a:hover { color: var(--text); }
 @keyframes pulse { 0%,100% { opacity: 0.2; } 50% { opacity: 0.5; } }
 
 /* SECTIONS */
+main { position: relative; z-index: 1; }
 section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
 .full-section { max-width: 100%; background: var(--bg2); }
 .section-label {
@@ -242,6 +298,26 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
   font-weight: 300;
 }
 
+/* CTA LINKS */
+.section-cta {
+  display: inline-block;
+  margin-top: 30px;
+  color: var(--text-mid);
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  transition: all 0.3s;
+  font-weight: 500;
+}
+.section-cta:hover {
+  color: var(--gold);
+}
+.section-cta::after {
+  content: ' →';
+  margin-left: 8px;
+}
+
 /* CAROUSEL */
 .carousel-wrapper { position: relative; overflow: hidden; }
 .carousel {
@@ -260,6 +336,8 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
   height: 100%;
   object-fit: cover;
   transition: transform 0.8s cubic-bezier(0.4,0,0.2,1), filter 0.5s ease;
+  loading: lazy;
+  decoding: async;
 }
 .carousel-item:hover img { transform: scale(1.03); filter: brightness(1.05); }
 .carousel-item { box-shadow: 0 4px 30px rgba(0,0,0,0.04); transition: box-shadow 0.5s; }
@@ -317,6 +395,8 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
   object-fit: cover;
   display: block;
   transition: transform 0.6s ease;
+  loading: lazy;
+  decoding: async;
 }
 .collection-item:hover img { transform: scale(1.02); }
 .collection-item .info {
@@ -483,6 +563,8 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
   background: #fff;
   box-shadow: 0 8px 40px rgba(0,0,0,0.06);
   transition: box-shadow 0.5s, transform 0.5s;
+  loading: lazy;
+  decoding: async;
 }
 .artist-img:hover { box-shadow: 0 12px 50px rgba(176,141,87,0.12); transform: translateY(-3px); }
 .artist-info h3 {
@@ -513,6 +595,77 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
   font-weight: 400;
 }
 .artist-link:hover { color: var(--gold); }
+
+/* NEWSLETTER */
+.newsletter {
+  background: var(--bg2);
+  text-align: center;
+}
+.newsletter-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.newsletter h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px;
+  font-weight: 300;
+  margin-bottom: 25px;
+  letter-spacing: 2px;
+}
+.newsletter-benefits {
+  list-style: none;
+  margin-bottom: 35px;
+}
+.newsletter-benefits li {
+  font-size: 14px;
+  color: var(--text-mid);
+  margin-bottom: 10px;
+  padding-left: 20px;
+  position: relative;
+}
+.newsletter-benefits li::before {
+  content: '•';
+  color: var(--gold);
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+.newsletter-form {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.newsletter-email {
+  padding: 15px 20px;
+  border: 2px solid var(--gold);
+  background: transparent;
+  font-size: 14px;
+  min-width: 300px;
+  flex: 1;
+  max-width: 400px;
+}
+.newsletter-email:focus {
+  outline: none;
+  border-color: var(--text);
+}
+.newsletter-submit {
+  padding: 15px 30px;
+  border: 2px solid var(--gold);
+  background: var(--gold);
+  color: white;
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 500;
+}
+.newsletter-submit:hover {
+  background: transparent;
+  color: var(--gold);
+}
 
 /* CONTACT */
 .contact { text-align: center; }
@@ -748,19 +901,25 @@ footer {
 
 /* MOBILE */
 @media (max-width: 768px) {
-  nav { padding: 18px 24px; }
-  nav ul { display: none; }
+  header { padding: 18px 24px; }
+  header ul { display: none; }
   .hamburger { display: flex; }
   .logo { font-size: 18px; letter-spacing: 4px; }
   
   /* Hero responsive */
   .hero { padding: 0 20px; }
   .hero h1 { font-size: 48px; letter-spacing: 8px; }
+  .hero .hero-subtitle { font-size: 22px; }
+  .hero .hero-description { font-size: 14px; }
   
   /* Sections responsive */
   section { padding: 80px 20px; }
   .section-title { font-size: 28px; }
   .section-text { font-size: 13px; margin-bottom: 40px; }
+  
+  /* Newsletter responsive */
+  .newsletter-form { flex-direction: column; align-items: center; }
+  .newsletter-email { min-width: 250px; }
   
   /* Pillars single column */
   .pillars { grid-template-columns: 1fr; }
@@ -814,6 +973,7 @@ footer {
 
 @media (max-width: 390px) {
   .hero h1 { font-size: 36px; letter-spacing: 6px; }
+  .hero .hero-subtitle { font-size: 18px; }
   section { padding: 60px 16px; }
   .collection-item { min-width: 240px; }
   .collection-item img { height: 280px; }
@@ -832,16 +992,16 @@ footer {
 </head>
 <body>
 
-<nav>
+<header>
   <div class="logo">HASH<span>21</span></div>
   <ul>
     <li><a href="#philosophy" data-i18n="nav_philosophy">Filosofía</a></li>
-    <li><a href="#collection" data-i18n="nav_collection">Colección</a></li>
-    <li><a href="#artists" data-i18n="nav_artists">Artistas</a></li>
-    <li><a href="#collaborations" data-i18n="nav_collabs">Colaboraciones</a></li>
+    <li><a href="#collection" data-i18n="nav_collection">Explorar Obras</a></li>
+    <li><a href="#artists" data-i18n="nav_artists">Creadores</a></li>
+    <li><a href="#collaborations" data-i18n="nav_collabs">Proyectos</a></li>
     <li><a href="#blog" data-i18n="nav_blog">Blog</a></li>
     <li><a href="#events" data-i18n="nav_events">Eventos</a></li>
-    <li><a href="#contact" data-i18n="nav_contact">Contacto</a></li>
+    <li><a href="#contact" data-i18n="nav_contact">Conectemos</a></li>
     <li class="lang-switch"><button class="lang-btn active" data-lang="es" onclick="setLang('es')">ES</button><button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button></li>
   </ul>
   <div class="hamburger" onclick="toggleMenu()">
@@ -849,34 +1009,37 @@ footer {
     <span></span>
     <span></span>
   </div>
-</nav>
+</header>
 
 <div class="nav-overlay" id="navOverlay">
   <ul>
     <li><a href="#philosophy" data-i18n="nav_philosophy" onclick="closeMenu()">Filosofía</a></li>
-    <li><a href="#collection" data-i18n="nav_collection" onclick="closeMenu()">Colección</a></li>
-    <li><a href="#artists" data-i18n="nav_artists" onclick="closeMenu()">Artistas</a></li>
-    <li><a href="#collaborations" data-i18n="nav_collabs" onclick="closeMenu()">Colaboraciones</a></li>
+    <li><a href="#collection" data-i18n="nav_collection" onclick="closeMenu()">Explorar Obras</a></li>
+    <li><a href="#artists" data-i18n="nav_artists" onclick="closeMenu()">Creadores</a></li>
+    <li><a href="#collaborations" data-i18n="nav_collabs" onclick="closeMenu()">Proyectos</a></li>
     <li><a href="#blog" data-i18n="nav_blog" onclick="closeMenu()">Blog</a></li>
     <li><a href="#events" data-i18n="nav_events" onclick="closeMenu()">Eventos</a></li>
-    <li><a href="#contact" data-i18n="nav_contact" onclick="closeMenu()">Contacto</a></li>
+    <li><a href="#contact" data-i18n="nav_contact" onclick="closeMenu()">Conectemos</a></li>
     <li class="lang-switch">
       <button class="lang-btn active" data-lang="es" onclick="setLang('es')">ES</button>
       <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
     </li>
   </ul>
 </div>
-</nav>
 
 <canvas id="dust" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.4;"></canvas>
 <section class="hero" style="position:relative;z-index:1;">
   <h1>HASH<span>21</span></h1>
   <div class="line"></div>
+  <p class="hero-subtitle" data-i18n="hero_subtitle">Galería de arte físico único inspirado en Bitcoin</p>
+  <p class="hero-description" data-i18n="hero_description">Descubre obras irrepetibles certificadas on-chain y únete a la comunidad del arte soberano.</p>
   <p class="tagline" data-i18n="hero_tagline">Sovereign art for sovereign minds</p>
   <p class="pow" data-i18n="hero_pow">Proof of Work · Proof of Soul</p>
+  <a href="#collection" class="cta-button" data-i18n="hero_cta">Explorar Colección</a>
   <div class="scroll-arrow" data-i18n="hero_scroll">↓ Explorar</div>
 </section>
 
+<main>
 <div class="full-section" id="philosophy">
   <section>
     <span class="section-label" data-i18n="philosophy_label">Filosofía</span>
@@ -896,31 +1059,32 @@ footer {
         <p data-i18n="pillar3_text">En un mundo de infinita reproducción, lo físico es escaso. Cada pieza es única. Finito por diseño — como Bitcoin.</p>
       </div>
     </div>
+    <a href="#collection" class="section-cta" data-i18n="philosophy_cta">Explorar Obras</a>
   </section>
 </div>
 
 <section id="collection">
   <span class="section-label" data-i18n="collection_label">Obras originales</span>
-  <h2 class="section-title toggle-title" data-i18n="collection_title" onclick="toggleCollection()">Colección</h2>
+  <h2 class="section-title toggle-title" data-i18n="collection_title" onclick="toggleCollection()">Explorar Obras</h2>
   <p class="section-text" data-i18n="collection_text">Serie Block 0. Cada obra registra un estado de consciencia irrepetible. Así como Bitcoin registra valor en el tiempo, mi obra registra momentos. Próximamente certificadas on-chain.</p>
 
   <!-- Carousel (default) -->
   <div class="collection-carousel-wrapper" id="collectionCarousel">
     <div class="collection-carousel" id="collCarousel">
       <div class="collection-item" onclick="openLightbox('img/obra4.jpg','Block 0 — #001','The Rabbit','Acrílico y texturas sobre lienzo')">
-        <img src="img/obra4.jpg" alt="The Rabbit">
+        <img src="img/obra4.jpg" alt="The Rabbit - Arte abstracto inspirado en Bitcoin" decoding="async">
         <div class="info"><h4 data-i18n="obra1_code">Block 0 — #001</h4><p data-i18n="obra1_name">The Rabbit</p><span data-i18n="obra1_tech">Acrílico y texturas sobre lienzo</span></div>
       </div>
       <div class="collection-item" onclick="openLightbox('img/obra3.jpg','Block 0 — #002','The Hole','Acrílico y texturas sobre lienzo')">
-        <img src="img/obra3.jpg" alt="The Hole">
+        <img src="img/obra3.jpg" alt="The Hole - Arte abstracto inspirado en Bitcoin" loading="lazy" decoding="async">
         <div class="info"><h4 data-i18n="obra2_code">Block 0 — #002</h4><p data-i18n="obra2_name">The Hole</p><span data-i18n="obra2_tech">Acrílico y texturas sobre lienzo</span></div>
       </div>
       <div class="collection-item" onclick="openLightbox('img/obra1.jpg','Block 0 — #003','Libertad','Acrílico y texturas sobre lienzo')">
-        <img src="img/obra1.jpg" alt="Libertad">
+        <img src="img/obra1.jpg" alt="Libertad - Arte abstracto inspirado en Bitcoin" loading="lazy" decoding="async">
         <div class="info"><h4 data-i18n="obra3_code">Block 0 — #003</h4><p data-i18n="obra3_name">Libertad</p><span data-i18n="obra3_tech">Acrílico y texturas sobre lienzo</span></div>
       </div>
       <div class="collection-item" onclick="openLightbox('img/obra2.jpg','Block 0 — #004','Horizonte Temporal','Acrílico y texturas sobre lienzo')">
-        <img src="img/obra2.jpg" alt="Horizonte Temporal">
+        <img src="img/obra2.jpg" alt="Horizonte Temporal - Arte abstracto inspirado en Bitcoin" loading="lazy" decoding="async">
         <div class="info"><h4 data-i18n="obra4_code">Block 0 — #004</h4><p data-i18n="obra4_name">Horizonte Temporal</p><span data-i18n="obra4_tech">Acrílico y texturas sobre lienzo</span></div>
       </div>
     </div>
@@ -933,28 +1097,29 @@ footer {
   <!-- Grid (expanded on click) -->
   <div class="collection-grid hidden" id="collectionGrid">
     <div class="collection-item" onclick="openLightbox('img/obra4.jpg','Block 0 — #001','The Rabbit','Acrílico y texturas sobre lienzo')">
-      <img src="img/obra4.jpg" alt="The Rabbit">
+      <img src="img/obra4.jpg" alt="The Rabbit - Arte abstracto inspirado en Bitcoin" loading="lazy" decoding="async">
       <div class="info"><h4 data-i18n="obra1_code">Block 0 — #001</h4><p data-i18n="obra1_name">The Rabbit</p><span data-i18n="obra1_tech">Acrílico y texturas sobre lienzo</span></div>
     </div>
     <div class="collection-item" onclick="openLightbox('img/obra3.jpg','Block 0 — #002','The Hole','Acrílico y texturas sobre lienzo')">
-      <img src="img/obra3.jpg" alt="The Hole">
+      <img src="img/obra3.jpg" alt="The Hole - Arte abstracto inspirado en Bitcoin" loading="lazy" decoding="async">
       <div class="info"><h4 data-i18n="obra2_code">Block 0 — #002</h4><p data-i18n="obra2_name">The Hole</p><span data-i18n="obra2_tech">Acrílico y texturas sobre lienzo</span></div>
     </div>
     <div class="collection-item" onclick="openLightbox('img/obra1.jpg','Block 0 — #003','Libertad','Acrílico y texturas sobre lienzo')">
-      <img src="img/obra1.jpg" alt="Libertad">
+      <img src="img/obra1.jpg" alt="Libertad - Arte abstracto inspirado en Bitcoin" loading="lazy" decoding="async">
       <div class="info"><h4 data-i18n="obra3_code">Block 0 — #003</h4><p data-i18n="obra3_name">Libertad</p><span data-i18n="obra3_tech">Acrílico y texturas sobre lienzo</span></div>
     </div>
     <div class="collection-item" onclick="openLightbox('img/obra2.jpg','Block 0 — #004','Horizonte Temporal','Acrílico y texturas sobre lienzo')">
-      <img src="img/obra2.jpg" alt="Horizonte Temporal">
+      <img src="img/obra2.jpg" alt="Horizonte Temporal - Arte abstracto inspirado en Bitcoin" loading="lazy" decoding="async">
       <div class="info"><h4 data-i18n="obra4_code">Block 0 — #004</h4><p data-i18n="obra4_name">Horizonte Temporal</p><span data-i18n="obra4_tech">Acrílico y texturas sobre lienzo</span></div>
     </div>
   </div>
+  <a href="#artists" class="section-cta" data-i18n="collection_cta">Conoce a los Creadores</a>
 </section>
 
 <section>
-  <span class="section-label" data-i18n="jewelry_label">Artesanal</span>
-  <h2 class="section-title" data-i18n="jewelry_title">Hard Art Objects</h2>
-  <p class="section-text" data-i18n="jewelry_text">Tiempo convertido en materia. Energía fijada en forma. Piezas únicas en plata, hechas a mano.</p>
+  <span class="section-label" data-i18n="objects_label">Artesanal</span>
+  <h2 class="section-title" data-i18n="objects_title">Hard Art Objects</h2>
+  <p class="section-text" data-i18n="objects_text">Tiempo convertido en materia. Energía fijada en forma. Piezas únicas en plata, hechas a mano.</p>
   <div class="collection-grid">
     <div class="collection-item"><span class="coming" data-i18n="coming">Próximamente</span></div>
     <div class="collection-item"><span class="coming" data-i18n="coming">Próximamente</span></div>
@@ -962,14 +1127,12 @@ footer {
   </div>
 </section>
 
-<!-- moved philosophy above collection -->
-
 <section id="artists">
   <span class="section-label" data-i18n="artists_label">Artistas</span>
   <h2 class="section-title" data-i18n="artists_title">Creadores</h2>
   <p class="section-text" data-i18n="artists_text">Hash21 es una plataforma curada. Cada artista comparte la visión de soberanía, verdad y trabajo real.</p>
   <div class="artist-card">
-    <img src="img/avatar.jpg" alt="Abstract Lai" class="artist-img">
+    <img src="img/avatar.jpg" alt="Abstract Lai - Artista Bitcoin" class="artist-img" loading="lazy" decoding="async">
     <div class="artist-info">
       <h3>Abstract Lai</h3>
       <div class="role" data-i18n="artist1_role">Fundadora · Artista</div>
@@ -977,6 +1140,7 @@ footer {
       <a href="https://www.instagram.com/abstract.lai" target="_blank" class="artist-link">@abstract.lai →</a>
     </div>
   </div>
+  <a href="#collaborations" class="section-cta" data-i18n="artists_cta">Ver Proyectos</a>
 </section>
 
 <section id="collaborations">
@@ -985,17 +1149,18 @@ footer {
   <p class="section-text" data-i18n="collab_text">Diseños exclusivos creados para el proyecto Veintiuno LAT. Arte abstracto aplicado a tarjetas contactless — cada diseño es único e irrepetible.</p>
   <div class="carousel-wrapper">
     <div class="carousel" id="carousel">
-      <div class="carousel-item"><img src="img/card-first.jpg" alt="Card"></div>
-      <div class="carousel-item"><img src="img/card6.jpg" alt="Card"></div>
-      <div class="carousel-item"><img src="img/card7.jpg" alt="Card"></div>
-      <div class="carousel-item"><img src="img/card8.jpg" alt="Card"></div>
-      <div class="carousel-item"><img src="img/card10.jpg" alt="Card"></div>
+      <div class="carousel-item"><img src="img/card-first.jpg" alt="Tarjeta Bitcoin Veintiuno LAT con arte único" loading="lazy" decoding="async"></div>
+      <div class="carousel-item"><img src="img/card6.jpg" alt="Tarjeta Bitcoin Veintiuno LAT con arte único" loading="lazy" decoding="async"></div>
+      <div class="carousel-item"><img src="img/card7.jpg" alt="Tarjeta Bitcoin Veintiuno LAT con arte único" loading="lazy" decoding="async"></div>
+      <div class="carousel-item"><img src="img/card8.jpg" alt="Tarjeta Bitcoin Veintiuno LAT con arte único" loading="lazy" decoding="async"></div>
+      <div class="carousel-item"><img src="img/card10.jpg" alt="Tarjeta Bitcoin Veintiuno LAT con arte única" loading="lazy" decoding="async"></div>
     </div>
     <div class="carousel-nav">
       <button class="carousel-btn" onclick="moveCarousel(-1)">←</button>
       <button class="carousel-btn" onclick="moveCarousel(1)">→</button>
     </div>
   </div>
+  <a href="#blog" class="section-cta" data-i18n="collabs_cta">Leer el Blog</a>
 </section>
 
 <section id="blog">
@@ -1004,24 +1169,25 @@ footer {
   <p class="section-text" data-i18n="blog_text">Reflexiones sobre Bitcoin, arte y soberanía. Explorando la intersección entre creatividad y libertad financiera.</p>
   <div class="blog-grid">
     <article class="blog-card">
-      <div class="blog-date" data-i18n="blog_date1">15 Feb 2026</div>
+      <time class="blog-date" data-i18n="blog_date1">15 Feb 2026</time>
       <h3 data-i18n="blog_title1">Bitcoin y el Arte: Una Revolución Silenciosa</h3>
       <p class="blog-excerpt" data-i18n="blog_excerpt1">Explorando cómo la filosofía de Bitcoin está transformando el mundo del arte y la creatividad.</p>
       <a href="#" class="blog-link" data-i18n="blog_read_more">Leer más →</a>
     </article>
     <article class="blog-card">
-      <div class="blog-date" data-i18n="blog_date2">12 Feb 2026</div>
+      <time class="blog-date" data-i18n="blog_date2">12 Feb 2026</time>
       <h3 data-i18n="blog_title2">Proof of Work en el Lienzo</h3>
       <p class="blog-excerpt" data-i18n="blog_excerpt2">Cada pincelada es irreversible. Reflexiones sobre el trabajo real en el arte físico.</p>
       <a href="#" class="blog-link" data-i18n="blog_read_more">Leer más →</a>
     </article>
     <article class="blog-card">
-      <div class="blog-date" data-i18n="blog_date3">08 Feb 2026</div>
+      <time class="blog-date" data-i18n="blog_date3">08 Feb 2026</time>
       <h3 data-i18n="blog_title3">La Escasez Digital vs La Escasez Física</h3>
       <p class="blog-excerpt" data-i18n="blog_excerpt3">¿Qué hace que algo sea verdaderamente único en la era digital?</p>
       <a href="#" class="blog-link" data-i18n="blog_read_more">Leer más →</a>
     </article>
   </div>
+  <a href="#events" class="section-cta" data-i18n="blog_cta">Próximos Eventos</a>
 </section>
 
 <section id="events">
@@ -1077,21 +1243,26 @@ footer {
       </div>
     </div>
   </div>
-  <h3 class="events-past-title" data-i18n="events_past_title" style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-top:60px;margin-bottom:30px;letter-spacing:1px;">Eventos Pasados</h3>
-  <div class="events-timeline">
-    <div class="event-card" style="opacity:0.85;">
-      <div class="event-date">
-        <span class="event-day">DIC</span>
-        <span class="event-month">2025</span>
-      </div>
-      <div class="event-info">
-        <h3 data-i18n="event_title_past1">La Bitconf Buenos Aires 2025</h3>
-        <p class="event-location" data-i18n="event_location_past1">Buenos Aires, Argentina</p>
-        <p class="event-desc" data-i18n="event_desc_past1">Dinámica de arte en vivo en el espacio de 21 LAT. Abstract Lai creando en tiempo real frente al público bitcoiner.</p>
-      </div>
-    </div>
+  <a href="#newsletter" class="section-cta" data-i18n="events_cta">Conectemos</a>
+</section>
+
+<div class="full-section">
+<section class="newsletter" id="newsletter">
+  <div class="newsletter-content">
+    <span class="section-label" data-i18n="newsletter_label">Comunidad</span>
+    <h2 data-i18n="newsletter_title">Únete a la comunidad</h2>
+    <ul class="newsletter-benefits">
+      <li data-i18n="newsletter_benefit1">Novedades de nuevas colecciones</li>
+      <li data-i18n="newsletter_benefit2">Acceso anticipado a piezas certificadas</li>
+      <li data-i18n="newsletter_benefit3">Newsletter educativo de Bitcoin + Arte</li>
+    </ul>
+    <form class="newsletter-form" onsubmit="return false;">
+      <input type="email" class="newsletter-email" placeholder="tu@email.com" data-i18n-placeholder="newsletter_placeholder">
+      <button type="submit" class="newsletter-submit" data-i18n="newsletter_submit">Suscribirse</button>
+    </form>
   </div>
 </section>
+</div>
 
 <section class="contact" id="contact">
   <span class="section-label" data-i18n="contact_community">Sumate a la comunidad</span>
@@ -1103,6 +1274,7 @@ footer {
   </div>
   <div class="lightning-badge" data-i18n="lightning_badge">₿ Bitcoin only</div>
 </section>
+</main>
 
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <button class="lightbox-close" onclick="closeLightbox()">✕</button>
@@ -1123,12 +1295,12 @@ footer {
     <div class="footer-col">
       <h4 class="footer-title" data-i18n="footer_nav">Navegación</h4>
       <a href="#philosophy" data-i18n="nav_philosophy">Filosofía</a>
-      <a href="#collection" data-i18n="nav_collection">Colección</a>
-      <a href="#artists" data-i18n="nav_artists">Artistas</a>
-      <a href="#collaborations" data-i18n="nav_collabs">Colaboraciones</a>
+      <a href="#collection" data-i18n="nav_collection">Explorar Obras</a>
+      <a href="#artists" data-i18n="nav_artists">Creadores</a>
+      <a href="#collaborations" data-i18n="nav_collabs">Proyectos</a>
       <a href="#blog" data-i18n="nav_blog">Blog</a>
       <a href="#events" data-i18n="nav_events">Eventos</a>
-      <a href="#contact" data-i18n="nav_contact">Contacto</a>
+      <a href="#contact" data-i18n="nav_contact">Conectemos</a>
     </div>
     <div class="footer-col">
       <h4 class="footer-title" data-i18n="footer_social">Redes</h4>
