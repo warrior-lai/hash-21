@@ -127,7 +127,7 @@ const translations = {
     collab_text: "Exclusive designs created for the 21 LAT project. Abstract art applied to contactless cards — each design is unique and unrepeatable.",
     collection_label: "Collection",
     collection_title: "Explore Works & Objects",
-    collection_text: "Block 0 Series. Each work records an unrepeatable state of consciousness. Just as Bitcoin records value over time, my work records moments. Soon to be certified on-chain.",
+    collection_text: "Each work records an unrepeatable state of consciousness, just as Bitcoin records value over time. Soon to be certified on-chain.",
     coming: "Coming soon",
     coming_objects: "Objects · Coming soon",
     badge_available: "Available",
