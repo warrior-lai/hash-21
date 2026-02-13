@@ -533,6 +533,17 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
   margin-top: 25px;
 }
 
+/* AVAILABILITY BADGE HOVER EFFECTS */
+.availability-badge:hover {
+  transform: translateY(-1px);
+}
+.availability-badge.badge-available:hover {
+  background: rgba(45,212,168,0.1);
+}
+.availability-badge.badge-consult:hover {
+  background: rgba(176,141,87,0.1);
+}
+
 /* COLLECTION GRID (expanded) */
 .collection-grid {
   display: grid;
@@ -1238,7 +1249,7 @@ footer {
       <a href="https://www.instagram.com/abstract.lai" target="_blank" class="artist-link">@abstract.lai →</a>
     </div>
   </div>
-  <a href="#collaborations" class="section-cta" data-i18n="artists_cta">Ver Proyectos</a>
+  <a href="#contact" class="section-cta" data-i18n="artists_cta">Conectemos</a>
 </section>
 
 <section id="collaborations" style="display:none;">
@@ -1259,7 +1270,7 @@ footer {
       <button class="carousel-btn" onclick="moveCarousel(1)">→</button>
     </div>
   </div>
-  <a href="#blog" class="section-cta" data-i18n="collabs_cta">Leer el Blog</a>
+  <a href="#contact" class="section-cta" data-i18n="collabs_cta">Conectemos</a>
 </section>
 
 <section id="blog" style="display:none;">
@@ -1286,7 +1297,7 @@ footer {
       <a href="#" class="blog-link" data-i18n="blog_read_more">Leer más →</a>
     </article>
   </div>
-  <a href="#events" class="section-cta" data-i18n="blog_cta">Próximos Eventos</a>
+  <a href="#contact" class="section-cta" data-i18n="blog_cta">Conectemos</a>
 </section>
 
 <section id="events" style="display:none;">
@@ -1382,7 +1393,7 @@ footer {
     <h4 id="lb-code"></h4>
     <p id="lb-name"></p>
     <span id="lb-tech"></span>
-    <span id="lb-badge" class="availability-badge" style="margin-top:15px;"></span>
+    <a id="lb-badge" class="availability-badge" href="https://t.me/abstract_lai" target="_blank" style="margin-top:15px; text-decoration: none; cursor: pointer; transition: all 0.3s;"></a>
   </div>
 </div>
 
@@ -1397,9 +1408,6 @@ footer {
       <a href="#collection" data-i18n="nav_collection">Explorar Obras y Objetos</a>
       <a href="#philosophy" data-i18n="nav_philosophy">Filosofía</a>
       <a href="#artists" data-i18n="nav_artists">Creadores</a>
-      <a href="#collaborations" data-i18n="nav_collabs">Proyectos</a>
-      <a href="#blog" data-i18n="nav_blog">Blog</a>
-      <a href="#events" data-i18n="nav_events">Eventos</a>
       <a href="/verify/" data-i18n="nav_verify">Verificar</a>
       <a href="#contact" data-i18n="nav_contact">Conectemos</a>
     </div>

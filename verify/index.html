@@ -343,7 +343,10 @@ footer {
 <body>
 
 <header>
-  <a href="/" class="logo">HASH<span>21</span></a>
+  <div style="display: flex; align-items: center; gap: 20px;">
+    <a href="https://hash21.studio" style="color: var(--text-dim); text-decoration: none; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">← Volver a Hash21</a>
+    <a href="https://hash21.studio" class="logo">HASH<span>21</span></a>
+  </div>
   <div class="lang-switch">
     <button class="lang-btn active" data-lang="es" onclick="setLang('es')">ES</button>
     <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
