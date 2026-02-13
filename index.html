@@ -1247,31 +1247,43 @@ footer {
       <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--text-dim);margin-bottom:12px;" data-i18n="hero_pow">Proof of Work · Proof of Soul</p>
       <p data-i18n="artist1_bio">Arte intuitivo que explora emoción y transformación. Acrílicos, texturas y capas que se construyen como las decisiones que nos forman. Buenos Aires, Argentina.</p>
       <a href="https://www.instagram.com/abstract.lai" target="_blank" class="artist-link">@abstract.lai →</a>
+      
+      <!-- Experiencia / Proyectos dentro del artista -->
+      <div style="margin-top:35px;padding-top:25px;border-top:1px solid var(--border);">
+        <h4 style="font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:15px;font-weight:500;" data-i18n="artist1_projects_label">Proyectos & Experiencia</h4>
+        
+        <div style="margin-bottom:20px;">
+          <h5 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;margin-bottom:6px;" data-i18n="collab_title">Colaboración con 21 LAT</h5>
+          <p style="color:var(--text-dim);font-size:13px;line-height:1.9;font-weight:300;" data-i18n="collab_text">Diseños exclusivos creados para el proyecto 21 LAT. Arte abstracto aplicado a tarjetas contactless — cada diseño es único e irrepetible.</p>
+        </div>
+        
+        <div class="carousel-wrapper" style="margin-bottom:25px;">
+          <div class="carousel" id="carousel">
+            <div class="carousel-item"><img src="img/21lat-logo.jpg" alt="Logo 21 LAT" loading="lazy" decoding="async" style="object-fit:contain;background:#fff;"></div>
+            <div class="carousel-item"><img src="img/card-first.jpg" alt="Tarjeta 21 LAT" loading="lazy" decoding="async"></div>
+            <div class="carousel-item"><img src="img/card6.jpg" alt="Tarjeta 21 LAT" loading="lazy" decoding="async"></div>
+            <div class="carousel-item"><img src="img/card7.jpg" alt="Tarjeta 21 LAT" loading="lazy" decoding="async"></div>
+            <div class="carousel-item"><img src="img/card8.jpg" alt="Tarjeta 21 LAT" loading="lazy" decoding="async"></div>
+            <div class="carousel-item"><img src="img/card10.jpg" alt="Tarjeta 21 LAT" loading="lazy" decoding="async"></div>
+          </div>
+          <div class="carousel-nav">
+            <button class="carousel-btn" onclick="moveCarousel(-1)">←</button>
+            <button class="carousel-btn" onclick="moveCarousel(1)">→</button>
+          </div>
+        </div>
+        
+        <div>
+          <h5 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;margin-bottom:6px;" data-i18n="event_title_past1">La Bitconf Buenos Aires 2025</h5>
+          <p style="color:var(--text-dim);font-size:13px;line-height:1.9;font-weight:300;" data-i18n="event_desc_past1">Dinámica de arte en vivo en el espacio de 21 LAT. Abstract Lai creando en tiempo real frente al público bitcoiner.</p>
+          <span style="font-size:11px;color:var(--gold);letter-spacing:1px;">Buenos Aires, Argentina · 2025</span>
+        </div>
+      </div>
     </div>
   </div>
   <a href="#contact" class="section-cta" data-i18n="artists_cta">Conectemos</a>
 </section>
 
-<section id="collaborations" style="display:none;">
-  <span class="section-label" data-i18n="collab_label">Colaboración</span>
-  <h2 class="section-title" data-i18n="collab_title">Colaboración con 21 LAT</h2>
-  <p class="section-text" data-i18n="collab_text">Diseños exclusivos creados para el proyecto 21 LAT. Arte abstracto aplicado a tarjetas contactless — cada diseño es único e irrepetible.</p>
-  <div class="carousel-wrapper">
-    <div class="carousel" id="carousel">
-      <div class="carousel-item"><img src="img/21lat-logo.jpg" alt="Logo Veintiuno LAT" loading="lazy" decoding="async" style="object-fit:contain;background:#fff;"></div>
-      <div class="carousel-item"><img src="img/card-first.jpg" alt="Tarjeta Bitcoin 21 LAT con arte único" loading="lazy" decoding="async"></div>
-      <div class="carousel-item"><img src="img/card6.jpg" alt="Tarjeta Bitcoin Veintiuno LAT con arte único" loading="lazy" decoding="async"></div>
-      <div class="carousel-item"><img src="img/card7.jpg" alt="Tarjeta Bitcoin Veintiuno LAT con arte único" loading="lazy" decoding="async"></div>
-      <div class="carousel-item"><img src="img/card8.jpg" alt="Tarjeta Bitcoin Veintiuno LAT con arte único" loading="lazy" decoding="async"></div>
-      <div class="carousel-item"><img src="img/card10.jpg" alt="Tarjeta Bitcoin Veintiuno LAT con arte única" loading="lazy" decoding="async"></div>
-    </div>
-    <div class="carousel-nav">
-      <button class="carousel-btn" onclick="moveCarousel(-1)">←</button>
-      <button class="carousel-btn" onclick="moveCarousel(1)">→</button>
-    </div>
-  </div>
-  <a href="#contact" class="section-cta" data-i18n="collabs_cta">Conectemos</a>
-</section>
+<!-- collaborations moved inside artist card -->
 
 <section id="blog" style="display:none;">
   <span class="section-label" data-i18n="blog_label">Blog</span>
