@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certificación On-Chain — Hash21</title>
+<meta name="description" content="Cómo certificamos obras de arte en Bitcoin. Proceso técnico, verificación y filosofía de Hash21.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0e0e;
+  --text: #e8e0d4;
+  --text-dim: #8a8478;
+  --gold: #b08d57;
+  --surface: #181614;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--gold); text-decoration: none; transition: opacity 0.3s; }
+a:hover { opacity: 0.7; }
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 80px 30px 120px;
+}
+.back-link {
+  display: inline-block;
+  margin-bottom: 50px;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.back-link:hover { color: var(--gold); }
+h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(28px, 5vw, 42px);
+  letter-spacing: 2px;
+  margin-bottom: 15px;
+  color: var(--text);
+}
+.tagline {
+  font-size: 12px;
+  color: var(--gold);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 60px;
+  display: block;
+}
+.intro {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 2;
+  margin-bottom: 50px;
+  font-weight: 300;
+  border-left: 2px solid rgba(176,141,87,0.3);
+  padding-left: 20px;
+}
+h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: 1px;
+  color: var(--gold);
+  margin-top: 50px;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(176,141,87,0.15);
+}
+h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--text);
+  margin-top: 25px;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+p, li {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+  line-height: 1.9;
+}
+ul {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 16px;
+}
+ul li::before {
+  content: "·";
+  color: var(--gold);
+  margin-right: 8px;
+}
+.check li::before { content: "✔"; color: var(--gold); }
+.cross li::before { content: "✘"; color: var(--text-dim); }
+.hash-example {
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--gold);
+  background: rgba(176,141,87,0.08);
+  padding: 10px 16px;
+  border-radius: 4px;
+  display: inline-block;
+  margin: 8px 0 16px;
+  letter-spacing: 1px;
+}
+.step {
+  margin-top: 30px;
+  padding-left: 18px;
+  border-left: 1px solid rgba(176,141,87,0.2);
+}
+.step-label {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+.highlight {
+  font-size: 14px;
+  color: var(--text);
+  font-style: italic;
+  font-family: 'Cormorant Garamond', serif;
+  margin: 40px 0;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="/" class="back-link">← Hash21</a>
+  <h1>Certificación On-Chain</h1>
+  <span class="tagline">Cómo certificamos en Hash21</span>
+
+  <p class="intro">Transparencia. Inmutabilidad. Soberanía.<br><br>En Hash21 certificamos obras de arte registrando su huella digital en la red Bitcoin. No emitimos NFTs. No custodiamos activos. No almacenamos la obra en la blockchain.<br><br>Registramos prueba criptográfica de existencia.</p>
+
+  <h2>1. ¿Qué significa certificar una obra?</h2>
+  <p>Cada obra digital o física puede transformarse en una huella digital única (hash criptográfico). Un hash es una cadena alfanumérica generada a partir del archivo digital de la obra (imagen, documentación, metadata).</p>
+  <p>Si la obra cambia aunque sea un pixel, el hash cambia completamente. Esto garantiza integridad.</p>
+
+  <h2>2. Proceso técnico simplificado</h2>
+  <p>El proceso consta de cuatro pasos:</p>
+
+  <div class="step">
+    <p class="step-label">Paso 1 — Digitalización</p>
+    <p>La obra se documenta mediante:</p>
+    <ul>
+      <li>Imagen en alta resolución</li>
+      <li>Datos técnicos (autor, fecha, técnica, dimensiones)</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <p class="step-label">Paso 2 — Generación del hash</p>
+    <p>Se aplica un algoritmo criptográfico (SHA-256) al archivo digital.</p>
+    <p>Resultado: una huella digital única e irrepetible.</p>
+    <span class="hash-example">3f9a8d...e7c21</span>
+  </div>
+
+  <div class="step">
+    <p class="step-label">Paso 3 — Registro en Bitcoin</p>
+    <p>El hash se incluye en una transacción en la red Bitcoin. Bitcoin actúa como:</p>
+    <ul>
+      <li>Registro público</li>
+      <li>Libro contable inmutable</li>
+      <li>Prueba de timestamp (fecha verificable)</li>
+    </ul>
+    <p>Una vez confirmada la transacción: el registro no puede alterarse y puede verificarse públicamente.</p>
+  </div>
+
+  <div class="step">
+    <p class="step-label">Paso 4 — Verificación</p>
+    <p>Cualquier persona puede verificar:</p>
+    <ul>
+      <li>Que ese hash existe en la red Bitcoin</li>
+      <li>La fecha exacta de registro</li>
+      <li>Que el archivo original corresponde a ese hash</li>
+    </ul>
+    <p>No se necesita confianza en Hash21. Solo en la red Bitcoin.</p>
+  </div>
+
+  <h2>3. ¿Qué garantiza esta certificación?</h2>
+  <ul class="check">
+    <li>Que un archivo específico existía en una fecha determinada</li>
+    <li>Que no fue alterado desde su registro</li>
+    <li>Que su huella digital coincide con la registrada</li>
+  </ul>
+
+  <h2>4. ¿Qué NO garantiza?</h2>
+  <p>La certificación no implica automáticamente:</p>
+  <ul class="cross">
+    <li>Transferencia de derechos de autor</li>
+    <li>Registro legal de propiedad intelectual</li>
+    <li>Garantía de compraventa</li>
+    <li>Custodia de la obra</li>
+  </ul>
+  <p>Hash21 registra prueba técnica de existencia e integridad.</p>
+
+  <h2>5. ¿Por qué Bitcoin?</h2>
+  <p>Elegimos Bitcoin porque:</p>
+  <ul>
+    <li>Es la red más segura y descentralizada del mundo</li>
+    <li>Es inmutable</li>
+    <li>No depende de una empresa</li>
+    <li>No puede ser alterada por un tercero</li>
+  </ul>
+  <p class="highlight">La certificación no depende de Hash21. Depende de la red Bitcoin.</p>
+
+  <h2>6. Filosofía</h2>
+  <p>En un mundo donde las imágenes pueden copiarse infinitamente, la certificación on-chain introduce escasez verificable. Hash21 utiliza tecnología soberana para proteger expresión artística.</p>
+</div>
+</body>
+</html>
