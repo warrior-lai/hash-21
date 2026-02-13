@@ -640,7 +640,7 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
 /* PILLARS */
 .pillars {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1px;
   background: var(--border);
 }
@@ -1233,8 +1233,12 @@ footer {
         <h3 data-i18n="pillar3_title">21 Millones</h3>
         <p data-i18n="pillar3_text">En un mundo de infinita reproducción, lo escaso tiene valor. Cada pieza es única. Finito por diseño — como Bitcoin.</p>
       </div>
+      <div class="pillar">
+        <h3 data-i18n="pillar4_title">Legado</h3>
+        <p data-i18n="pillar4_text">Crear es dejar rastro. Certificar es asumir responsabilidad por lo creado. Registramos únicamente la huella digital de cada obra, de forma eficiente y respetuosa con la red. Porque la permanencia no necesita ruido. Solo verdad verificable.</p>
+      </div>
     </div>
-    <a href="#artists" class="section-cta" data-i18n="philosophy_cta">Conoce a los Creadores</a>
+    <a href="#collection" class="section-cta" data-i18n="philosophy_cta">Explorar Obras y Objetos</a>
   </section>
 </div>
 
@@ -1250,8 +1254,15 @@ footer {
       <p class="artist-motto" data-i18n="artist1_motto" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--gold);margin-bottom:6px;">Sovereign Art for Sovereign Minds</p>
       <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--text-dim);margin-bottom:12px;" data-i18n="hero_pow">Proof of Work · Proof of Soul</p>
       <p data-i18n="artist1_bio">Arte intuitivo que explora emoción y transformación. Acrílicos, texturas y capas que se construyen como las decisiones que nos forman. Buenos Aires, Argentina.</p>
-      <a href="https://www.instagram.com/abstract.lai" target="_blank" class="artist-link">@abstract.lai →</a>
-      <a href="https://primal.net/p/nprofile1qqs20z3erzyvdfazuy226ekupernh86kzu6v0uyce92jktjmhpqdymq3ha49c" target="_blank" class="artist-link">Nostr →</a>
+      <div style="display:flex;gap:18px;align-items:center;margin-top:15px;">
+        <a href="https://t.me/abstract_lai" target="_blank" title="Telegram" style="font-size:22px;text-decoration:none;transition:opacity 0.3s;opacity:0.6;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">✈️</a>
+        <a href="https://primal.net/p/nprofile1qqs20z3erzyvdfazuy226ekupernh86kzu6v0uyce92jktjmhpqdymq3ha49c" target="_blank" title="Nostr" style="font-size:22px;text-decoration:none;transition:opacity 0.3s;opacity:0.6;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">🟣</a>
+        <a href="https://www.instagram.com/abstract.lai" target="_blank" title="Instagram" style="font-size:22px;text-decoration:none;transition:opacity 0.3s;opacity:0.6;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">📸</a>
+        <a href="javascript:void(0)" onclick="toggleLightning()" title="Lightning Address" style="font-size:22px;text-decoration:none;transition:opacity 0.3s;opacity:0.6;cursor:pointer;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">⚡</a>
+      </div>
+      <div id="lightning-address" style="display:none;margin-top:10px;padding:10px 15px;border:1px solid rgba(176,141,87,0.3);font-size:13px;color:var(--gold);letter-spacing:1px;">
+        crustycoil11@walletofsatoshi.com
+      </div>
       
       <!-- Proyectos: hidden by default, toggle on click -->
       <a href="javascript:void(0)" onclick="toggleProjects()" class="artist-link" id="projects-toggle" style="margin-top:10px;display:inline-block;color:var(--gold);" data-i18n="artist1_projects_label">Proyectos & Experiencia →</a>
@@ -1569,6 +1580,12 @@ function closeMenu() {
   hamburger.classList.remove('active');
   navOverlay.classList.remove('active');
   document.body.style.overflow = '';
+}
+
+/* Toggle lightning address */
+function toggleLightning() {
+  var el = document.getElementById('lightning-address');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
 /* Toggle artist projects */
