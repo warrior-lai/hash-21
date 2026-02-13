@@ -458,6 +458,18 @@ function showSuccess(artwork) {
           <strong>${timestampText}:</strong> ${artwork.timestamp_service}<br>
           <strong>Hash:</strong> <code style="font-size:10px; word-break: break-all;">${artwork.hash}</code>
         </div>
+        ${artwork.bitcoin_block ? `
+        <div class="cert-info" style="margin-top:15px;padding-top:15px;border-top:1px solid var(--border);">
+          <strong style="color:var(--gold);">⛓ ${currentLang === 'es' ? 'Anclaje en Bitcoin' : 'Bitcoin Anchor'}</strong><br>
+          <strong>Block:</strong> #${artwork.bitcoin_block}<br>
+          <strong>Merkle Root:</strong> <code style="font-size:9px;word-break:break-all;">${artwork.merkle_root}</code><br>
+          <a href="${artwork.mempool_url}" target="_blank" style="display:inline-block;margin-top:10px;padding:10px 20px;border:1px solid var(--gold);color:var(--gold);text-decoration:none;font-size:11px;letter-spacing:2px;text-transform:uppercase;transition:all 0.3s;"
+            onmouseover="this.style.background='var(--gold)';this.style.color='#fff';"
+            onmouseout="this.style.background='transparent';this.style.color='var(--gold)';">
+            ${currentLang === 'es' ? '🔍 Ver en Mempool.space' : '🔍 View on Mempool.space'}
+          </a>
+        </div>
+        ` : ''}
       </div>
     </div>
   `;
