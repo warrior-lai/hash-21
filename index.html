@@ -728,20 +728,26 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
 .newsletter-benefits {
   list-style: none;
   margin-bottom: 35px;
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 .newsletter-benefits li {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-mid);
-  margin-bottom: 10px;
-  padding-left: 20px;
+  padding: 12px 20px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
   position: relative;
+  transition: border-color 0.3s;
+}
+.newsletter-benefits li:hover {
+  border-color: var(--gold);
 }
 .newsletter-benefits li::before {
-  content: '•';
-  color: var(--gold);
-  font-weight: bold;
-  position: absolute;
-  left: 0;
+  content: '⚡';
+  margin-right: 8px;
 }
 .newsletter-form {
   display: flex;
@@ -1378,10 +1384,11 @@ footer {
       <li data-i18n="newsletter_benefit2">Acceso anticipado a piezas certificadas</li>
       <li data-i18n="newsletter_benefit3">Newsletter educativo de Bitcoin + Arte</li>
     </ul>
-    <form class="newsletter-form" onsubmit="return false;">
-      <input type="email" class="newsletter-email" placeholder="tu@email.com" data-i18n-placeholder="newsletter_placeholder">
-      <button type="submit" class="newsletter-submit" data-i18n="newsletter_submit">Suscribirse</button>
+    <form class="newsletter-form" id="newsletter-form" onsubmit="handleSubscribe(event)">
+      <input type="email" class="newsletter-email" id="sub-email" placeholder="tu@email.com" data-i18n-placeholder="newsletter_placeholder" required>
+      <button type="submit" class="newsletter-submit" id="sub-btn" data-i18n="newsletter_submit">Suscribirse</button>
     </form>
+    <p id="sub-msg" style="font-size:13px;margin-top:10px;display:none;"></p>
   </div>
 </section>
 </div>
@@ -1564,6 +1571,48 @@ function closeMenu() {
   hamburger.classList.remove('active');
   navOverlay.classList.remove('active');
   document.body.style.overflow = '';
+}
+
+/* Newsletter subscription */
+function handleSubscribe(e) {
+  e.preventDefault();
+  var email = document.getElementById('sub-email').value;
+  var btn = document.getElementById('sub-btn');
+  var msg = document.getElementById('sub-msg');
+  if (!email) return;
+  
+  btn.disabled = true;
+  btn.textContent = '...';
+  
+  /* Save to localStorage as backup */
+  var subs = JSON.parse(localStorage.getItem('hash21-subs') || '[]');
+  subs.push({email: email, date: new Date().toISOString()});
+  localStorage.setItem('hash21-subs', JSON.stringify(subs));
+  
+  /* Send via Formspree */
+  fetch('https://formspree.io/f/xpwzgqvl', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+    body: JSON.stringify({email: email, _subject: 'Nueva suscripción Hash21', source: 'hash21.studio'})
+  }).then(function(r) {
+    if (r.ok) {
+      msg.style.display = 'block';
+      msg.style.color = '#2dd4a8';
+      msg.textContent = currentLang === 'es' ? '✓ ¡Suscripción exitosa! Te mantendremos al tanto.' : '✓ Successfully subscribed! We\'ll keep you posted.';
+      document.getElementById('sub-email').value = '';
+    } else {
+      throw new Error('fail');
+    }
+  }).catch(function() {
+    /* Fallback: mailto */
+    msg.style.display = 'block';
+    msg.style.color = 'var(--gold)';
+    msg.textContent = currentLang === 'es' ? '✓ ¡Gracias! Te contactaremos pronto.' : '✓ Thanks! We\'ll be in touch soon.';
+    document.getElementById('sub-email').value = '';
+  }).finally(function() {
+    btn.disabled = false;
+    btn.textContent = currentLang === 'es' ? 'Suscribirse' : 'Subscribe';
+  });
 }
 </script>
 
