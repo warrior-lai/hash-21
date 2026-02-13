@@ -1254,10 +1254,10 @@ footer {
       <p data-i18n="artist1_bio">Arte intuitivo que explora emoción y transformación. Acrílicos, texturas y capas que se construyen como las decisiones que nos forman. Buenos Aires, Argentina.</p>
       <a href="https://www.instagram.com/abstract.lai" target="_blank" class="artist-link">@abstract.lai →</a>
       
-      <!-- Experiencia / Proyectos dentro del artista -->
-      <div style="margin-top:35px;padding-top:25px;border-top:1px solid var(--border);">
-        <h4 style="font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:15px;font-weight:500;" data-i18n="artist1_projects_label">Proyectos & Experiencia</h4>
-        
+      <!-- Proyectos: hidden by default, toggle on click -->
+      <a href="javascript:void(0)" onclick="toggleProjects()" class="artist-link" id="projects-toggle" style="margin-top:10px;display:inline-block;color:var(--gold);" data-i18n="artist1_projects_label">Proyectos & Experiencia →</a>
+      
+      <div id="artist-projects" style="display:none;margin-top:25px;padding-top:25px;border-top:1px solid var(--border);">
         <div style="margin-bottom:20px;">
           <h5 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;margin-bottom:6px;" data-i18n="collab_title">Colaboración con 21 LAT</h5>
           <p style="color:var(--text-dim);font-size:13px;line-height:1.9;font-weight:300;" data-i18n="collab_text">Diseños exclusivos creados para el proyecto 21 LAT. Arte abstracto aplicado a tarjetas contactless — cada diseño es único e irrepetible.</p>
@@ -1571,6 +1571,19 @@ function closeMenu() {
   hamburger.classList.remove('active');
   navOverlay.classList.remove('active');
   document.body.style.overflow = '';
+}
+
+/* Toggle artist projects */
+function toggleProjects() {
+  var el = document.getElementById('artist-projects');
+  var toggle = document.getElementById('projects-toggle');
+  if (el.style.display === 'none') {
+    el.style.display = 'block';
+    toggle.textContent = (currentLang === 'es' ? 'Proyectos & Experiencia ↑' : 'Projects & Experience ↑');
+  } else {
+    el.style.display = 'none';
+    toggle.textContent = (currentLang === 'es' ? 'Proyectos & Experiencia →' : 'Projects & Experience →');
+  }
 }
 
 /* Newsletter subscription */
