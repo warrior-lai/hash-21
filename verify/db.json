@@ -13,5 +13,17 @@
     "bitcoin_block": 936387,
     "merkle_root": "33279954427594e69bc11e9cd4ea8bc42cdec2ca517f3eb552995f07bf97fdbd",
     "mempool_url": "https://mempool.space/block/936387"
+  },
+  {
+    "hash": "ea2274905a30a8629cb1839d0c0a95528be26e03dd145d64abc0d1d0d7b63457",
+    "title": "Libertad",
+    "artist": "Abstract Lai",
+    "year": "2025",
+    "technique": "Acrílico y texturas sobre lienzo",
+    "series": "Block 0 — #003",
+    "certification_date": "2026-02-15",
+    "timestamp_service": "OpenTimestamps",
+    "image": "../img/obra1.jpg",
+    "status": "certified"
   }
 ]
