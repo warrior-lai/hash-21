@@ -368,7 +368,7 @@ footer {
         id="hashInput" 
         placeholder="Pegá aquí el hash SHA-256 (64 caracteres hexadecimales)" 
         data-i18n-placeholder="verify_input_placeholder"
-        maxlength="64"
+        maxlength="128"
         required
       ></textarea>
     </div>
@@ -396,7 +396,7 @@ async function verifyHash(event) {
   
   const hashInput = document.getElementById('hashInput');
   const resultDiv = document.getElementById('result');
-  const hash = hashInput.value.trim().toLowerCase();
+  const hash = hashInput.value.replace(/[\s\n\r\t]/g, '').trim().toLowerCase();
   
   // Validar formato del hash
   if (!isValidSHA256(hash)) {
