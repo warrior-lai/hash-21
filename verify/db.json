@@ -24,6 +24,9 @@
     "certification_date": "2026-02-15",
     "timestamp_service": "OpenTimestamps",
     "image": "../img/obra1.jpg",
-    "status": "certified"
+    "status": "certified",
+    "bitcoin_block": 936793,
+    "merkle_root": "0ae72abc9f1cdc28c1396770bcc8d601c80b2fef7e51729eb51d191c291df6ea",
+    "mempool_url": "https://mempool.space/block/936793"
   }
 ]
