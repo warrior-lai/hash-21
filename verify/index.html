@@ -406,7 +406,7 @@ async function verifyHash(event) {
   
   // Cargar base de datos y verificar
   try {
-    const response = await fetch('./db.json');
+    const response = await fetch('./db.json?t=' + Date.now());
     const artworks = await response.json();
     
     const found = artworks.find(artwork => artwork.hash.toLowerCase() === hash);
@@ -515,6 +515,13 @@ document.getElementById('hashInput').addEventListener('input', function() {
 document.addEventListener('DOMContentLoaded', function() {
   const savedLang = getCurrentLang();
   setLang(savedLang);
+  // Auto-verify if hash is in URL
+  const params = new URLSearchParams(window.location.search);
+  const hashParam = params.get('hash');
+  if (hashParam) {
+    document.getElementById('hashInput').value = hashParam;
+    verifyHash(new Event('submit'));
+  }
 });
 </script>
 
