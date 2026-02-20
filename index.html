@@ -257,6 +257,21 @@ header ul a:hover { color: var(--text); }
   background: var(--gold);
   color: white;
 }
+.hero-ctas {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeUp 2.5s ease-out;
+}
+.hero .cta-secondary {
+  background: var(--gold);
+  color: #fff;
+}
+.hero .cta-secondary:hover {
+  background: transparent;
+  color: var(--gold);
+}
 .scroll-arrow {
   position: absolute;
   bottom: 50px;
@@ -1154,7 +1169,10 @@ footer {
   <div class="line"></div>
   <p class="hero-subtitle" data-i18n="hero_subtitle">Galería de arte inspirada en Bitcoin</p>
   <p class="hero-description" data-i18n="hero_description">Certificamos arte físico anclando pruebas de existencia en la red. Permanencia para la obra. Soberanía para el artista.</p>
-  <a href="#collection" class="cta-button" data-i18n="hero_cta">Explorá obras certificadas</a>
+  <div class="hero-ctas">
+    <a href="#collection" class="cta-button" data-i18n="hero_cta">Explorar Colección</a>
+    <a href="#contact" class="cta-button cta-secondary" data-i18n="hero_cta2">Certificar Mi Obra</a>
+  </div>
   <div class="scroll-arrow" data-i18n="hero_scroll">↓ Explorar</div>
 </section>
 
