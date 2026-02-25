@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laila Jurisich — Abstract Lai | Hash21</title>
+<meta name="description" content="Laila Jurisich es artista abstracta, emprendedora y fundadora de Hash21 — la primera plataforma latinoamericana de certificación de arte en Bitcoin.">
+<meta name="keywords" content="Laila Jurisich, Abstract Lai, Hash21, arte abstracto, Bitcoin, certificación arte, artista argentina">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Laila Jurisich — Abstract Lai">
+<meta property="og:description" content="Artista abstracta y fundadora de Hash21. Certificación de arte en Bitcoin.">
+<meta property="og:type" content="profile">
+<meta property="og:url" content="https://hash21.studio/about">
+<meta property="og:site_name" content="Hash21">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@abstract_lai">
+<meta name="twitter:title" content="Laila Jurisich — Abstract Lai">
+<meta name="twitter:description" content="Artista abstracta y fundadora de Hash21. Certificación de arte en Bitcoin.">
+
+<!-- Schema.org JSON-LD -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Laila Jurisich",
+  "alternateName": "Abstract Lai",
+  "url": "https://hash21.studio/about",
+  "image": "https://hash21.studio/img/avatar.jpg",
+  "description": "Artista abstracta, emprendedora y fundadora de Hash21 — plataforma de certificación de arte en Bitcoin.",
+  "jobTitle": "Artista & Founder",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "Hash21",
+    "url": "https://hash21.studio"
+  },
+  "knowsAbout": ["Arte Abstracto", "Bitcoin", "Certificación On-Chain", "Marketing", "Product Management"],
+  "nationality": {
+    "@type": "Country",
+    "name": "Argentina"
+  },
+  "sameAs": [
+    "https://x.com/abstract_lai",
+    "https://instagram.com/abstract.lai",
+    "https://ar.linkedin.com/in/lailajurisich",
+    "https://t.me/abstract_lai"
+  ]
+}
+</script>
+
+<!-- Organization Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Hash21",
+  "url": "https://hash21.studio",
+  "logo": "https://hash21.studio/img/logo.png",
+  "description": "Plataforma de certificación de arte en Bitcoin. Soberana, abierta, verificable.",
+  "founder": {
+    "@type": "Person",
+    "name": "Laila Jurisich"
+  },
+  "sameAs": [
+    "https://x.com/abstract_lai",
+    "https://instagram.com/abstract.lai",
+    "https://t.me/abstract_lai"
+  ]
+}
+</script>
+
+<link rel="canonical" href="https://hash21.studio/about">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0e0e;
+  --text: #e8e0d4;
+  --text-dim: #8a8478;
+  --gold: #b08d57;
+  --surface: #181614;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--gold); text-decoration: none; transition: opacity 0.3s; }
+a:hover { opacity: 0.7; }
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 40px 30px 0;
+}
+.back-link {
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.back-link:hover { color: var(--gold); }
+.lang-switch {
+  display: flex;
+  gap: 8px;
+}
+.lang-switch button {
+  background: none;
+  border: 1px solid var(--text-dim);
+  color: var(--text-dim);
+  padding: 4px 10px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s;
+}
+.lang-switch button.active {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.about-container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 60px 30px 120px;
+}
+
+.profile-section {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  margin-bottom: 60px;
+}
+.profile-img {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(176,141,87,0.3);
+  flex-shrink: 0;
+}
+.profile-info h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(28px, 5vw, 38px);
+  letter-spacing: 2px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.profile-info .aka {
+  font-size: 14px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  display: block;
+}
+.profile-info .role {
+  font-size: 12px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.profile-info p {
+  font-size: 14px;
+  color: var(--text-dim);
+  font-weight: 300;
+  line-height: 1.9;
+}
+
+.section {
+  margin-bottom: 50px;
+}
+.section h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: 1px;
+  color: var(--gold);
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(176,141,87,0.15);
+}
+.section p, .section li {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--text-dim);
+  line-height: 1.9;
+  margin-bottom: 10px;
+}
+.section ul {
+  list-style: none;
+  padding: 0;
+}
+.section ul li::before {
+  content: "·";
+  color: var(--gold);
+  margin-right: 8px;
+}
+
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.link-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--surface);
+  border: 1px solid rgba(176,141,87,0.1);
+  border-radius: 6px;
+  transition: border-color 0.3s;
+  text-decoration: none;
+}
+.link-card:hover {
+  border-color: var(--gold);
+  opacity: 1;
+}
+.link-card .icon {
+  font-size: 18px;
+}
+.link-card .label {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--text);
+}
+.link-card .handle {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-style: italic;
+  color: var(--text);
+  text-align: center;
+  padding: 40px 0;
+  letter-spacing: 0.5px;
+  border-top: 1px solid rgba(176,141,87,0.1);
+  border-bottom: 1px solid rgba(176,141,87,0.1);
+  margin: 40px 0;
+}
+
+.cta-section {
+  text-align: center;
+  margin-top: 50px;
+}
+.cta-btn {
+  display: inline-block;
+  padding: 14px 35px;
+  background: var(--gold);
+  color: #fff;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+.cta-btn:hover {
+  background: transparent;
+  outline: 2px solid var(--gold);
+  color: var(--gold);
+  opacity: 1;
+}
+
+@media (max-width: 600px) {
+  .profile-section { flex-direction: column; align-items: center; text-align: center; gap: 24px; }
+  .profile-img { width: 120px; height: 120px; }
+}
+
+[data-lang-en] { display: none; }
+body.lang-en [data-lang-es] { display: none; }
+body.lang-en [data-lang-en] { display: block; }
+body.lang-en span[data-lang-en],
+body.lang-en a[data-lang-en],
+body.lang-en p[data-lang-en] { display: inline; }
+body.lang-en li[data-lang-en] { display: list-item; }
+</style>
+</head>
+<body class="lang-es">
+
+<div class="top-bar">
+  <a href="/" class="back-link">← Hash21</a>
+  <div class="lang-switch">
+    <button id="btn-es" class="active" onclick="setLang('es')">ES</button>
+    <button id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<div class="about-container">
+
+  <div class="profile-section">
+    <img src="/img/avatar.jpg" alt="Laila Jurisich — Abstract Lai" class="profile-img">
+    <div class="profile-info">
+      <h1>Laila Jurisich</h1>
+      <span class="aka">Abstract Lai</span>
+      <div class="role">
+        <span data-lang-es>Artista · Emprendedora · Founder de Hash21</span>
+        <span data-lang-en>Artist · Entrepreneur · Hash21 Founder</span>
+      </div>
+      <p>
+        <span data-lang-es>Artista abstracta argentina y fundadora de Hash21 — la primera plataforma latinoamericana que certifica obras de arte en Bitcoin. Combina arte, tecnología y soberanía individual para construir herramientas que protejan la expresión artística sin intermediarios.</span>
+        <span data-lang-en>Argentine abstract artist and founder of Hash21 — the first Latin American platform that certifies artwork on Bitcoin. She combines art, technology, and individual sovereignty to build tools that protect artistic expression without intermediaries.</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="quote">
+    <span data-lang-es>"El arte necesita permanencia. Bitcoin la ofrece."</span>
+    <span data-lang-en>"Art needs permanence. Bitcoin provides it."</span>
+  </div>
+
+  <div class="section">
+    <h2>
+      <span data-lang-es>Sobre Laila</span>
+      <span data-lang-en>About Laila</span>
+    </h2>
+    <p>
+      <span data-lang-es>Con experiencia en product management, marketing y ventas internacionales, Laila encontró en Bitcoin no solo una herramienta financiera sino una filosofía de soberanía. En 2026 fundó Hash21 para resolver un problema real: la certificación de arte depende de instituciones centralizadas, censurables y excluyentes.</span>
+      <span data-lang-en>With experience in product management, marketing, and international sales, Laila found in Bitcoin not just a financial tool but a philosophy of sovereignty. In 2026 she founded Hash21 to solve a real problem: art certification depends on centralized, censorable, and exclusionary institutions.</span>
+    </p>
+    <p>
+      <span data-lang-es>Hash21 permite a cualquier artista certificar su obra en la blockchain de Bitcoin — inmutable, verificable y sin permisos. La plataforma ya cuenta con obras certificadas on-chain y un sistema de verificación pública.</span>
+      <span data-lang-en>Hash21 allows any artist to certify their work on the Bitcoin blockchain — immutable, verifiable, and permissionless. The platform already has works certified on-chain and a public verification system.</span>
+    </p>
+    <p>
+      <span data-lang-es>Como artista, firma como <strong>Abstract Lai</strong>. Su obra explora la abstracción como lenguaje universal — formas, texturas y colores que no necesitan traducción.</span>
+      <span data-lang-en>As an artist, she signs as <strong>Abstract Lai</strong>. Her work explores abstraction as a universal language — shapes, textures, and colors that need no translation.</span>
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>
+      <span data-lang-es>Trayectoria</span>
+      <span data-lang-en>Background</span>
+    </h2>
+    <ul>
+      <li data-lang-es>Fundadora de <strong>Hash21</strong> — certificación de arte en Bitcoin</li>
+      <li data-lang-es>Artista abstracta bajo el nombre <strong>Abstract Lai</strong></li>
+      <li data-lang-es>Product Manager con experiencia en startups tech</li>
+      <li data-lang-es>Experiencia en ventas y congresos internacionales</li>
+      <li data-lang-es>Miembro de <strong>La Crypta</strong> — la comunidad Bitcoin más grande de Argentina</li>
+      <li data-lang-es>Formación en ITBA (Instituto Tecnológico de Buenos Aires)</li>
+      <li data-lang-en>Founder of <strong>Hash21</strong> — art certification on Bitcoin</li>
+      <li data-lang-en>Abstract artist under the name <strong>Abstract Lai</strong></li>
+      <li data-lang-en>Product Manager with experience in tech startups</li>
+      <li data-lang-en>Experience in international sales and conferences</li>
+      <li data-lang-en>Member of <strong>La Crypta</strong> — Argentina's largest Bitcoin community</li>
+      <li data-lang-en>Education at ITBA (Buenos Aires Institute of Technology)</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>
+      <span data-lang-es>Filosofía</span>
+      <span data-lang-en>Philosophy</span>
+    </h2>
+    <p>
+      <span data-lang-es>Libertad, soberanía, verdad. Laila cree que la tecnología debe servir a las personas — no al revés. Que el arte merece permanencia. Que Bitcoin es la herramienta más poderosa para proteger la expresión humana de la censura y el olvido.</span>
+      <span data-lang-en>Freedom, sovereignty, truth. Laila believes technology should serve people — not the other way around. That art deserves permanence. That Bitcoin is the most powerful tool to protect human expression from censorship and oblivion.</span>
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>
+      <span data-lang-es>Conectar</span>
+      <span data-lang-en>Connect</span>
+    </h2>
+    <div class="links-grid">
+      <a href="https://x.com/abstract_lai" target="_blank" class="link-card">
+        <span class="icon">𝕏</span>
+        <div>
+          <div class="label">Twitter / X</div>
+          <div class="handle">@abstract_lai</div>
+        </div>
+      </a>
+      <a href="https://instagram.com/abstract.lai" target="_blank" class="link-card">
+        <span class="icon">📷</span>
+        <div>
+          <div class="label">Instagram</div>
+          <div class="handle">@abstract.lai</div>
+        </div>
+      </a>
+      <a href="https://t.me/abstract_lai" target="_blank" class="link-card">
+        <span class="icon">✈️</span>
+        <div>
+          <div class="label">Telegram</div>
+          <div class="handle">@abstract_lai</div>
+        </div>
+      </a>
+      <a href="https://ar.linkedin.com/in/lailajurisich" target="_blank" class="link-card">
+        <span class="icon">💼</span>
+        <div>
+          <div class="label">LinkedIn</div>
+          <div class="handle">Laila Jurisich</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="cta-section">
+    <a href="/certification" class="cta-btn">
+      <span data-lang-es>Certificá tu obra en Bitcoin</span>
+      <span data-lang-en>Certify your work on Bitcoin</span>
+    </a>
+  </div>
+
+</div>
+
+<script>
+function setLang(lang) {
+  document.body.className = 'lang-' + lang;
+  document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  localStorage.setItem('hash21-lang', lang);
+}
+(function() {
+  var saved = localStorage.getItem('hash21-lang');
+  if (saved) setLang(saved);
+})();
+</script>
+</body>
+</html>
