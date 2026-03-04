@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Block Lab — Hash21</title>
-<meta name="description" content="Block Lab: Bitcoin Inscription Laboratory. Exploración creativa en Bitcoin. Espacio de consultoría para inscripciones con intención.">
+<meta name="description" content="Block Lab: Laboratorio de pensamiento y creación en Bitcoin. Un espacio de Hash21 donde el arte se encuentra con la soberanía.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -31,7 +31,7 @@ a:hover { opacity: 0.7; }
   padding: 80px 30px 120px;
 }
 
-/* Header bar */
+/* Header */
 .page-header {
   position: fixed;
   top: 0;
@@ -81,6 +81,7 @@ a:hover { opacity: 0.7; }
 
 /* Content */
 .content { padding-top: 80px; }
+
 .lab-label {
   font-size: 11px;
   letter-spacing: 4px;
@@ -89,6 +90,7 @@ a:hover { opacity: 0.7; }
   display: block;
   margin-bottom: 15px;
 }
+
 h1 {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 300;
@@ -97,6 +99,7 @@ h1 {
   margin-bottom: 8px;
   color: var(--text);
 }
+
 .h1-sub {
   font-size: 13px;
   font-weight: 300;
@@ -105,6 +108,7 @@ h1 {
   margin-bottom: 50px;
   display: block;
 }
+
 .intro {
   font-size: 15px;
   color: var(--text-dim);
@@ -112,15 +116,76 @@ h1 {
   margin-bottom: 20px;
   font-weight: 300;
 }
-.intro-highlight {
-  font-size: 14px;
-  color: var(--text);
-  font-style: italic;
-  font-family: 'Cormorant Garamond', serif;
-  line-height: 1.8;
-  margin-bottom: 40px;
+
+.manifesto {
+  margin: 40px 0 50px;
   padding-left: 20px;
   border-left: 2px solid rgba(176,141,87,0.3);
+}
+.manifesto p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  font-style: italic;
+  color: var(--text);
+  line-height: 2;
+  margin-bottom: 6px;
+}
+
+/* Sections */
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: var(--text);
+  margin-bottom: 20px;
+  padding-top: 50px;
+  border-top: 1px solid rgba(176,141,87,0.12);
+}
+
+.audience-list {
+  list-style: none;
+  padding: 0;
+}
+.audience-list li {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text-dim);
+  line-height: 2.2;
+  padding-left: 18px;
+  position: relative;
+}
+.audience-list li::before {
+  content: "·";
+  color: var(--gold);
+  position: absolute;
+  left: 0;
+  font-weight: 700;
+}
+
+.modality {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text-dim);
+  line-height: 2;
+  margin-top: 15px;
+}
+
+.modality-highlight {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-style: italic;
+  color: var(--text);
+  margin-top: 25px;
+  line-height: 1.8;
+}
+
+/* Final CTA */
+.final-cta {
+  margin-top: 60px;
+  padding-top: 40px;
+  border-top: 1px solid rgba(176,141,87,0.12);
+  text-align: center;
 }
 .cta-btn {
   display: inline-block;
@@ -132,82 +197,14 @@ h1 {
   text-transform: uppercase;
   text-decoration: none;
   transition: all 0.3s;
-  margin-bottom: 10px;
 }
 .cta-btn:hover { background: var(--gold); color: var(--bg); opacity: 1; }
 .cta-note {
   font-size: 12px;
   color: var(--text-dim);
   font-weight: 300;
-  margin-bottom: 60px;
+  margin-top: 12px;
   display: block;
-}
-
-/* Accordion */
-.accordion-item { border-top: 1px solid rgba(176,141,87,0.12); }
-.accordion-item:last-child { border-bottom: 1px solid rgba(176,141,87,0.12); }
-.accordion-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 22px 0;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-.accordion-header:hover .accordion-title { color: var(--gold); }
-.accordion-title {
-  font-size: 14px;
-  font-weight: 400;
-  letter-spacing: 0.5px;
-  color: var(--text);
-}
-.accordion-icon {
-  font-size: 18px;
-  color: var(--gold);
-  transition: transform 0.3s;
-  flex-shrink: 0;
-  margin-left: 20px;
-}
-.accordion-item.open .accordion-icon { transform: rotate(45deg); }
-.accordion-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.4s ease, padding 0.4s ease;
-}
-.accordion-item.open .accordion-content { max-height: 600px; padding-bottom: 25px; }
-.accordion-text {
-  font-size: 13px;
-  font-weight: 300;
-  color: var(--text-dim);
-  line-height: 1.9;
-}
-.accordion-text strong { color: var(--text); font-weight: 400; }
-.accordion-list {
-  list-style: none;
-  padding: 10px 0 0 0;
-}
-.accordion-list li {
-  font-size: 13px;
-  font-weight: 300;
-  color: var(--text-dim);
-  line-height: 2;
-  padding-left: 15px;
-  position: relative;
-}
-.accordion-list li::before { content: "·"; color: var(--gold); position: absolute; left: 0; }
-.final-cta {
-  margin-top: 60px;
-  padding-top: 40px;
-  border-top: 1px solid rgba(176,141,87,0.12);
-  text-align: center;
-}
-.final-cta-text {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 18px;
-  font-weight: 300;
-  color: var(--text-dim);
-  margin-bottom: 25px;
-  font-style: italic;
 }
 
 @media (max-width: 768px) {
@@ -233,113 +230,79 @@ h1 {
 <div class="container content">
   <span class="lab-label">Hash21</span>
   <h1>Block Lab</h1>
-  <span class="h1-sub" data-i18n="bl_sub">Bitcoin Inscription Laboratory</span>
+  <span class="h1-sub" data-i18n="bl_sub">Laboratorio de pensamiento y creación en Bitcoin</span>
 
-  <p class="intro" data-i18n="bl_intro">Exploración creativa en Bitcoin. No todo debe inscribirse. Pero si decidís hacerlo, que sea con intención.</p>
+  <p class="intro" data-i18n="bl_intro">Block Lab es el espacio de Hash21 donde el arte se encuentra con la soberanía. Leemos y debatimos las ideas que sostienen Bitcoin. Exploramos sus implicancias culturales y evolutivas. Creamos en diálogo. Creamos obras.</p>
 
-  <p class="intro-highlight" data-i18n="bl_highlight">¿Estás pensando en crear una pieza en Bitcoin? Antes de ocupar un bloque, conversemos. Inscribir en Bitcoin no es solo una acción técnica. Es una decisión conceptual y estratégica.</p>
+  <p class="intro" data-i18n="bl_intro2">No es un curso técnico. No es una tendencia. Es un espacio de pensamiento, práctica y criterio.</p>
 
-  <a href="https://t.me/abstract_lai" target="_blank" class="cta-btn" data-i18n="bl_cta">👉 Abrir conversación en Telegram</a>
-  <span class="cta-note" data-i18n="bl_cta_note">Charlas exploratorias 1:1. Evaluamos tu caso antes de avanzar.</span>
-
-  <div class="accordion">
-    <div class="accordion-item">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title" data-i18n="bl_a1_title">Qué es Block Lab</span>
-        <span class="accordion-icon">+</span>
-      </div>
-      <div class="accordion-content">
-        <p class="accordion-text" data-i18n="bl_a1_text">Block Lab es el espacio de Hash21 donde exploramos cuándo tiene sentido crear directamente en Bitcoin. No es un lugar para "subir archivos". Es un espacio para pensar. Trabajamos con artistas y proyectos que quieren entender qué implica dejar una huella permanente en la red.</p>
-      </div>
-    </div>
-
-    <div class="accordion-item">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title" data-i18n="bl_a2_title">Certificar no es lo mismo que inscribir</span>
-        <span class="accordion-icon">+</span>
-      </div>
-      <div class="accordion-content">
-        <p class="accordion-text" data-i18n="bl_a2_text">En Hash21 certificamos obras anclando un hash criptográfico en Bitcoin. Es una forma eficiente y responsable de garantizar autenticidad. Inscribir es distinto. Inscribir significa grabar el contenido directamente dentro de la red. Es una decisión más radical. En muchos casos, la certificación es suficiente. La inscripción solo tiene sentido cuando forma parte de la obra misma.</p>
-      </div>
-    </div>
-
-    <div class="accordion-item">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title" data-i18n="bl_a3_title">¿Cuándo vale la pena?</span>
-        <span class="accordion-icon">+</span>
-      </div>
-      <div class="accordion-content">
-        <p class="accordion-text" data-i18n="bl_a3_text">Cuando la obra nace digital. Cuando la permanencia es parte del mensaje. Cuando el acto de inscribir es parte del concepto.</p>
-      </div>
-    </div>
-
-    <div class="accordion-item">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title" data-i18n="bl_a4_title">Exploración 1:1</span>
-        <span class="accordion-icon">+</span>
-      </div>
-      <div class="accordion-content">
-        <p class="accordion-text" data-i18n="bl_a4_intro">Analizamos:</p>
-        <ul class="accordion-list">
-          <li data-i18n="bl_a4_1">Qué querés crear</li>
-          <li data-i18n="bl_a4_2">Qué significa inscribirlo</li>
-          <li data-i18n="bl_a4_3">Si realmente lo necesitás</li>
-          <li data-i18n="bl_a4_4">Cómo hacerlo de forma coherente</li>
-        </ul>
-      </div>
-    </div>
+  <div class="manifesto">
+    <p data-i18n="bl_m1">Aquí la escasez no es limitación: es marco creativo.</p>
+    <p data-i18n="bl_m2">La permanencia no es espectáculo: es decisión.</p>
+    <p data-i18n="bl_m3">Inscribir no es impulso: es responsabilidad.</p>
   </div>
 
+  <h2 class="section-title" data-i18n="bl_audience_title">¿Para quién es?</h2>
+  <ul class="audience-list">
+    <li data-i18n="bl_aud1">Para artistas que quieren comprender Bitcoin más allá de la superficie.</li>
+    <li data-i18n="bl_aud2">Para bitcoiners interesados en la filosofía y el arte como expresión cultural.</li>
+    <li data-i18n="bl_aud3">Para quienes buscan profundidad y sentido en lugar de tendencia.</li>
+    <li data-i18n="bl_aud4">Para quienes ven en Bitcoin una infraestructura para la evolución humana, no solo financiera.</li>
+    <li data-i18n="bl_aud5">Para quienes entienden que crear también es asumir una postura frente al tiempo, el valor y la permanencia.</li>
+    <li data-i18n="bl_aud6">Para quienes quieren pensar y crear en comunidad.</li>
+  </ul>
+
+  <h2 class="section-title" data-i18n="bl_mod_title">Modalidad</h2>
+  <p class="modality" data-i18n="bl_mod1">Block Lab no es masivo. Funciona por aplicación o invitación. Buscamos compromiso, no volumen. Diálogo real, no exposición superficial.</p>
+  <p class="modality-highlight" data-i18n="bl_mod2">Pensar juntos. Crear juntos. Decidir juntos qué merece permanecer.</p>
+
   <div class="final-cta">
-    <p class="final-cta-text" data-i18n="bl_final">No todo necesita vivir en un bloque. Pero lo que sí, merece ser pensado.</p>
-    <a href="https://t.me/abstract_lai" target="_blank" class="cta-btn" data-i18n="bl_cta">👉 Abrir conversación en Telegram</a>
-    <br><span class="cta-note" data-i18n="bl_cta_note_final">Charlas exploratorias 1:1.</span>
+    <a href="https://t.me/abstract_lai" target="_blank" class="cta-btn" data-i18n="bl_cta">Contactar</a>
+    <span class="cta-note" data-i18n="bl_cta_note">Aplicación o invitación.</span>
   </div>
 </div>
 
 <script>
 const translations = {
   es: {
-    bl_sub: "Bitcoin Inscription Laboratory",
-    bl_intro: "Exploración creativa en Bitcoin. No todo debe inscribirse. Pero si decidís hacerlo, que sea con intención.",
-    bl_highlight: "¿Estás pensando en crear una pieza en Bitcoin? Antes de ocupar un bloque, conversemos. Inscribir en Bitcoin no es solo una acción técnica. Es una decisión conceptual y estratégica.",
-    bl_cta: "👉 Abrir conversación en Telegram",
-    bl_cta_note: "Charlas exploratorias 1:1. Evaluamos tu caso antes de avanzar.",
-    bl_a1_title: "Qué es Block Lab",
-    bl_a1_text: 'Block Lab es el espacio de Hash21 donde exploramos cuándo tiene sentido crear directamente en Bitcoin. No es un lugar para "subir archivos". Es un espacio para pensar. Trabajamos con artistas y proyectos que quieren entender qué implica dejar una huella permanente en la red.',
-    bl_a2_title: "Certificar no es lo mismo que inscribir",
-    bl_a2_text: "En Hash21 certificamos obras anclando un hash criptográfico en Bitcoin. Es una forma eficiente y responsable de garantizar autenticidad. Inscribir es distinto. Inscribir significa grabar el contenido directamente dentro de la red. Es una decisión más radical. En muchos casos, la certificación es suficiente. La inscripción solo tiene sentido cuando forma parte de la obra misma.",
-    bl_a3_title: "¿Cuándo vale la pena?",
-    bl_a3_text: "Cuando la obra nace digital. Cuando la permanencia es parte del mensaje. Cuando el acto de inscribir es parte del concepto.",
-    bl_a4_title: "Exploración 1:1",
-    bl_a4_intro: "Analizamos:",
-    bl_a4_1: "Qué querés crear",
-    bl_a4_2: "Qué significa inscribirlo",
-    bl_a4_3: "Si realmente lo necesitás",
-    bl_a4_4: "Cómo hacerlo de forma coherente",
-    bl_final: "No todo necesita vivir en un bloque. Pero lo que sí, merece ser pensado.",
-    bl_cta_note_final: "Charlas exploratorias 1:1."
+    bl_sub: "Laboratorio de pensamiento y creación en Bitcoin",
+    bl_intro: "Block Lab es el espacio de Hash21 donde el arte se encuentra con la soberanía. Leemos y debatimos las ideas que sostienen Bitcoin. Exploramos sus implicancias culturales y evolutivas. Creamos en diálogo. Creamos obras.",
+    bl_intro2: "No es un curso técnico. No es una tendencia. Es un espacio de pensamiento, práctica y criterio.",
+    bl_m1: "Aquí la escasez no es limitación: es marco creativo.",
+    bl_m2: "La permanencia no es espectáculo: es decisión.",
+    bl_m3: "Inscribir no es impulso: es responsabilidad.",
+    bl_audience_title: "¿Para quién es?",
+    bl_aud1: "Para artistas que quieren comprender Bitcoin más allá de la superficie.",
+    bl_aud2: "Para bitcoiners interesados en la filosofía y el arte como expresión cultural.",
+    bl_aud3: "Para quienes buscan profundidad y sentido en lugar de tendencia.",
+    bl_aud4: "Para quienes ven en Bitcoin una infraestructura para la evolución humana, no solo financiera.",
+    bl_aud5: "Para quienes entienden que crear también es asumir una postura frente al tiempo, el valor y la permanencia.",
+    bl_aud6: "Para quienes quieren pensar y crear en comunidad.",
+    bl_mod_title: "Modalidad",
+    bl_mod1: "Block Lab no es masivo. Funciona por aplicación o invitación. Buscamos compromiso, no volumen. Diálogo real, no exposición superficial.",
+    bl_mod2: "Pensar juntos. Crear juntos. Decidir juntos qué merece permanecer.",
+    bl_cta: "Contactar",
+    bl_cta_note: "Aplicación o invitación."
   },
   en: {
-    bl_sub: "Bitcoin Inscription Laboratory",
-    bl_intro: "Creative exploration on Bitcoin. Not everything should be inscribed. But if you decide to, do it with intention.",
-    bl_highlight: "Are you thinking about creating a piece on Bitcoin? Before taking up a block, let's talk. Inscribing on Bitcoin is not just a technical action. It's a conceptual and strategic decision.",
-    bl_cta: "👉 Start a conversation on Telegram",
-    bl_cta_note: "Exploratory 1:1 sessions. We evaluate your case before moving forward.",
-    bl_a1_title: "What is Block Lab",
-    bl_a1_text: "Block Lab is Hash21's space where we explore when it makes sense to create directly on Bitcoin. It's not a place to \"upload files\". It's a space to think. We work with artists and projects that want to understand what it means to leave a permanent mark on the network.",
-    bl_a2_title: "Certifying is not the same as inscribing",
-    bl_a2_text: "At Hash21 we certify artworks by anchoring a cryptographic hash on Bitcoin. It's an efficient and responsible way to guarantee authenticity. Inscribing is different. Inscribing means recording the content directly within the network. It's a more radical decision. In many cases, certification is enough. Inscription only makes sense when it's part of the artwork itself.",
-    bl_a3_title: "When is it worth it?",
-    bl_a3_text: "When the artwork is born digital. When permanence is part of the message. When the act of inscribing is part of the concept.",
-    bl_a4_title: "1:1 Exploration",
-    bl_a4_intro: "We analyze:",
-    bl_a4_1: "What you want to create",
-    bl_a4_2: "What inscribing it means",
-    bl_a4_3: "Whether you really need it",
-    bl_a4_4: "How to do it coherently",
-    bl_final: "Not everything needs to live in a block. But what does, deserves to be thought through.",
-    bl_cta_note_final: "Exploratory 1:1 sessions."
+    bl_sub: "A laboratory for thought and creation on Bitcoin",
+    bl_intro: "Block Lab is Hash21's space where art meets sovereignty. We read and debate the ideas that sustain Bitcoin. We explore its cultural and evolutionary implications. We create in dialogue. We create works.",
+    bl_intro2: "It's not a technical course. It's not a trend. It's a space for thought, practice, and judgment.",
+    bl_m1: "Here, scarcity is not a limitation: it's a creative framework.",
+    bl_m2: "Permanence is not spectacle: it's a decision.",
+    bl_m3: "Inscribing is not impulse: it's responsibility.",
+    bl_audience_title: "Who is it for?",
+    bl_aud1: "For artists who want to understand Bitcoin beyond the surface.",
+    bl_aud2: "For bitcoiners interested in philosophy and art as cultural expression.",
+    bl_aud3: "For those seeking depth and meaning instead of trends.",
+    bl_aud4: "For those who see Bitcoin as infrastructure for human evolution, not just financial.",
+    bl_aud5: "For those who understand that creating is also taking a stance on time, value, and permanence.",
+    bl_aud6: "For those who want to think and create in community.",
+    bl_mod_title: "Format",
+    bl_mod1: "Block Lab is not massive. It works by application or invitation. We seek commitment, not volume. Real dialogue, not superficial exposure.",
+    bl_mod2: "Think together. Create together. Decide together what deserves to remain.",
+    bl_cta: "Get in touch",
+    bl_cta_note: "Application or invitation."
   }
 };
 
@@ -357,13 +320,6 @@ function setLang(lang) {
     btn.classList.toggle('active', btn.textContent.trim().toLowerCase() === lang);
   });
   document.documentElement.lang = lang;
-}
-
-function toggleAccordion(header) {
-  const item = header.parentElement;
-  const wasOpen = item.classList.contains('open');
-  document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
-  if (!wasOpen) item.classList.add('open');
 }
 
 document.addEventListener('DOMContentLoaded', function() {
