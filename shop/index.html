@@ -677,13 +677,74 @@
           <h3>¡Pago confirmado!</h3>
           <p>Tu pedido está registrado. Gracias por apoyar el arte Bitcoin.</p>
           <div class="success-detail" id="success-detail">
-            📦 <strong>Próximos pasos</strong><br>
-            Te contactaremos para coordinar el envío o retiro de tu pieza.<br><br>
             🔖 <strong>Número de pedido:</strong> <span id="order-id">—</span>
           </div>
-          <button class="btn-primary" onclick="closeModal()" style="background:var(--gold)">
-            Cerrar
+          <p style="margin:20px 0 10px;font-size:0.85rem;color:var(--text-mid);">¿Cómo querés coordinar el envío?</p>
+          <button class="btn-primary" onclick="showStep('shipping-nokyc')" style="background:var(--gold);margin-bottom:10px;">
+            🔒 &nbsp;Sin KYC — Coordinar por Telegram
           </button>
+          <button class="btn-primary" onclick="showStep('shipping-kyc')" style="background:var(--text);color:var(--bg);">
+            📦 &nbsp;Con datos — Envío a domicilio
+          </button>
+        </div>
+
+        <!-- Step 4a: Sin KYC -->
+        <div class="step" id="step-shipping-nokyc">
+          <div class="success-symbol">🔒</div>
+          <h3>Coordiná por Telegram</h3>
+          <p style="margin:15px 0;font-size:0.85rem;color:var(--text-mid);line-height:1.6;">
+            Sin datos personales. Contactanos directamente y coordinamos el envío de forma privada.
+          </p>
+          <div class="success-detail">
+            🔖 <strong>Tu pedido:</strong> <span class="order-id-copy">—</span><br><br>
+            Mencioná tu número de pedido en el mensaje.
+          </div>
+          <a href="https://t.me/abstract_lai" target="_blank" class="btn-primary" style="background:var(--gold);display:block;text-align:center;text-decoration:none;margin-top:16px;">
+            Abrir Telegram →
+          </a>
+          <button class="btn-secondary" onclick="closeModal()" style="margin-top:10px;">Cerrar</button>
+        </div>
+
+        <!-- Step 4b: Con KYC -->
+        <div class="step" id="step-shipping-kyc">
+          <div class="success-symbol">📦</div>
+          <h3>Datos de envío</h3>
+          <p style="margin:10px 0 16px;font-size:0.8rem;color:var(--text-dim);">Completá tus datos para recibir el pedido en tu domicilio.</p>
+          <form id="shipping-form" onsubmit="submitShipping(event)" style="text-align:left;">
+            <label style="font-size:0.75rem;color:var(--text-mid);letter-spacing:0.05em;display:block;margin-bottom:4px;">NOMBRE COMPLETO</label>
+            <input type="text" id="ship-name" required style="width:100%;padding:10px 12px;border:1px solid var(--border-md);border-radius:var(--radius);background:var(--bg);color:var(--text);font-size:0.9rem;margin-bottom:12px;">
+
+            <label style="font-size:0.75rem;color:var(--text-mid);letter-spacing:0.05em;display:block;margin-bottom:4px;">DIRECCIÓN</label>
+            <input type="text" id="ship-address" required placeholder="Calle, número, piso, depto" style="width:100%;padding:10px 12px;border:1px solid var(--border-md);border-radius:var(--radius);background:var(--bg);color:var(--text);font-size:0.9rem;margin-bottom:12px;">
+
+            <label style="font-size:0.75rem;color:var(--text-mid);letter-spacing:0.05em;display:block;margin-bottom:4px;">CIUDAD / LOCALIDAD</label>
+            <input type="text" id="ship-city" required style="width:100%;padding:10px 12px;border:1px solid var(--border-md);border-radius:var(--radius);background:var(--bg);color:var(--text);font-size:0.9rem;margin-bottom:12px;">
+
+            <label style="font-size:0.75rem;color:var(--text-mid);letter-spacing:0.05em;display:block;margin-bottom:4px;">CÓDIGO POSTAL</label>
+            <input type="text" id="ship-zip" required style="width:100%;padding:10px 12px;border:1px solid var(--border-md);border-radius:var(--radius);background:var(--bg);color:var(--text);font-size:0.9rem;margin-bottom:12px;">
+
+            <label style="font-size:0.75rem;color:var(--text-mid);letter-spacing:0.05em;display:block;margin-bottom:4px;">PAÍS</label>
+            <input type="text" id="ship-country" required value="Argentina" style="width:100%;padding:10px 12px;border:1px solid var(--border-md);border-radius:var(--radius);background:var(--bg);color:var(--text);font-size:0.9rem;margin-bottom:12px;">
+
+            <label style="font-size:0.75rem;color:var(--text-mid);letter-spacing:0.05em;display:block;margin-bottom:4px;">TELÉFONO O EMAIL</label>
+            <input type="text" id="ship-contact" required placeholder="Para coordinar la entrega" style="width:100%;padding:10px 12px;border:1px solid var(--border-md);border-radius:var(--radius);background:var(--bg);color:var(--text);font-size:0.9rem;margin-bottom:18px;">
+
+            <button type="submit" class="btn-primary" style="background:var(--gold);width:100%;">Confirmar envío</button>
+          </form>
+          <button class="btn-secondary" onclick="showStep('success')" style="margin-top:8px;">← Volver</button>
+        </div>
+
+        <!-- Step 4c: Confirmación envío -->
+        <div class="step" id="step-shipping-done">
+          <div class="success-symbol">✅</div>
+          <h3>¡Listo!</h3>
+          <p style="margin:15px 0;font-size:0.85rem;color:var(--text-mid);line-height:1.6;">
+            Recibimos tus datos. Te contactaremos para confirmar el envío de tu pieza.
+          </p>
+          <div class="success-detail">
+            🔖 <strong>Pedido:</strong> <span class="order-id-copy">—</span>
+          </div>
+          <button class="btn-primary" onclick="closeModal()" style="background:var(--gold);margin-top:16px;">Cerrar</button>
         </div>
 
       </div>
@@ -901,8 +962,30 @@
     window.confirmPayment = function(preimage) {
       const orderId = "H21-" + Date.now().toString(36).toUpperCase();
       document.getElementById("order-id").textContent = orderId;
+      document.querySelectorAll(".order-id-copy").forEach(el => el.textContent = orderId);
       document.getElementById("modal-title").textContent = "¡Gracias!";
       showStep("success");
+    };
+
+    window.submitShipping = function(e) {
+      e.preventDefault();
+      const data = {
+        order: document.querySelector(".order-id-copy")?.textContent,
+        product: currentProduct?.name,
+        name: document.getElementById("ship-name").value,
+        address: document.getElementById("ship-address").value,
+        city: document.getElementById("ship-city").value,
+        zip: document.getElementById("ship-zip").value,
+        country: document.getElementById("ship-country").value,
+        contact: document.getElementById("ship-contact").value,
+        timestamp: new Date().toISOString()
+      };
+      // Guardar en localStorage como backup
+      const orders = JSON.parse(localStorage.getItem("h21-orders") || "[]");
+      orders.push(data);
+      localStorage.setItem("h21-orders", JSON.stringify(orders));
+      console.log("📦 Order shipping data:", data);
+      showStep("shipping-done");
     };
   </script>
 
