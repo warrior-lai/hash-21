@@ -665,9 +665,12 @@
             <button class="btn-copy" id="copy-btn" onclick="copyInvoice()">Copiar invoice</button>
             <div class="waiting-label">
               <span class="pulse-dot"></span>
-              Esperando confirmación de pago
+              Escaneá el QR y pagá desde tu wallet
             </div>
-            <button class="btn-paid" onclick="confirmPayment()">✓ &nbsp;Ya pagué</button>
+            <button class="btn-primary" onclick="confirmPayment()" style="background:var(--gold);margin-top:16px;font-size:1rem;padding:14px 24px;">
+              ✓ &nbsp;Ya pagué
+            </button>
+            <p style="font-size:0.7rem;color:var(--text-dim);margin-top:8px;">Presioná después de pagar desde tu wallet</p>
           </div>
         </div>
 
