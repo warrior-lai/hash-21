@@ -1136,7 +1136,11 @@
       renderProducts();
     }
 
-    document.addEventListener('DOMContentLoaded', () => setLang(currentLang));
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => setLang(currentLang));
+    } else {
+      setLang(currentLang);
+    }
   </script>
 
 </body>
