@@ -843,7 +843,7 @@
     }
 
     function renderProducts() {
-      const t = T[currentLang] || T.es;
+      const t = (typeof T !== 'undefined' && T[currentLang]) ? T[currentLang] : {badge_available:"● Disponible",badge_soon:"◌ Próximamente",placeholder_soon:"Próximamente",price_soon:"Precio próximamente",btn_buy:"⚡ Comprar",btn_soon:"Próximamente"};
       document.getElementById("shop-grid").innerHTML = PRODUCTS.map(p => `
         <article class="card" onclick="${p.available ? `openCheckout('${p.id}')` : ''}">
           <div class="card-image">
@@ -877,7 +877,7 @@
       `).join("");
     }
 
-    renderProducts();
+    // renderProducts() se llama desde setLang() al cargar
 
     // ── Modal ─────────────────────────────────
     window.openCheckout = function(id) {
