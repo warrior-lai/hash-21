@@ -770,39 +770,42 @@
     const PRODUCTS = [
       {
         id: "dije-001",
-        name: "Stay humble and stack sats",
-        label: "Dije de plata 925 · Barra grabada",
-        desc: "Nada mas que agregar. Recordatorio diario. Barra de plata 925 con grabado artesanal.",
+        name: { es: "Stay humble and stack sats", en: "Stay humble and stack sats" },
+        label: { es: "Dije de plata 925 · Barra grabada", en: "925 Silver pendant · Engraved bar" },
+        desc: { es: "Nada mas que agregar. Recordatorio diario. Barra de plata 925 con grabado artesanal.", en: "Nothing more to add. A daily reminder. 925 silver bar with artisan engraving." },
         sats: 21,
         icon: "🥈",
         image: "/images/stay-humble.jpg",
+        imageHover: "/images/barritas-caja.jpg",
         available: true,
       },
       {
         id: "dije-002",
-        name: "Fix the Money, Fix the World",
-        label: "Dije de plata 925 · Barra grabada",
-        desc: "Una declaración de principios. Plata 925 con mensaje que trasciende.",
+        name: { es: "Fix the Money, Fix the World", en: "Fix the Money, Fix the World" },
+        label: { es: "Dije de plata 925 · Barra grabada", en: "925 Silver pendant · Engraved bar" },
+        desc: { es: "Una declaración de principios. Plata 925 con mensaje que trasciende.", en: "A declaration of principles. 925 silver with a message that transcends." },
         sats: 21,
         icon: "🥈",
         image: "/images/fix-the-money.jpg",
+        imageHover: "/images/barritas-caja.jpg",
         available: true,
       },
       {
         id: "dije-003",
-        name: "Proof of Work, Proof of Soul",
-        label: "Dije de plata 925 · Barra grabada",
-        desc: "La filosofía del esfuerzo genuino, grabada en plata 925 para siempre.",
+        name: { es: "Proof of Work, Proof of Soul", en: "Proof of Work, Proof of Soul" },
+        label: { es: "Dije de plata 925 · Barra grabada", en: "925 Silver pendant · Engraved bar" },
+        desc: { es: "La filosofía del esfuerzo genuino, grabada en plata 925 para siempre.", en: "The philosophy of genuine effort, engraved in 925 silver forever." },
         sats: 21,
         icon: "🥈",
         image: "/images/proof-of-work.jpg",
+        imageHover: "/images/barritas-caja.jpg",
         available: true,
       },
       {
         id: "dije-004",
-        name: "Bloque 21",
-        label: "Dije de plata 925",
-        desc: "Simple. Minimalista. Poderoso. 21 millones y nada mas.",
+        name: { es: "Bloque 21", en: "Block 21" },
+        label: { es: "Dije de plata 925", en: "925 Silver pendant" },
+        desc: { es: "Simple. Minimalista. Poderoso. 21 millones y nada mas.", en: "Simple. Minimalist. Powerful. 21 million and nothing more." },
         sats: 21,
         icon: "✦",
         image: "/images/colgante-21.jpg",
@@ -811,9 +814,9 @@
       },
       {
         id: "dije-005",
-        name: "Dije Rayo ⚡",
-        label: "Dije de plata 925",
-        desc: "El símbolo de Lightning Network en plata 925. Rápido, elegante, definitivo.",
+        name: { es: "Dije Rayo ⚡", en: "Lightning Pendant ⚡" },
+        label: { es: "Dije de plata 925", en: "925 Silver pendant" },
+        desc: { es: "El símbolo de Lightning Network en plata 925. Rápido, elegante, definitivo.", en: "The Lightning Network symbol in 925 silver. Fast, elegant, definitive." },
         sats: 21,
         icon: "⚡",
         image: "/images/dije-rayo.jpg",
@@ -822,9 +825,9 @@
       },
       {
         id: "dije-006",
-        name: "Próximamente",
-        label: "Nueva pieza · En desarrollo",
-        desc: "Una nueva pieza está en camino. Seguinos para enterarte primero.",
+        name: { es: "Próximamente", en: "Coming soon" },
+        label: { es: "Nueva pieza · En desarrollo", en: "New piece · In development" },
+        desc: { es: "Una nueva pieza está en camino. Seguinos para enterarte primero.", en: "A new piece is on its way. Follow us to be the first to know." },
         sats: null,
         icon: "✦",
         image: null,
@@ -844,12 +847,13 @@
 
     function renderProducts() {
       const t = (typeof T !== 'undefined' && T[currentLang]) ? T[currentLang] : {badge_available:"● Disponible",badge_soon:"◌ Próximamente",placeholder_soon:"Próximamente",price_soon:"Precio próximamente",btn_buy:"⚡ Comprar",btn_soon:"Próximamente"};
+      const lang = currentLang || 'es';
       document.getElementById("shop-grid").innerHTML = PRODUCTS.map(p => `
         <article class="card" onclick="${p.available ? `openCheckout('${p.id}')` : ''}">
           <div class="card-image">
             ${p.image
-              ? `<img src="${p.image}" alt="${p.name}" loading="lazy" class="img-main">
-                 ${p.imageHover ? `<img src="${p.imageHover}" alt="${p.name} look" loading="lazy" class="img-hover">` : ''}`
+              ? `<img src="${p.image}" alt="${p.name[lang]}" loading="lazy" class="img-main">
+                 ${p.imageHover ? `<img src="${p.imageHover}" alt="${p.name[lang]} look" loading="lazy" class="img-hover">` : ''}`
               : `<div class="placeholder">
                    <div class="placeholder-symbol">${p.icon}</div>
                    <div class="placeholder-text">${t.placeholder_soon}</div>
@@ -860,9 +864,9 @@
             </span>
           </div>
           <div class="card-body">
-            <p class="card-label">${p.label}</p>
-            <h2 class="card-title">${p.name}</h2>
-            <p class="card-desc">${p.desc}</p>
+            <p class="card-label">${p.label[lang]}</p>
+            <h2 class="card-title">${p.name[lang]}</h2>
+            <p class="card-desc">${p.desc[lang]}</p>
             <div class="card-footer">
               <span class="price-sats">${p.sats ? `${formatSats(p.sats)} <em>sats ⚡</em>` : `<em style="font-size:0.8rem">${t.price_soon}</em>`}</span>
               ${p.available
@@ -885,8 +889,8 @@
       if (!currentProduct) return;
 
       document.getElementById("summary-icon").textContent = currentProduct.icon;
-      document.getElementById("summary-name").textContent = currentProduct.name;
-      document.getElementById("summary-label").textContent = currentProduct.label;
+      document.getElementById("summary-name").textContent = currentProduct.name[currentLang];
+      document.getElementById("summary-label").textContent = currentProduct.label[currentLang];
       document.getElementById("summary-price").textContent = `⚡ ${formatSats(currentProduct.sats)} sats`;
       document.getElementById("modal-title").textContent = "Confirmar compra";
 
@@ -926,7 +930,7 @@
         const amountMsat = currentProduct.sats * 1000;
         let callbackUrl = `${lnurlData.callback}?amount=${amountMsat}`;
         if (lnurlData.commentAllowed && lnurlData.commentAllowed > 0) {
-          const comment = encodeURIComponent(`Hash21 Shop — ${currentProduct.name}`);
+          const comment = encodeURIComponent(`Hash21 Shop — ${currentProduct.name.en}`);
           callbackUrl += `&comment=${comment}`;
         }
         const invoiceRes = await fetch(callbackUrl);
@@ -989,7 +993,7 @@
       e.preventDefault();
       const data = {
         order: document.querySelector(".order-id-copy")?.textContent,
-        product: currentProduct?.name,
+        product: currentProduct?.name?.es || currentProduct?.name,
         name: document.getElementById("ship-name").value,
         address: document.getElementById("ship-address").value,
         city: document.getElementById("ship-city").value,
