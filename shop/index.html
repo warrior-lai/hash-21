@@ -760,7 +760,7 @@
         name: "Stay humble and stack sats",
         label: "Dije de plata 925 · Barra grabada",
         desc: "Nada mas que agregar. Recordatorio diario. Barra de plata 925 con grabado artesanal.",
-        sats: 1,
+        sats: 21,
         icon: "🥈",
         image: "/images/stay-humble.jpg",
         available: true,
@@ -770,7 +770,7 @@
         name: "Fix the Money, Fix the World",
         label: "Dije de plata 925 · Barra grabada",
         desc: "Una declaración de principios. Plata 925 con mensaje que trasciende.",
-        sats: 1,
+        sats: 21,
         icon: "🥈",
         image: "/images/fix-the-money.jpg",
         available: true,
@@ -780,7 +780,7 @@
         name: "Proof of Work, Proof of Soul",
         label: "Dije de plata 925 · Barra grabada",
         desc: "La filosofía del esfuerzo genuino, grabada en plata 925 para siempre.",
-        sats: 1,
+        sats: 21,
         icon: "🥈",
         image: "/images/proof-of-work.jpg",
         available: true,
@@ -790,7 +790,7 @@
         name: "Bloque 21",
         label: "Dije de plata 925",
         desc: "Simple. Minimalista. Poderoso. 21 millones y nada mas.",
-        sats: 1,
+        sats: 21,
         icon: "✦",
         image: "/images/colgante-21.jpg",
         imageHover: "/images/collar-bloque21.jpg",
@@ -801,7 +801,7 @@
         name: "Dije Rayo ⚡",
         label: "Dije de plata 925",
         desc: "El símbolo de Lightning Network en plata 925. Rápido, elegante, definitivo.",
-        sats: 1,
+        sats: 21,
         icon: "⚡",
         image: "/images/dije-rayo.jpg",
         imageHover: "/images/collar-rayo.jpg",
@@ -910,8 +910,12 @@
         const lnurlData = await lnurlRes.json();
 
         const amountMsat = currentProduct.sats * 1000;
-        const comment = encodeURIComponent(`Hash21 Shop — ${currentProduct.name}`);
-        const invoiceRes = await fetch(`${lnurlData.callback}?amount=${amountMsat}&comment=${comment}`);
+        let callbackUrl = `${lnurlData.callback}?amount=${amountMsat}`;
+        if (lnurlData.commentAllowed && lnurlData.commentAllowed > 0) {
+          const comment = encodeURIComponent(`Hash21 Shop — ${currentProduct.name}`);
+          callbackUrl += `&comment=${comment}`;
+        }
+        const invoiceRes = await fetch(callbackUrl);
         if (!invoiceRes.ok) throw new Error("Error al generar invoice");
         const invoiceData = await invoiceRes.json();
         if (invoiceData.status === "ERROR") throw new Error(invoiceData.reason);
