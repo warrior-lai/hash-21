@@ -1606,6 +1606,9 @@ footer {
     <p id="lb-name"></p>
     <span id="lb-tech"></span>
     <a id="lb-badge" class="availability-badge" href="https://t.me/abstract_lai" target="_blank" style="margin-top:15px; text-decoration: none; cursor: pointer; transition: all 0.3s;"></a>
+    <button class="zap-btn" id="lb-zap-btn" onclick="event.stopPropagation();" style="margin-top:15px;font-size:13px;padding:8px 20px;">
+      <span class="zap-icon">⚡</span> <span data-i18n="zap_btn">Zap</span> <span class="zap-count" id="lb-zap-count"></span>
+    </button>
   </div>
 </div>
 
@@ -1694,6 +1697,18 @@ function openLightbox(src, code, name, tech, status) {
   } else {
     badge.textContent = '';
     badge.className = 'availability-badge';
+  }
+  // Wire zap button
+  var obraMap = {'The Rabbit':'the-rabbit','The Hole':'the-hole','Libertad':'libertad','Horizonte Temporal':'horizonte-temporal'};
+  var slug = obraMap[name] || name.toLowerCase().replace(/ /g,'-');
+  var zapBtn = document.getElementById('lb-zap-btn');
+  zapBtn.onclick = function(e) { e.stopPropagation(); openZap(slug, name, 'obra'); };
+  var countEl = document.getElementById('lb-zap-count');
+  var counts = getZapCounts();
+  if (counts[slug] && counts[slug].count > 0) {
+    countEl.textContent = formatSatsShort(counts[slug].total);
+  } else {
+    countEl.textContent = '';
   }
   document.getElementById('lightbox').classList.add('active');
   document.body.style.overflow = 'hidden';
