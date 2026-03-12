@@ -1127,6 +1127,150 @@ footer {
     grid-column: auto;
   }
 }
+
+/* ZAP SYSTEM */
+.zap-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid rgba(176,141,87,0.3);
+  background: transparent;
+  color: var(--gold);
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 10px;
+}
+.zap-btn:hover {
+  background: var(--gold);
+  color: var(--bg);
+  border-color: var(--gold);
+}
+.zap-btn .zap-icon { font-size: 14px; }
+.zap-btn .zap-count {
+  font-size: 10px;
+  opacity: 0.7;
+}
+.zap-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 10000;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(4px);
+}
+.zap-modal-overlay.active { display: flex; }
+.zap-modal {
+  background: var(--bg);
+  max-width: 420px;
+  width: 90%;
+  padding: 40px;
+  position: relative;
+  text-align: center;
+}
+.zap-modal-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 20px;
+  cursor: pointer;
+}
+.zap-modal h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 400;
+  margin-bottom: 8px;
+}
+.zap-modal .zap-target-name {
+  font-size: 12px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 25px;
+}
+.zap-amounts {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.zap-amount-btn {
+  padding: 10px 18px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.zap-amount-btn:hover, .zap-amount-btn.selected {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(176,141,87,0.05);
+}
+.zap-custom-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 20px;
+  outline: none;
+}
+.zap-custom-input:focus { border-color: var(--gold); }
+.zap-qr-container {
+  margin: 20px auto;
+  display: none;
+}
+.zap-qr-container canvas { max-width: 200px !important; height: auto !important; }
+.zap-qr-container.active { display: block; }
+.zap-pay-btn {
+  display: inline-block;
+  padding: 14px 40px;
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+.zap-pay-btn:hover { opacity: 0.85; }
+.zap-invoice-text {
+  margin-top: 15px;
+  font-size: 11px;
+  color: var(--text-dim);
+  word-break: break-all;
+  cursor: pointer;
+  padding: 8px;
+  border: 1px solid var(--border);
+  display: none;
+}
+.zap-invoice-text.active { display: block; }
+.zap-invoice-text:hover { border-color: var(--gold); }
+.zap-success {
+  display: none;
+  text-align: center;
+  padding: 20px;
+}
+.zap-success.active { display: block; }
+.zap-success .check { font-size: 48px; margin-bottom: 15px; }
+
 </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GB0GQ5P9NE"></script>
@@ -1687,6 +1831,215 @@ function handleSubscribe(e) {
     btn.textContent = currentLang === 'es' ? 'Suscribirse' : 'Subscribe';
   });
 }
+</script>
+
+
+<!-- ZAP MODAL -->
+<div class="zap-modal-overlay" id="zapModal" onclick="if(event.target===this)closeZap()">
+  <div class="zap-modal">
+    <button class="zap-modal-close" onclick="closeZap()">×</button>
+    <h3>⚡ Zap</h3>
+    <div class="zap-target-name" id="zapTargetName"></div>
+    <p style="font-size:12px;color:var(--text-dim);margin-bottom:20px;line-height:1.6;" data-i18n="zap_clarify">Apreciá esta obra con sats. No es una compra — es un gesto de valor directo al artista.</p>
+    
+    <div id="zapSelectPhase">
+      <div class="zap-amounts">
+        <button class="zap-amount-btn" onclick="selectZapAmount(100)">100 sats</button>
+        <button class="zap-amount-btn" onclick="selectZapAmount(1000)">1K sats</button>
+        <button class="zap-amount-btn" onclick="selectZapAmount(5000)">5K sats</button>
+        <button class="zap-amount-btn" onclick="selectZapAmount(21000)">21K sats</button>
+      </div>
+      <input type="number" class="zap-custom-input" id="zapCustomAmount" placeholder="Custom amount (sats)" min="1">
+      <button class="zap-pay-btn" onclick="generateZapInvoice()" data-i18n="zap_generate">⚡ Generate Invoice</button>
+    </div>
+    
+    <div id="zapPayPhase" style="display:none;">
+      <div class="zap-qr-container active" id="zapQR"></div>
+      <p style="font-size:12px;color:var(--text-dim);margin:10px 0;" data-i18n="zap_scan">Scan with any Lightning wallet</p>
+      <div class="zap-invoice-text active" id="zapInvoiceText" onclick="copyZapInvoice()" title="Click to copy"></div>
+      <p style="font-size:11px;color:var(--text-dim);margin-top:10px;cursor:pointer;" onclick="copyZapInvoice()" data-i18n="zap_copy">📋 Tap to copy invoice</p>
+      <button class="zap-pay-btn" style="margin-top:15px;" onclick="window.open(zapLnurl,'_blank')" data-i18n="zap_open_wallet">Open in wallet</button>
+    </div>
+    
+    <div class="zap-success" id="zapSuccess">
+      <div class="check">⚡</div>
+      <h3 data-i18n="zap_thanks">Thank you!</h3>
+      <p style="color:var(--text-dim);font-size:13px;" data-i18n="zap_sent">Zap sent to the artist</p>
+    </div>
+  </div>
+</div>
+
+<!-- QR Code library -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+<!-- ZAP SYSTEM JS -->
+<script>
+const LIGHTNING_ADDR = "crustycoil11@walletofsatoshi.com";
+let currentZapTarget = {};
+let selectedZapAmount = 1000;
+let zapLnurl = "";
+
+// Zap counts stored in localStorage
+function getZapCounts() {
+  try { return JSON.parse(localStorage.getItem('h21_zaps') || '{}'); } catch(e) { return {}; }
+}
+function addZapCount(id, amount) {
+  const counts = getZapCounts();
+  if (!counts[id]) counts[id] = { total: 0, count: 0 };
+  counts[id].total += amount;
+  counts[id].count += 1;
+  localStorage.setItem('h21_zaps', JSON.stringify(counts));
+  updateZapDisplays();
+}
+function updateZapDisplays() {
+  const counts = getZapCounts();
+  document.querySelectorAll('.zap-count').forEach(el => {
+    const id = el.id.replace('zap-count-', '');
+    if (counts[id] && counts[id].count > 0) {
+      el.textContent = formatSatsShort(counts[id].total);
+    }
+  });
+}
+function formatSatsShort(n) {
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n/1000).toFixed(n >= 10000 ? 0 : 1) + 'K';
+  return n.toString();
+}
+
+function openZap(id, name, type) {
+  currentZapTarget = { id, name, type };
+  document.getElementById('zapTargetName').textContent = name;
+  document.getElementById('zapSelectPhase').style.display = 'block';
+  document.getElementById('zapPayPhase').style.display = 'none';
+  document.getElementById('zapSuccess').classList.remove('active');
+  document.getElementById('zapModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  // Reset selection
+  document.querySelectorAll('.zap-amount-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('zapCustomAmount').value = '';
+  selectedZapAmount = 0;
+}
+
+function closeZap() {
+  document.getElementById('zapModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function selectZapAmount(amount) {
+  selectedZapAmount = amount;
+  document.querySelectorAll('.zap-amount-btn').forEach(b => b.classList.remove('selected'));
+  event.target.classList.add('selected');
+  document.getElementById('zapCustomAmount').value = '';
+}
+
+async function generateZapInvoice() {
+  const custom = parseInt(document.getElementById('zapCustomAmount').value);
+  const amount = custom > 0 ? custom : selectedZapAmount;
+  if (!amount || amount < 1) {
+    alert('Select an amount');
+    return;
+  }
+  selectedZapAmount = amount;
+  
+  try {
+    // Resolve Lightning Address to LNURL-pay endpoint
+    const [user, domain] = LIGHTNING_ADDR.split('@');
+    const res = await fetch('https://' + domain + '/.well-known/lnurlp/' + user);
+    const data = await res.json();
+    
+    if (!data.callback) throw new Error('Invalid LNURL response');
+    
+    // Request invoice for the amount (amount in millisats)
+    const msats = amount * 1000;
+    const sep = data.callback.includes('?') ? '&' : '?';
+    const invRes = await fetch(data.callback + sep + 'amount=' + msats);
+    const invData = await invRes.json();
+    
+    if (!invData.pr) throw new Error('No invoice received');
+    
+    // Show QR and invoice
+    const invoice = invData.pr;
+    zapLnurl = 'lightning:' + invoice;
+    
+    document.getElementById('zapSelectPhase').style.display = 'none';
+    document.getElementById('zapPayPhase').style.display = 'block';
+    
+    // Generate QR
+    const qrContainer = document.getElementById('zapQR');
+    qrContainer.innerHTML = '';
+    QRCode.toCanvas(invoice, { width: 200, margin: 2, color: { dark: '#1a1a1a', light: '#fafaf8' } }, function(err, canvas) {
+      if (!err) qrContainer.appendChild(canvas);
+    });
+    
+    document.getElementById('zapInvoiceText').textContent = invoice;
+    
+    // Record zap (optimistic - we can't verify payment without a backend)
+    addZapCount(currentZapTarget.id, amount);
+    
+  } catch(e) {
+    console.error('Zap error:', e);
+    // Fallback: show Lightning address directly
+    zapLnurl = 'lightning:' + LIGHTNING_ADDR;
+    document.getElementById('zapSelectPhase').style.display = 'none';
+    document.getElementById('zapPayPhase').style.display = 'block';
+    document.getElementById('zapQR').innerHTML = '<p style="color:var(--gold);font-size:14px;">⚡ ' + LIGHTNING_ADDR + '</p>';
+    document.getElementById('zapInvoiceText').textContent = LIGHTNING_ADDR;
+  }
+}
+
+function copyZapInvoice() {
+  const text = document.getElementById('zapInvoiceText').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const el = document.getElementById('zapInvoiceText');
+    const orig = el.textContent;
+    el.textContent = '✅ Copied!';
+    setTimeout(() => el.textContent = orig, 1500);
+  });
+}
+
+// Inject zap buttons into collection items
+document.addEventListener('DOMContentLoaded', function() {
+  const obras = [
+    { img: 'obra4.jpg', id: 'the-rabbit', name: 'The Rabbit' },
+    { img: 'obra3.jpg', id: 'the-hole', name: 'The Hole' },
+    { img: 'obra1.jpg', id: 'libertad', name: 'Libertad' },
+    { img: 'obra2.jpg', id: 'horizonte-temporal', name: 'Horizonte Temporal' },
+  ];
+  
+  document.querySelectorAll('.collection-item').forEach(item => {
+    const imgEl = item.querySelector('img');
+    if (!imgEl) return;
+    const src = imgEl.getAttribute('src') || '';
+    const obra = obras.find(o => src.includes(o.img));
+    if (!obra) return;
+    
+    const info = item.querySelector('.info');
+    if (info) {
+      const btn = document.createElement('button');
+      btn.className = 'zap-btn';
+      btn.onclick = function(e) { e.stopPropagation(); openZap(obra.id, obra.name, 'obra'); };
+      btn.title = 'Zap';
+      btn.innerHTML = '<span class="zap-icon">⚡</span> Zap <span class="zap-count" id="zap-count-' + obra.id + '"></span>';
+      info.appendChild(btn);
+    }
+  });
+  
+  // Add zap button to artist card
+  const artistSocials = document.querySelector('.artist-card .artist-info div[style*="display:flex"]');
+  if (artistSocials) {
+    const zapLink = document.createElement('a');
+    zapLink.href = 'javascript:void(0)';
+    zapLink.onclick = function() { openZap('lai', 'Lai⚡️', 'artist'); };
+    zapLink.title = 'Zap Artist';
+    zapLink.style.cssText = 'font-size:11px;text-decoration:none;transition:all 0.3s;padding:4px 12px;border:1px solid rgba(176,141,87,0.3);color:var(--gold);letter-spacing:1px;display:inline-flex;align-items:center;gap:4px;margin-left:5px;';
+    zapLink.innerHTML = '⚡ ZAP';
+    zapLink.onmouseover = function() { this.style.background='var(--gold)'; this.style.color='var(--bg)'; };
+    zapLink.onmouseout = function() { this.style.background='transparent'; this.style.color='var(--gold)'; };
+    artistSocials.appendChild(zapLink);
+  }
+  
+  updateZapDisplays();
+});
 </script>
 
 </body>
