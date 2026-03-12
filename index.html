@@ -1849,8 +1849,8 @@ function handleSubscribe(e) {
         <button class="zap-amount-btn" onclick="selectZapAmount(2100)">🔥 2,100</button>
         <button class="zap-amount-btn" onclick="selectZapAmount(21000)">⚡ 21K</button>
       </div>
-      <input type="number" class="zap-custom-input" id="zapCustomAmount" placeholder="Custom amount (sats)" min="1" style="margin-bottom:12px;">
-      <input type="text" class="zap-custom-input" id="zapMessage" placeholder="Leave a message (optional)" maxlength="140" style="margin-bottom:20px;" data-i18n-placeholder="zap_message_placeholder">
+      <input type="number" class="zap-custom-input" id="zapCustomAmount" placeholder="Monto personalizado (sats)" data-i18n-placeholder="zap_custom_placeholder" min="1" style="margin-bottom:12px;">
+      <input type="text" class="zap-custom-input" id="zapMessage" placeholder="Dejá un mensaje (opcional)" data-i18n-placeholder="zap_message_placeholder" maxlength="140" style="margin-bottom:20px;" data-i18n-placeholder="zap_message_placeholder">
       <button class="zap-pay-btn" onclick="generateZapInvoice()" data-i18n="zap_generate">⚡ Generate Invoice</button>
     </div>
     
@@ -1937,7 +1937,7 @@ async function generateZapInvoice() {
   const custom = parseInt(document.getElementById('zapCustomAmount').value);
   const amount = custom > 0 ? custom : selectedZapAmount;
   if (!amount || amount < 1) {
-    alert('Select an amount');
+    alert(document.documentElement.lang === 'en' ? 'Select an amount' : 'Seleccioná un monto');
     return;
   }
   selectedZapAmount = amount;
@@ -1998,7 +1998,7 @@ function copyZapInvoice() {
   navigator.clipboard.writeText(text).then(() => {
     const el = document.getElementById('zapInvoiceText');
     const orig = el.textContent;
-    el.textContent = '✅ Copied!';
+    el.textContent = document.documentElement.lang === 'en' ? '✅ Copied!' : '✅ Copiado!';
     setTimeout(() => el.textContent = orig, 1500);
   });
 }
