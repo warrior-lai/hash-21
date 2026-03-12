@@ -1128,6 +1128,39 @@ footer {
   }
 }
 
+
+/* OBRA TAGS */
+.obra-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  align-items: center;
+}
+.obra-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  font-weight: 400;
+  font-family: 'Inter', sans-serif;
+}
+.tag-artist {
+  color: var(--gold);
+  border: 1px solid rgba(176,141,87,0.25);
+}
+.tag-type {
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+}
+.tag-price {
+  color: #f7931a;
+  border: 1px solid rgba(247,147,26,0.25);
+}
+
 /* ZAP SYSTEM */
 .zap-btn {
   display: inline-flex;
@@ -1606,6 +1639,7 @@ footer {
     <p id="lb-name"></p>
     <span id="lb-tech"></span>
     <a id="lb-badge" class="availability-badge" href="https://t.me/abstract_lai" target="_blank" style="margin-top:15px; text-decoration: none; cursor: pointer; transition: all 0.3s;"></a>
+    <div class="obra-tags" id="lb-tags"></div>
     <button class="zap-btn" id="lb-zap-btn" onclick="event.stopPropagation();" style="margin-top:15px;font-size:13px;padding:8px 20px;">
       <span class="zap-icon">⚡</span> <span data-i18n="zap_btn">Zap</span> <span class="zap-count" id="lb-zap-count"></span>
     </button>
@@ -1698,6 +1732,21 @@ function openLightbox(src, code, name, tech, status) {
     badge.textContent = '';
     badge.className = 'availability-badge';
   }
+  // Populate tags
+  var tagData = {
+    'The Rabbit': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical'},
+    'The Hole': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical'},
+    'Libertad': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical'},
+    'Horizonte Temporal': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical'}
+  };
+  var td = tagData[name] || {artist:'Lai⚡️', type_es:'Física', type_en:'Physical'};
+  var typeName = lang === 'en' ? td.type_en : td.type_es;
+  var priceLabel = lang === 'en' ? 'Price TBA' : 'Precio próximamente';
+  document.getElementById('lb-tags').innerHTML = 
+    '<span class="obra-tag tag-artist">👤 ' + td.artist + '</span>' +
+    '<span class="obra-tag tag-type">🖼 ' + typeName + '</span>' +
+    '<span class="obra-tag tag-price">₿ ' + priceLabel + '</span>';
+
   // Wire zap button
   var obraMap = {'The Rabbit':'the-rabbit','The Hole':'the-hole','Libertad':'libertad','Horizonte Temporal':'horizonte-temporal'};
   var slug = obraMap[name] || name.toLowerCase().replace(/ /g,'-');
@@ -2045,6 +2094,36 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
+  // Add tags to collection items
+  const obraTagData = {
+    'obra4.jpg': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical'},
+    'obra3.jpg': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical'},
+    'obra1.jpg': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical'},
+    'obra2.jpg': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical'},
+  };
+  const cLang = document.documentElement.lang || 'es';
+  document.querySelectorAll('.collection-item').forEach(item => {
+    const imgEl = item.querySelector('img');
+    if (!imgEl) return;
+    const src = imgEl.getAttribute('src') || '';
+    const key = Object.keys(obraTagData).find(k => src.includes(k));
+    if (!key) return;
+    const td = obraTagData[key];
+    const info = item.querySelector('.info');
+    if (!info) return;
+    // Check if tags already added
+    if (info.querySelector('.obra-tags')) return;
+    const typeName = cLang === 'en' ? td.type_en : td.type_es;
+    const priceLabel = cLang === 'en' ? 'Price TBA' : 'Precio próx.';
+    const tagsDiv = document.createElement('div');
+    tagsDiv.className = 'obra-tags';
+    tagsDiv.innerHTML = '<span class="obra-tag tag-artist">👤 ' + td.artist + '</span><span class="obra-tag tag-type">🖼 ' + typeName + '</span><span class="obra-tag tag-price">₿ ' + priceLabel + '</span>';
+    // Insert before zap button if exists
+    const zapBtn = info.querySelector('.zap-btn');
+    if (zapBtn) info.insertBefore(tagsDiv, zapBtn);
+    else info.appendChild(tagsDiv);
+  });
+
   // Add zap button to artist card
   const artistSocials = document.querySelector('.artist-card .artist-info div[style*="display:flex"]');
   if (artistSocials) {
