@@ -1844,12 +1844,13 @@ function handleSubscribe(e) {
     
     <div id="zapSelectPhase">
       <div class="zap-amounts">
-        <button class="zap-amount-btn" onclick="selectZapAmount(100)">100 sats</button>
-        <button class="zap-amount-btn" onclick="selectZapAmount(1000)">1K sats</button>
-        <button class="zap-amount-btn" onclick="selectZapAmount(5000)">5K sats</button>
-        <button class="zap-amount-btn" onclick="selectZapAmount(21000)">21K sats</button>
+        <button class="zap-amount-btn" onclick="selectZapAmount(21)">😊 21</button>
+        <button class="zap-amount-btn" onclick="selectZapAmount(210)">🚀 210</button>
+        <button class="zap-amount-btn" onclick="selectZapAmount(2100)">🔥 2,100</button>
+        <button class="zap-amount-btn" onclick="selectZapAmount(21000)">⚡ 21K</button>
       </div>
-      <input type="number" class="zap-custom-input" id="zapCustomAmount" placeholder="Custom amount (sats)" min="1">
+      <input type="number" class="zap-custom-input" id="zapCustomAmount" placeholder="Custom amount (sats)" min="1" style="margin-bottom:12px;">
+      <input type="text" class="zap-custom-input" id="zapMessage" placeholder="Leave a message (optional)" maxlength="140" style="margin-bottom:20px;" data-i18n-placeholder="zap_message_placeholder">
       <button class="zap-pay-btn" onclick="generateZapInvoice()" data-i18n="zap_generate">⚡ Generate Invoice</button>
     </div>
     
@@ -1952,7 +1953,12 @@ async function generateZapInvoice() {
     // Request invoice for the amount (amount in millisats)
     const msats = amount * 1000;
     const sep = data.callback.includes('?') ? '&' : '?';
-    const invRes = await fetch(data.callback + sep + 'amount=' + msats);
+    const msg = document.getElementById('zapMessage').value || '';
+    let invoiceUrl = data.callback + sep + 'amount=' + msats;
+    if (msg && data.commentAllowed && data.commentAllowed > 0) {
+      invoiceUrl += '&comment=' + encodeURIComponent(msg.slice(0, data.commentAllowed));
+    }
+    const invRes = await fetch(invoiceUrl);
     const invData = await invRes.json();
     
     if (!invData.pr) throw new Error('No invoice received');
