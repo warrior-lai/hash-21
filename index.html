@@ -1745,7 +1745,6 @@ function openLightbox(src, code, name, tech, status) {
   document.getElementById('lb-tags').innerHTML = 
     '<span class="obra-tag tag-artist">👤 ' + td.artist + '</span>' +
     '<span class="obra-tag tag-type">🖼 ' + typeName + '</span>' +
-    '<span class="obra-tag tag-type">📐 ' + td.dim + '</span>' +
     '<span class="obra-tag tag-price">₿ ' + priceLabel + '</span>';
 
   // Wire zap button
@@ -2118,7 +2117,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const priceLabel = cLang === 'en' ? 'Price TBA' : 'Precio próx.';
     const tagsDiv = document.createElement('div');
     tagsDiv.className = 'obra-tags';
-    tagsDiv.innerHTML = '<span class="obra-tag tag-artist">👤 ' + td.artist + '</span><span class="obra-tag tag-type">🖼 ' + typeName + '</span><span class="obra-tag tag-type">📐 ' + td.dim + '</span><span class="obra-tag tag-price">₿ ' + priceLabel + '</span>';
+    tagsDiv.innerHTML = '<span class="obra-tag tag-artist">👤 ' + td.artist + '</span><span class="obra-tag tag-type">🖼 ' + typeName + '</span><span class="obra-tag tag-price">₿ ' + priceLabel + '</span>';
     // Insert before zap button if exists
     const zapBtn = info.querySelector('.zap-btn');
     if (zapBtn) info.insertBefore(tagsDiv, zapBtn);
