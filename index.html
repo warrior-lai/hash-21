@@ -1776,20 +1776,24 @@ function openLightbox(src, code, name, tech, status) {
   }
   // Populate tags
   var tagData = {
-    'Paspartuz 1': {artist:'Roxy', type_es:'Física', type_en:'Physical'},
-    'Paspartuz 2': {artist:'Roxy', type_es:'Física', type_en:'Physical'},
-    'The Rabbit': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', dim:'100 × 80 cm'},
-    'The Hole': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', dim:'80 × 60 cm'},
-    'Libertad': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', dim:'120 × 100 cm'},
-    'Horizonte Temporal': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', dim:'90 × 70 cm'}
+    'Paspartuz 1': {artist:'Roxy', type_es:'Física', type_en:'Physical', status:'consult'},
+    'Paspartuz 2': {artist:'Roxy', type_es:'Física', type_en:'Physical', status:'consult'},
+    'The Rabbit': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', status:'consult'},
+    'The Hole': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', status:'available'},
+    'Libertad': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', status:'consult'},
+    'Horizonte Temporal': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', status:'available'}
   };
   var td = tagData[name] || {artist:'Lai⚡️', type_es:'Física', type_en:'Physical'};
   var typeName = lang === 'en' ? td.type_en : td.type_es;
   var priceLabel = lang === 'en' ? 'Price TBA' : 'Precio próximamente';
+  var statusLabel = '';
+  if (td.status === 'available') statusLabel = lang === 'en' ? 'Available' : 'Disponible';
+  else if (td.status === 'consult') statusLabel = lang === 'en' ? 'Inquire' : 'Consultar';
+  var statusClass = td.status === 'available' ? 'badge-available' : 'badge-consult';
   document.getElementById('lb-tags').innerHTML = 
     '<span class="obra-tag tag-artist">👤 ' + td.artist + '</span>' +
     '<span class="obra-tag tag-type">🖼 ' + typeName + '</span>' +
-    '<span class="obra-tag tag-price">₿ ' + priceLabel + '</span>';
+    (statusLabel ? '<span class="obra-tag ' + statusClass + '">' + statusLabel + '</span>' : '');
 
   // Wire zap button
   var obraMap = {'The Rabbit':'the-rabbit','The Hole':'the-hole','Libertad':'libertad','Horizonte Temporal':'horizonte-temporal','Paspartuz 1':'paspartuz-1','Paspartuz 2':'paspartuz-2'};
@@ -2140,12 +2144,12 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Add tags to collection items
   const obraTagData = {
-    'roxy-paspartuz1.jpg': {artist:'Roxy', type_es:'Física', type_en:'Physical'},
-    'roxy-paspartuz2.jpg': {artist:'Roxy', type_es:'Física', type_en:'Physical'},
-    'obra4.jpg': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', dim:'100 × 80 cm'},
-    'obra3.jpg': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', dim:'80 × 60 cm'},
-    'obra1.jpg': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', dim:'120 × 100 cm'},
-    'obra2.jpg': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', dim:'90 × 70 cm'},
+    'roxy-paspartuz1.jpg': {artist:'Roxy', type_es:'Física', type_en:'Physical', status:'consult'},
+    'roxy-paspartuz2.jpg': {artist:'Roxy', type_es:'Física', type_en:'Physical', status:'consult'},
+    'obra4.jpg': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', status:'consult'},
+    'obra3.jpg': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', status:'available'},
+    'obra1.jpg': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', status:'consult'},
+    'obra2.jpg': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', status:'available'},
   };
   const cLang = document.documentElement.lang || 'es';
   document.querySelectorAll('.collection-item').forEach(item => {
