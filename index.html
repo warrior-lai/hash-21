@@ -1377,6 +1377,14 @@ footer {
   <!-- Carousel (default) -->
   <div class="collection-carousel-wrapper" id="collectionCarousel">
     <div class="collection-carousel" id="collCarousel">
+            <div class="collection-item" onclick="openLightbox('img/roxy-paspartuz1.jpg','Block 0 — #005','Paspartuz 1','Técnica mixta','consult')">
+        <img src="img/roxy-paspartuz1.jpg" alt="Paspartuz 1 - Roxy" decoding="async">
+        <div class="info"><h4>Block 0 — #005</h4><p>Paspartuz 1</p><span>Técnica mixta</span></div>
+      </div>
+      <div class="collection-item" onclick="openLightbox('img/roxy-paspartuz2.jpg','Block 0 — #006','Paspartuz 2','Técnica mixta','consult')">
+        <img src="img/roxy-paspartuz2.jpg" alt="Paspartuz 2 - Roxy" decoding="async">
+        <div class="info"><h4>Block 0 — #006</h4><p>Paspartuz 2</p><span>Técnica mixta</span></div>
+      </div>
       <div class="collection-item" onclick="openLightbox('img/obra4.jpg','Block 0 — #001','The Rabbit','Acrílico y texturas sobre lienzo','consult')">
         <img src="img/obra4.jpg" alt="The Rabbit - Arte abstracto inspirado en Bitcoin" decoding="async">
         <div class="info"><h4 data-i18n="obra1_code">Block 0 — #001</h4><p data-i18n="obra1_name">The Rabbit</p><span data-i18n="obra1_tech">Acrílico y texturas sobre lienzo</span></div>
@@ -1405,6 +1413,14 @@ footer {
 
   <!-- Grid (expanded on click) -->
   <div class="collection-grid hidden" id="collectionGrid">
+    <div class="collection-item" onclick="openLightbox('img/roxy-paspartuz1.jpg','Block 0 — #005','Paspartuz 1','Técnica mixta','consult')">
+      <img src="img/roxy-paspartuz1.jpg" alt="Paspartuz 1 - Roxy" loading="lazy" decoding="async">
+      <div class="info"><h4>Block 0 — #005</h4><p>Paspartuz 1</p><span>Técnica mixta</span></div>
+    </div>
+    <div class="collection-item" onclick="openLightbox('img/roxy-paspartuz2.jpg','Block 0 — #006','Paspartuz 2','Técnica mixta','consult')">
+      <img src="img/roxy-paspartuz2.jpg" alt="Paspartuz 2 - Roxy" loading="lazy" decoding="async">
+      <div class="info"><h4>Block 0 — #006</h4><p>Paspartuz 2</p><span>Técnica mixta</span></div>
+    </div>
     <div class="collection-item" onclick="openLightbox('img/obra4.jpg','Block 0 — #001','The Rabbit','Acrílico y texturas sobre lienzo','consult')">
       <img src="img/obra4.jpg" alt="The Rabbit - Arte abstracto inspirado en Bitcoin" loading="lazy" decoding="async">
       <div class="info"><h4 data-i18n="obra1_code">Block 0 — #001</h4><p data-i18n="obra1_name">The Rabbit</p><span data-i18n="obra1_tech">Acrílico y texturas sobre lienzo</span></div>
@@ -1511,7 +1527,33 @@ footer {
       </div>
     </div>
   </div>
-  <a href="https://t.me/abstract_lai" target="_blank" class="section-cta" data-i18n="artists_join_cta">Quiero sumarme como artista →</a>
+  <div class="artist-card">
+    <img src="img/avatar-martu.jpg" alt="Martu - Artista" class="artist-img" loading="lazy" decoding="async">
+    <div class="artist-info">
+      <h3>Martu</h3>
+      <div class="role">Artista</div>
+      <p class="artist-motto" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--gold);margin-bottom:6px;">Bridge between the presence and the register</p>
+      <p>Arte que explora la relación entre presencia y registro, entre aquello que puede tocarse y aquello que solo existe como energía, información o imagen. Cada pieza funciona como un puente: traduce lo intangible en forma visible y, al mismo tiempo, expande lo físico hacia nuevos espacios de circulación y permanencia.</p>
+      <div style="display:flex;gap:18px;align-items:center;margin-top:15px;">
+        <a href="javascript:void(0)" onclick="openZap('martu','Martu','artist')" title="Zap Artist" style="font-size:11px;text-decoration:none;transition:all 0.3s;padding:4px 12px;border:1px solid rgba(176,141,87,0.3);color:var(--gold);letter-spacing:1px;display:inline-flex;align-items:center;gap:4px;" onmouseover="this.style.background='var(--gold)';this.style.color='var(--bg)'" onmouseout="this.style.background='transparent';this.style.color='var(--gold)'">⚡ ZAP</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="artist-card">
+    <img src="img/avatar-roxy.jpg" alt="Roxy - Artista" class="artist-img" loading="lazy" decoding="async">
+    <div class="artist-info">
+      <h3>Roxy</h3>
+      <div class="role">Artista</div>
+      <p class="artist-motto" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--gold);margin-bottom:6px;">Sovereign Art for Sovereign Minds</p>
+      <p>Artista visual que fusiona técnicas clásicas con la estética Bitcoin. Sus obras exploran la intersección entre valor, belleza y descentralización.</p>
+      <div style="display:flex;gap:18px;align-items:center;margin-top:15px;">
+        <a href="javascript:void(0)" onclick="openZap('roxy','Roxy','artist')" title="Zap Artist" style="font-size:11px;text-decoration:none;transition:all 0.3s;padding:4px 12px;border:1px solid rgba(176,141,87,0.3);color:var(--gold);letter-spacing:1px;display:inline-flex;align-items:center;gap:4px;" onmouseover="this.style.background='var(--gold)';this.style.color='var(--bg)'" onmouseout="this.style.background='transparent';this.style.color='var(--gold)'">⚡ ZAP</a>
+      </div>
+    </div>
+  </div>
+
+    <a href="https://t.me/abstract_lai" target="_blank" class="section-cta" data-i18n="artists_join_cta">Quiero sumarme como artista →</a>
 </section>
 
 <!-- collaborations moved inside artist card -->
@@ -1734,6 +1776,8 @@ function openLightbox(src, code, name, tech, status) {
   }
   // Populate tags
   var tagData = {
+    'Paspartuz 1': {artist:'Roxy', type_es:'Física', type_en:'Physical'},
+    'Paspartuz 2': {artist:'Roxy', type_es:'Física', type_en:'Physical'},
     'The Rabbit': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', dim:'100 × 80 cm'},
     'The Hole': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', dim:'80 × 60 cm'},
     'Libertad': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', dim:'120 × 100 cm'},
@@ -1748,7 +1792,7 @@ function openLightbox(src, code, name, tech, status) {
     '<span class="obra-tag tag-price">₿ ' + priceLabel + '</span>';
 
   // Wire zap button
-  var obraMap = {'The Rabbit':'the-rabbit','The Hole':'the-hole','Libertad':'libertad','Horizonte Temporal':'horizonte-temporal'};
+  var obraMap = {'The Rabbit':'the-rabbit','The Hole':'the-hole','Libertad':'libertad','Horizonte Temporal':'horizonte-temporal','Paspartuz 1':'paspartuz-1','Paspartuz 2':'paspartuz-2'};
   var slug = obraMap[name] || name.toLowerCase().replace(/ /g,'-');
   var zapBtn = document.getElementById('lb-zap-btn');
   zapBtn.onclick = function(e) { e.stopPropagation(); openZap(slug, name, 'obra'); };
@@ -2096,6 +2140,8 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Add tags to collection items
   const obraTagData = {
+    'roxy-paspartuz1.jpg': {artist:'Roxy', type_es:'Física', type_en:'Physical'},
+    'roxy-paspartuz2.jpg': {artist:'Roxy', type_es:'Física', type_en:'Physical'},
     'obra4.jpg': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', dim:'100 × 80 cm'},
     'obra3.jpg': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', dim:'80 × 60 cm'},
     'obra1.jpg': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', dim:'120 × 100 cm'},
