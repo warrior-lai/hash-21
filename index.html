@@ -1401,8 +1401,13 @@ footer {
         <img src="img/obra2.jpg" alt="Horizonte Temporal - Arte abstracto inspirado en Bitcoin" loading="lazy" decoding="async">
         <div class="info"><h4 data-i18n="obra4_code">Block 0 — #004</h4><p data-i18n="obra4_name">Horizonte Temporal</p><span data-i18n="obra4_tech">Acrílico y texturas sobre lienzo</span></div>
       </div>
-      <div class="collection-item">
-        <span class="coming" data-i18n="coming_objects" style="padding:20px;text-align:center;">Objetos · Próximamente</span>
+      <div class="collection-item" onclick="window.location.href='/shop/'" style="cursor:pointer;">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:420px;padding:40px;text-align:center;">
+          <span style="font-size:32px;margin-bottom:15px;">✦</span>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--text);margin-bottom:10px;" data-i18n="shop_explore_title">Objetos de diseño</p>
+          <span style="font-size:12px;color:var(--text-dim);line-height:1.6;max-width:260px;" data-i18n="shop_explore_desc">Explorá objetos únicos creados por los artistas de Hash21</span>
+          <a href="/shop/" style="margin-top:20px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;border:1px solid rgba(176,141,87,0.3);padding:8px 20px;transition:all 0.3s;" onmouseover="this.style.background='var(--gold)';this.style.color='var(--bg)'" onmouseout="this.style.background='transparent';this.style.color='var(--gold)'" data-i18n="shop_explore_cta">Ver tienda →</a>
+        </div>
       </div>
     </div>
     <div class="collection-carousel-nav">
