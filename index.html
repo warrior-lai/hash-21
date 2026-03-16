@@ -729,6 +729,100 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
 }
 .artist-link:hover { color: var(--gold); }
 
+/* CREATORS PORTRAITS */
+.creators-portraits {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  flex-wrap: wrap;
+  margin-bottom: 60px;
+}
+.creator-portrait {
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+.creator-portrait:hover { transform: translateY(-5px); }
+.creator-portrait img {
+  width: 200px;
+  height: 280px;
+  object-fit: cover;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+  transition: box-shadow 0.5s, transform 0.5s;
+  margin-bottom: 15px;
+}
+.creator-portrait:hover img { box-shadow: 0 12px 50px rgba(176,141,87,0.12); }
+.creator-portrait h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 300;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+.creator-portrait .role {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.creator-portrait.active img { box-shadow: 0 0 0 2px var(--gold); }
+
+/* CREATOR EXPANDED */
+.creator-expanded {
+  border-top: 1px solid var(--border);
+  padding: 50px 0;
+  animation: fadeIn 0.4s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.creator-expanded-header {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+.creator-expanded-avatar {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+.creator-expanded-header h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  font-weight: 300;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+.creator-expanded-motto {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--gold);
+}
+.creator-expanded-bio {
+  color: var(--text-mid);
+  font-size: 14px;
+  line-height: 1.9;
+  font-weight: 300;
+  margin-top: 8px;
+  max-width: 500px;
+}
+.creator-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 15px;
+}
+.creator-gallery img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+.creator-gallery img:hover { transform: scale(1.02); box-shadow: 0 6px 25px rgba(0,0,0,0.2); }
+
 /* NEWSLETTER */
 .newsletter {
   background: var(--bg2);
@@ -1087,6 +1181,12 @@ footer {
     height: 200px; 
     margin: 0 auto;
   }
+  .creators-portraits { gap: 25px; }
+  .creator-portrait img { width: 140px; height: 200px; }
+  .creator-portrait h3 { font-size: 20px; }
+  .creator-expanded-header { flex-direction: column; text-align: center; gap: 15px; }
+  .creator-expanded-avatar { width: 90px; height: 90px; }
+  .creator-gallery { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   
   /* Blog and Events responsive */
   .blog-grid { grid-template-columns: 1fr; gap: 20px; }
@@ -1321,7 +1421,7 @@ footer {
   <ul>
     <li><a href="#collection" data-i18n="nav_collection">Colección</a></li>
     <li><a href="#philosophy" data-i18n="nav_philosophy">Filosofía</a></li>
-    <li><a href="/creators/" data-i18n="nav_artists">Creadores</a></li>
+    <li><a href="#artists" data-i18n="nav_artists">Creadores</a></li>
     <li class="nav-hidden" style="display:none;"><a href="#collaborations" data-i18n="nav_collabs">Proyectos</a></li>
     <li class="nav-hidden" style="display:none;"><a href="#blog" data-i18n="nav_blog">Blog</a></li>
     <li class="nav-hidden" style="display:none;"><a href="#events" data-i18n="nav_events">Eventos</a></li>
@@ -1341,7 +1441,7 @@ footer {
   <ul>
     <li><a href="#collection" data-i18n="nav_collection" onclick="closeMenu()">Colección</a></li>
     <li><a href="#philosophy" data-i18n="nav_philosophy" onclick="closeMenu()">Filosofía</a></li>
-    <li><a href="/creators/" data-i18n="nav_artists" onclick="closeMenu()">Creadores</a></li>
+    <li><a href="#artists" data-i18n="nav_artists" onclick="closeMenu()">Creadores</a></li>
     <li class="nav-hidden" style="display:none;"><a href="#collaborations" data-i18n="nav_collabs" onclick="closeMenu()">Proyectos</a></li>
     <li class="nav-hidden" style="display:none;"><a href="#blog" data-i18n="nav_blog" onclick="closeMenu()">Blog</a></li>
     <li class="nav-hidden" style="display:none;"><a href="#events" data-i18n="nav_events" onclick="closeMenu()">Eventos</a></li>
@@ -1480,8 +1580,10 @@ footer {
 
 <section id="artists">
   <span class="section-label" data-i18n="artists_label">Artistas</span>
-  <h2 class="section-title" data-i18n="artists_title">Creadores</h2>
+  <h2 class="section-title" data-i18n="artists_title" style="cursor:pointer;" onclick="toggleCreatorsPanel()">Creadores</h2>
   <p class="section-text" data-i18n="artists_text" style="max-width:700px;">Hash21 es un refugio para artistas que crean desde la libertad. Creemos que el arte, como Bitcoin, es un acto de soberanía: una decisión consciente de expresar la verdad interior sin pedir permiso, a través del color, la textura, la materia y el tiempo invertido en cada obra. Cada pieza nace del trabajo real y refleja la autenticidad del alma que la crea.<br><br>Cada creador es guardián de su energía, responsable de su visión y dueño de su proceso. Aquí, el amor por la creación se encuentra con la libertad de existir. Aquí, el valor no se impone: se construye.</p>
+
+  <!-- Original artist cards -->
   <div class="artist-card">
     <img src="img/avatar.jpg" alt="Lai⚡️ - Artista Bitcoin" class="artist-img" loading="lazy" decoding="async">
     <div class="artist-info">
@@ -1500,7 +1602,6 @@ footer {
         crustycoil11@walletofsatoshi.com
       </div>
       
-      <!-- Proyectos: hidden by default, toggle on click -->
       <a href="javascript:void(0)" onclick="toggleProjects()" class="artist-link" id="projects-toggle" style="margin-top:10px;display:inline-block;color:var(--gold);" data-i18n="artist1_projects_label">Proyectos & Experiencia →</a>
       
       <div id="artist-projects" style="display:none;margin-top:25px;padding-top:25px;border-top:1px solid var(--border);">
@@ -1558,7 +1659,7 @@ footer {
     </div>
   </div>
 
-    <div class="artist-card">
+  <div class="artist-card">
     <img src="img/avatar-guadis.jpg" alt="Guadis - Diseñadora Bitcoiner" class="artist-img" loading="lazy" decoding="async">
     <div class="artist-info">
       <h3>Guadis</h3>
@@ -1571,7 +1672,98 @@ footer {
     </div>
   </div>
 
-    <a href="https://t.me/abstract_lai" target="_blank" class="section-cta" data-i18n="artists_join_cta">Quiero sumarme como artista →</a>
+  <a href="https://t.me/abstract_lai" target="_blank" class="section-cta" data-i18n="artists_join_cta">Quiero sumarme como artista →</a>
+
+  <!-- Hidden creators panel - toggles on click "Creadores" title -->
+  <div id="creators-panel" style="display:none;padding-top:40px;border-top:1px solid var(--border);margin-top:40px;">
+    <div class="creators-portraits">
+      <div class="creator-portrait" onclick="toggleCreator('lai')">
+        <img src="img/avatar.jpg" alt="Lai⚡️" loading="lazy" decoding="async">
+        <h3>Lai⚡️</h3>
+        <div class="role" data-i18n="artist1_role">Fundadora · Artista</div>
+      </div>
+      <div class="creator-portrait" onclick="toggleCreator('martu')">
+        <img src="img/avatar-martu.jpg" alt="Martu" loading="lazy" decoding="async">
+        <h3>Martu</h3>
+        <div class="role">Artista</div>
+      </div>
+      <div class="creator-portrait" onclick="toggleCreator('roxy')">
+        <img src="img/avatar-roxy.jpg" alt="Roxy" loading="lazy" decoding="async">
+        <h3>Roxy</h3>
+        <div class="role">Artista</div>
+      </div>
+      <div class="creator-portrait" onclick="toggleCreator('guadis')">
+        <img src="img/avatar-guadis.jpg" alt="Guadis" loading="lazy" decoding="async">
+        <h3>Guadis</h3>
+        <div class="role" data-i18n="artist_guadis_role">Diseñadora · Creativa</div>
+      </div>
+    </div>
+
+    <div class="creator-expanded" id="creator-lai" style="display:none;">
+      <div class="creator-expanded-header">
+        <img src="img/avatar.jpg" alt="Lai⚡️" class="creator-expanded-avatar">
+        <div>
+          <h3>Lai⚡️</h3>
+          <span class="creator-expanded-motto">Sovereign Art for Sovereign Minds</span>
+          <p class="creator-expanded-bio" data-i18n="artist1_bio">Arte intuitivo que explora emoción y transformación. Acrílicos, texturas y capas que se construyen como las decisiones que nos forman. Buenos Aires, Argentina.</p>
+        </div>
+      </div>
+      <div class="creator-gallery">
+        <img src="img/obra4.jpg" alt="The Rabbit" loading="lazy" onclick="openLightbox('img/obra4.jpg','Block 0 — #001','The Rabbit','Acrílico y texturas sobre lienzo','consult')">
+        <img src="img/obra3.jpg" alt="The Hole" loading="lazy" onclick="openLightbox('img/obra3.jpg','Block 0 — #002','The Hole','Acrílico y texturas sobre lienzo','available')">
+        <img src="img/obra1.jpg" alt="Libertad" loading="lazy" onclick="openLightbox('img/obra1.jpg','Block 0 — #003','Libertad','Acrílico y texturas sobre lienzo','consult')">
+        <img src="img/obra2.jpg" alt="Horizonte Temporal" loading="lazy" onclick="openLightbox('img/obra2.jpg','Block 0 — #004','Horizonte Temporal','Acrílico y texturas sobre lienzo','available')">
+        <img src="img/card-first.jpg" alt="21 LAT Card" loading="lazy">
+        <img src="img/card6.jpg" alt="21 LAT Card" loading="lazy">
+        <img src="img/card7.jpg" alt="21 LAT Card" loading="lazy">
+        <img src="img/card8.jpg" alt="21 LAT Card" loading="lazy">
+        <img src="img/card10.jpg" alt="21 LAT Card" loading="lazy">
+      </div>
+    </div>
+
+    <div class="creator-expanded" id="creator-martu" style="display:none;">
+      <div class="creator-expanded-header">
+        <img src="img/avatar-martu.jpg" alt="Martu" class="creator-expanded-avatar">
+        <div>
+          <h3>Martu</h3>
+          <span class="creator-expanded-motto">Bridge between the presence and the register</span>
+          <p class="creator-expanded-bio" data-i18n="artist_martu_bio">Arte que explora la relación entre presencia y registro, entre aquello que puede tocarse y aquello que solo existe como energía, información o imagen.</p>
+        </div>
+      </div>
+      <div class="creator-gallery">
+        <img src="img/avatar-martu.jpg" alt="Martu" loading="lazy" style="object-fit:cover;">
+      </div>
+    </div>
+
+    <div class="creator-expanded" id="creator-roxy" style="display:none;">
+      <div class="creator-expanded-header">
+        <img src="img/avatar-roxy.jpg" alt="Roxy" class="creator-expanded-avatar">
+        <div>
+          <h3>Roxy</h3>
+          <span class="creator-expanded-motto">Sovereign Art for Sovereign Minds</span>
+          <p class="creator-expanded-bio" data-i18n="artist_roxy_bio">Artista visual que fusiona técnicas clásicas con la estética Bitcoin. Sus obras exploran la intersección entre valor, belleza y descentralización.</p>
+        </div>
+      </div>
+      <div class="creator-gallery">
+        <img src="img/roxy-paspartuz1.jpg" alt="Roxy - Paspartuz" loading="lazy">
+        <img src="img/roxy-paspartuz2.jpg" alt="Roxy - Paspartuz" loading="lazy">
+      </div>
+    </div>
+
+    <div class="creator-expanded" id="creator-guadis" style="display:none;">
+      <div class="creator-expanded-header">
+        <img src="img/avatar-guadis.jpg" alt="Guadis" class="creator-expanded-avatar">
+        <div>
+          <h3>Guadis</h3>
+          <span class="creator-expanded-motto">Bitcoin as a way of life</span>
+          <p class="creator-expanded-bio" data-i18n="artist_guadis_bio">Diseñadora bitcoiner y creativa. Bitcoin como filosofía de vida, amante de la naturaleza, creativa de profesión.</p>
+        </div>
+      </div>
+      <div class="creator-gallery">
+        <img src="img/avatar-guadis.jpg" alt="Guadis" loading="lazy" style="object-fit:cover;">
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- collaborations moved inside artist card -->
@@ -1905,6 +2097,44 @@ function closeMenu() {
 function toggleLightning() {
   var el = document.getElementById('lightning-address');
   el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+/* Toggle creators panel (on title click) */
+function toggleCreatorsPanel() {
+  var panel = document.getElementById('creators-panel');
+  if (panel.style.display === 'none') {
+    panel.style.display = 'block';
+    setTimeout(function() { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+  } else {
+    panel.style.display = 'none';
+    // Also close any open creator
+    document.querySelectorAll('.creator-expanded').forEach(function(p) { p.style.display = 'none'; });
+    document.querySelectorAll('.creator-portrait').forEach(function(p) { p.classList.remove('active'); });
+  }
+}
+
+/* Toggle creator expanded panel */
+function toggleCreator(id) {
+  var panel = document.getElementById('creator-' + id);
+  var allPanels = document.querySelectorAll('.creator-expanded');
+  var allPortraits = document.querySelectorAll('.creator-portrait');
+  var isOpen = panel.style.display !== 'none';
+  
+  // Close all
+  allPanels.forEach(function(p) { p.style.display = 'none'; });
+  allPortraits.forEach(function(p) { p.classList.remove('active'); });
+  
+  // If it was closed, open it
+  if (!isOpen) {
+    panel.style.display = 'block';
+    // Mark active portrait
+    var portraits = document.querySelectorAll('.creator-portrait');
+    portraits.forEach(function(p) {
+      if (p.getAttribute('onclick').indexOf(id) !== -1) p.classList.add('active');
+    });
+    // Scroll to panel
+    setTimeout(function() { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+  }
 }
 
 /* Toggle artist projects */
