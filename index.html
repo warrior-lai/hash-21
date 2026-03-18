@@ -2247,7 +2247,7 @@ function handleSubscribe(e) {
 <!-- QR Code library -->
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
 <!-- Nostr tools for NIP-57 zaps -->
-<script src="https://cdn.jsdelivr.net/npm/nostr-tools@1.17.0/lib/nostr.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/nostr-tools@2.7.0/lib/nostr.bundle.min.js"></script>
 
 <!-- ZAP SYSTEM JS (NIP-57) -->
 <script>
@@ -2433,9 +2433,9 @@ async function generateZapInvoice() {
     // NIP-57: Build and sign zap request with ephemeral key
     if (data.allowsNostr && data.nostrPubkey && window.NostrTools) {
       try {
-        const sk = NostrTools.generatePrivateKey();
+        const sk = NostrTools.generateSecretKey();
         const pk = NostrTools.getPublicKey(sk);
-        const zapEvent = {
+        const zapEvent = NostrTools.finalizeEvent({
           kind: 9734,
           content: msg,
           tags: [
@@ -2444,10 +2444,7 @@ async function generateZapInvoice() {
             ["p", RECIPIENT_PUBKEY]
           ],
           created_at: Math.floor(Date.now() / 1000),
-          pubkey: pk
-        };
-        zapEvent.id = NostrTools.getEventHash(zapEvent);
-        zapEvent.sig = NostrTools.signEvent(zapEvent, sk);
+        }, sk);
         invoiceUrl += '&nostr=' + encodeURIComponent(JSON.stringify(zapEvent));
       } catch(e) { console.warn('NIP-57 sign failed, fallback to plain LNURL:', e); }
     }
