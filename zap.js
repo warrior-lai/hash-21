@@ -1,26 +1,11 @@
-const LNBITS_URL = "https://demo.lnbits.com";
-
-// Artist wallets — each artist receives zaps directly
-const ARTIST_WALLETS = {
-  'lai': {
-    adminKey: 'e5c9ee0d6f52425f8d029e76ad134acd',
-    invoiceKey: '50fe5632be8d4ec69e594f2b139f4c5c'
-  },
-  'roxy': {
-    adminKey: '5e47c77f26534d04a9a6b190fc3c0fc8',
-    invoiceKey: 'c237418e98bb48cca58eada9e1dedeac'
-  },
-  'martu': {
-    adminKey: '5635b93960134994a60b2d6fbf117fc0',
-    invoiceKey: '98a1a2b2ba314ec9886b3f04dbb3e64a'
-  },
-  'guadis': {
-    adminKey: '55a9d43de0204d6ba38f5cb14b5b4c7b',
-    invoiceKey: 'a42c502315d245f98baaa93c0ac9c484'
-  }
+// Hash21 Zap System — Direct to artist's wallet via Lightning Address
+const ARTIST_LN_ADDRESS = {
+  'lai': 'crustycoil11@walletofsatoshi.com',
+  'roxy': 'crustycoil11@walletofsatoshi.com',   // TODO: replace with Roxy's Lightning Address
+  'martu': 'crustycoil11@walletofsatoshi.com',   // TODO: replace with Martu's Lightning Address
+  'guadis': 'crustycoil11@walletofsatoshi.com'   // TODO: replace with Guadis's Lightning Address
 };
 
-// Map obra/target to artist
 const TARGET_ARTIST = {
   'the-rabbit': 'lai',
   'the-hole': 'lai',
@@ -34,15 +19,21 @@ const TARGET_ARTIST = {
   'guadis': 'guadis'
 };
 
-function getArtistKeys(targetId) {
+function getArtistLnAddress(targetId) {
   const artist = TARGET_ARTIST[targetId] || 'lai';
-  return ARTIST_WALLETS[artist] || ARTIST_WALLETS['lai'];
+  return ARTIST_LN_ADDRESS[artist] || ARTIST_LN_ADDRESS['lai'];
+}
+
+// Resolve Lightning Address to LNURL-pay endpoint
+async function resolveLnAddress(address) {
+  const [user, domain] = address.split('@');
+  const res = await fetch('https://' + domain + '/.well-known/lnurlp/' + user);
+  return await res.json();
 }
 
 let currentZapTarget = {};
-let selectedZapAmount = 1000;
+let selectedZapAmount = 0;
 let zapLnurl = "";
-let zapPaymentHash = "";
 let zapCheckInterval = null;
 
 // Zap counts stored in localStorage
@@ -89,7 +80,6 @@ function openZap(id, name, type) {
 function closeZap() {
   document.getElementById('zapModal').classList.remove('active');
   document.body.style.overflow = '';
-  if (zapCheckInterval) { clearInterval(zapCheckInterval); zapCheckInterval = null; }
 }
 
 function selectZapAmount(amount) {
@@ -99,56 +89,12 @@ function selectZapAmount(amount) {
   document.getElementById('zapCustomAmount').value = '';
 }
 
-// Poll LNbits for payment status
-function pollPayment(paymentHash, amount, invoiceKey) {
-  const statusEl = document.getElementById('zapStatusText');
-  const lang = document.documentElement.lang || 'es';
-  statusEl.textContent = lang === 'en' ? 'Waiting for payment...' : 'Esperando pago...';
-  statusEl.style.color = 'var(--gold)';
-  
-  let elapsed = 0;
-  zapCheckInterval = setInterval(async () => {
-    elapsed += 2;
-    try {
-      const res = await fetch(LNBITS_URL + '/api/v1/payments/' + paymentHash, {
-        headers: { 'X-Api-Key': invoiceKey }
-      });
-      const data = await res.json();
-      if (data.paid === true) {
-        clearInterval(zapCheckInterval);
-        zapCheckInterval = null;
-        onZapConfirmed(amount);
-        return;
-      }
-    } catch(e) {}
-    
-    // Animate dots
-    const dots = '.'.repeat((elapsed % 6) / 2 + 1);
-    statusEl.textContent = (lang === 'en' ? 'Waiting for payment' : 'Esperando pago') + dots;
-    
-    // Timeout after 5 min
-    if (elapsed > 300) {
-      clearInterval(zapCheckInterval);
-      zapCheckInterval = null;
-      statusEl.textContent = lang === 'en' ? 'Invoice expired. Try again.' : 'Invoice expirado. Intentá de nuevo.';
-      statusEl.style.color = 'var(--text-dim)';
-    }
-  }, 2000);
-}
-
 function onZapConfirmed(amount) {
-  if (zapCheckInterval) { clearInterval(zapCheckInterval); zapCheckInterval = null; }
-  
-  // Update count
   addZapCount(currentZapTarget.id, amount);
-  
-  // Show success
   document.getElementById('zapSelectPhase').style.display = 'none';
   document.getElementById('zapPayPhase').style.display = 'none';
   document.getElementById('zapSuccess').classList.add('active');
   document.getElementById('zapStatusText').textContent = '';
-  
-  // Auto-close after 5 seconds
   setTimeout(() => closeZap(), 5000);
 }
 
@@ -161,24 +107,25 @@ async function generateZapInvoice() {
   }
   selectedZapAmount = amount;
   const msg = document.getElementById('zapMessage').value || '';
-  const memo = '⚡ Zap: ' + currentZapTarget.name + (msg ? ' — ' + msg : '');
   
   try {
-    // Get the correct artist wallet keys
-    const keys = getArtistKeys(currentZapTarget.id);
+    // Resolve artist's Lightning Address
+    const lnAddress = getArtistLnAddress(currentZapTarget.id);
+    const lnurlData = await resolveLnAddress(lnAddress);
     
-    // Create invoice via LNbits (artist's wallet)
-    const res = await fetch(LNBITS_URL + '/api/v1/payments', {
-      method: 'POST',
-      headers: { 'X-Api-Key': keys.adminKey, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ out: false, amount: amount, memo: memo })
-    });
-    const data = await res.json();
+    // Request invoice from artist's wallet (amount in millisats)
+    const amountMsat = amount * 1000;
+    let callbackUrl = lnurlData.callback + '?amount=' + amountMsat;
+    if (msg && lnurlData.commentAllowed > 0) {
+      callbackUrl += '&comment=' + encodeURIComponent(msg);
+    }
     
-    if (!data.payment_request) throw new Error('No invoice received');
+    const invoiceRes = await fetch(callbackUrl);
+    const invoiceData = await invoiceRes.json();
     
-    const invoice = data.payment_request;
-    zapPaymentHash = data.payment_hash;
+    if (!invoiceData.pr) throw new Error('No invoice received');
+    
+    const invoice = invoiceData.pr;
     zapLnurl = 'lightning:' + invoice;
     
     document.getElementById('zapSelectPhase').style.display = 'none';
@@ -193,8 +140,11 @@ async function generateZapInvoice() {
     
     document.getElementById('zapInvoiceText').textContent = invoice;
     
-    // Poll LNbits for payment confirmation (using artist's invoice key)
-    pollPayment(zapPaymentHash, amount, keys.invoiceKey);
+    // Show status with confirm button
+    const lang = document.documentElement.lang || 'es';
+    const statusEl = document.getElementById('zapStatusText');
+    statusEl.innerHTML = '<button onclick="onZapConfirmed(' + amount + ')" style="margin-top:10px;padding:8px 24px;background:var(--gold);color:var(--bg);border:none;cursor:pointer;font-family:Inter,sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;">' + 
+      (lang === 'en' ? '✓ I already paid' : '✓ Ya pagué') + '</button>';
     
   } catch(e) {
     console.error('Zap error:', e);
@@ -231,12 +181,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!imgEl) return;
     const src = imgEl.getAttribute('src') || '';
     const obra = obras.find(o => src.includes(o.img));
-    // Extract name from info p tag as fallback
     const infoP = item.querySelector('.info p');
     const obraName = obra ? obra.name : (infoP ? infoP.textContent : 'obra');
     const obraId = obra ? obra.id : obraName.toLowerCase().replace(/ /g, '-');
     
-    // Zap button in info area
     const info = item.querySelector('.info');
     if (info && !info.querySelector('.grid-zap')) {
       const gridZap = document.createElement('button');
@@ -247,7 +195,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-  // Add tags to collection items
   const obraTagData = {
     'roxy-paspartuz1.jpg': {artist:'Roxy', type_es:'Física', type_en:'Physical', status:'consult'},
     'roxy-paspartuz2.jpg': {artist:'Roxy', type_es:'Física', type_en:'Physical', status:'consult'},
@@ -268,7 +215,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!info) return;
   });
 
-  // Add zap button to artist card
   const artistSocials = document.querySelector('.artist-card .artist-info div[style*="display:flex"]');
   if (artistSocials) {
     const zapLink = document.createElement('a');
