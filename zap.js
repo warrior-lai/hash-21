@@ -4,17 +4,12 @@
 
 const ZAP_API = 'https://hash21-backend.vercel.app/api/zap';
 
-const NOSTR_RELAYS = [
-  'wss://relay.damus.io',
-  'wss://relay.nostr.band',
-  'wss://nos.lol',
-  'wss://relay.primal.net'
-];
+const ZAP_CHECK = ZAP_API.replace('/zap', '/check');
 
 let currentZapTarget = {};
 let selectedZapAmount = 0;
 let zapLnurl = "";
-let zapRelaySockets = [];
+let zapPollInterval = null;
 
 // Zap counts stored in localStorage
 function getZapCounts() {
@@ -60,12 +55,7 @@ function openZap(id, name, type) {
 function closeZap() {
   document.getElementById('zapModal').classList.remove('active');
   document.body.style.overflow = '';
-  closeRelays();
-}
-
-function closeRelays() {
-  zapRelaySockets.forEach(ws => { try { ws.close(); } catch(e) {} });
-  zapRelaySockets = [];
+  if (zapPollInterval) { clearInterval(zapPollInterval); zapPollInterval = null; }
 }
 
 function selectZapAmount(amount) {
@@ -76,7 +66,7 @@ function selectZapAmount(amount) {
 }
 
 function onZapConfirmed(amount) {
-  closeRelays();
+  if (zapPollInterval) { clearInterval(zapPollInterval); zapPollInterval = null; }
   addZapCount(currentZapTarget.id, amount);
   document.getElementById('zapSelectPhase').style.display = 'none';
   document.getElementById('zapPayPhase').style.display = 'none';
@@ -85,71 +75,39 @@ function onZapConfirmed(amount) {
   setTimeout(() => closeZap(), 5000);
 }
 
-// Listen for zap receipt (kind 9735) on Nostr relays
-function listenForZapReceipt(zapRequestId, zapRequestPubkey, recipientPubkey, amount) {
+// Poll backend for zap receipt confirmation
+function pollZapReceipt(zapRequestId, recipientPubkey, since, amount) {
   const statusEl = document.getElementById('zapStatusText');
   const lang = document.documentElement.lang || 'es';
   statusEl.textContent = lang === 'en' ? 'Waiting for payment...' : 'Esperando pago...';
   statusEl.style.color = 'var(--gold)';
   
-  let confirmed = false;
   let elapsed = 0;
   
-  // Animate dots
-  const dotInterval = setInterval(() => {
-    if (confirmed) { clearInterval(dotInterval); return; }
-    elapsed += 1;
-    const dots = '.'.repeat((elapsed % 3) + 1);
+  zapPollInterval = setInterval(async () => {
+    elapsed += 3;
+    
+    // Animate dots
+    const dots = '.'.repeat((elapsed % 9) / 3 + 1);
     statusEl.textContent = (lang === 'en' ? 'Waiting for payment' : 'Esperando pago') + dots;
     
     // Timeout after 5 min
     if (elapsed > 300) {
-      clearInterval(dotInterval);
-      closeRelays();
+      clearInterval(zapPollInterval);
+      zapPollInterval = null;
       statusEl.textContent = lang === 'en' ? 'Invoice expired. Try again.' : 'Invoice expirado. Intentá de nuevo.';
       statusEl.style.color = 'var(--text-dim)';
+      return;
     }
-  }, 1000);
-  
-  // Connect to relays and subscribe for kind 9735
-  NOSTR_RELAYS.forEach(relayUrl => {
+    
     try {
-      const ws = new WebSocket(relayUrl);
-      zapRelaySockets.push(ws);
-      
-      ws.onopen = () => {
-        // Subscribe to zap receipts for the recipient, since our zap request time
-        const subId = 'zap_' + Math.random().toString(36).substr(2, 8);
-        const sinceTime = Math.floor(Date.now() / 1000) - 10;
-        ws.send(JSON.stringify([
-          'REQ', subId,
-          { kinds: [9735], '#p': [recipientPubkey], since: sinceTime, limit: 5 }
-        ]));
-      };
-      
-      ws.onmessage = (msg) => {
-        try {
-          const data = JSON.parse(msg.data);
-          if (data[0] === 'EVENT' && data[2] && data[2].kind === 9735 && !confirmed) {
-            // Verify this receipt matches our zap request
-            const descTag = data[2].tags.find(t => t[0] === 'description');
-            if (descTag) {
-              try {
-                const zapReq = JSON.parse(descTag[1]);
-                if (zapReq.id === zapRequestId || zapReq.pubkey === zapRequestPubkey) {
-                  confirmed = true;
-                  clearInterval(dotInterval);
-                  onZapConfirmed(amount);
-                }
-              } catch(e) {}
-            }
-          }
-        } catch(e) {}
-      };
-      
-      ws.onerror = () => {};
+      const res = await fetch(ZAP_CHECK + '?zapRequestId=' + zapRequestId + '&recipientPubkey=' + recipientPubkey + '&since=' + since);
+      const data = await res.json();
+      if (data.paid) {
+        onZapConfirmed(amount);
+      }
     } catch(e) {}
-  });
+  }, 3000);
 }
 
 async function generateZapInvoice() {
@@ -200,10 +158,12 @@ async function generateZapInvoice() {
     
     document.getElementById('zapInvoiceText').textContent = invoice;
     
-    // Listen for zap receipt on Nostr relays
+    // Poll backend for zap receipt
     if (data.zapRequest && data.zapRequest.id) {
-      const recipientPubkey = data.zapRequest.tags.find(t => t[0] === 'p');
-      listenForZapReceipt(data.zapRequest.id, data.zapRequest.pubkey, recipientPubkey ? recipientPubkey[1] : '', amount);
+      const recipientTag = data.zapRequest.tags.find(t => t[0] === 'p');
+      const recipientPubkey = recipientTag ? recipientTag[1] : '';
+      const since = data.zapRequest.created_at - 5;
+      pollZapReceipt(data.zapRequest.id, recipientPubkey, since, amount);
     } else {
       // Fallback: manual confirm
       const statusEl = document.getElementById('zapStatusText');
