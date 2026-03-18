@@ -2246,20 +2246,16 @@ function handleSubscribe(e) {
 
 <!-- QR Code library -->
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
-<!-- Nostr tools for NIP-57 zaps -->
-<script src="https://cdn.jsdelivr.net/npm/nostr-tools@2.7.0/lib/nostr.bundle.min.js"></script>
-
-<!-- ZAP SYSTEM JS (NIP-57) -->
+<!-- ZAP SYSTEM JS (LNbits) -->
 <script>
-const LIGHTNING_ADDR = "crustycoil11@walletofsatoshi.com";
-const RECIPIENT_PUBKEY = "a78a391888c6a7a2e114ad66dc0e473b9f561734c7f098c9552b2e5bb840d26c";
-const NOSTR_RELAYS = ["wss://relay.damus.io", "wss://relay.nostr.band", "wss://nos.lol", "wss://relay.primal.net"];
+const LNBITS_URL = "https://demo.lnbits.com";
+const LNBITS_KEY = "50fe5632be8d4ec69e594f2b139f4c5c"; // Invoice/read key
+const LNBITS_ADMIN = "e5c9ee0d6f52425f8d029e76ad134acd"; // Admin key for creating invoices
 let currentZapTarget = {};
 let selectedZapAmount = 1000;
 let zapLnurl = "";
 let zapPaymentHash = "";
 let zapCheckInterval = null;
-let zapRelaySocket = null;
 
 // Zap counts stored in localStorage
 function getZapCounts() {
@@ -2305,9 +2301,7 @@ function openZap(id, name, type) {
 function closeZap() {
   document.getElementById('zapModal').classList.remove('active');
   document.body.style.overflow = '';
-  // Cleanup payment detection
   if (zapCheckInterval) { clearInterval(zapCheckInterval); zapCheckInterval = null; }
-  if (zapRelaySocket) { try { zapRelaySocket.close(); } catch(e){} zapRelaySocket = null; }
 }
 
 function selectZapAmount(amount) {
@@ -2317,76 +2311,38 @@ function selectZapAmount(amount) {
   document.getElementById('zapCustomAmount').value = '';
 }
 
-// NIP-57: Listen for zap receipt on Nostr relays
-function listenForZapReceipt(paymentHash, amount) {
+// Poll LNbits for payment status
+function pollPayment(paymentHash, amount) {
   const statusEl = document.getElementById('zapStatusText');
   const lang = document.documentElement.lang || 'es';
   statusEl.textContent = lang === 'en' ? 'Waiting for payment...' : 'Esperando pago...';
   statusEl.style.color = 'var(--gold)';
   
-  let detected = false;
-  
-  // Try each relay
-  NOSTR_RELAYS.forEach(relayUrl => {
-    try {
-      const ws = new WebSocket(relayUrl);
-      zapRelaySocket = ws;
-      
-      ws.onopen = function() {
-        // Subscribe to zap receipts (kind 9735) for our pubkey
-        const subId = 'zap_' + Math.random().toString(36).slice(2, 8);
-        const filter = {
-          kinds: [9735],
-          "#p": [RECIPIENT_PUBKEY],
-          since: Math.floor(Date.now() / 1000) - 60,
-          limit: 10
-        };
-        ws.send(JSON.stringify(["REQ", subId, filter]));
-      };
-      
-      ws.onmessage = function(msg) {
-        try {
-          const data = JSON.parse(msg.data);
-          if (data[0] === 'EVENT' && data[2] && data[2].kind === 9735 && !detected) {
-            // Check if this zap receipt matches our invoice
-            const tags = data[2].tags || [];
-            const descTag = tags.find(t => t[0] === 'description');
-            const bolt11Tag = tags.find(t => t[0] === 'bolt11');
-            
-            if (descTag || bolt11Tag) {
-              // Zap receipt found — payment confirmed!
-              detected = true;
-              onZapConfirmed(amount);
-              ws.close();
-            }
-          }
-        } catch(e) {}
-      };
-      
-      ws.onerror = function() {};
-      
-      // Auto-close after 5 min
-      setTimeout(() => { try { ws.close(); } catch(e){} }, 300000);
-      
-    } catch(e) {}
-  });
-  
-  // Also poll via simple interval as fallback visual feedback
   let elapsed = 0;
-  zapCheckInterval = setInterval(() => {
+  zapCheckInterval = setInterval(async () => {
     elapsed += 2;
-    if (detected) {
-      clearInterval(zapCheckInterval);
-      return;
-    }
-    // Animate waiting text
+    try {
+      const res = await fetch(LNBITS_URL + '/api/v1/payments/' + paymentHash, {
+        headers: { 'X-Api-Key': LNBITS_KEY }
+      });
+      const data = await res.json();
+      if (data.paid === true) {
+        clearInterval(zapCheckInterval);
+        zapCheckInterval = null;
+        onZapConfirmed(amount);
+        return;
+      }
+    } catch(e) {}
+    
+    // Animate dots
     const dots = '.'.repeat((elapsed % 6) / 2 + 1);
     statusEl.textContent = (lang === 'en' ? 'Waiting for payment' : 'Esperando pago') + dots;
     
-    // After 3 minutes, show timeout message
-    if (elapsed > 180 && !detected) {
+    // Timeout after 5 min
+    if (elapsed > 300) {
       clearInterval(zapCheckInterval);
-      statusEl.textContent = lang === 'en' ? 'Payment not detected. If you paid, it will be registered shortly.' : 'Pago no detectado. Si pagaste, se registrará en breve.';
+      zapCheckInterval = null;
+      statusEl.textContent = lang === 'en' ? 'Invoice expired. Try again.' : 'Invoice expirado. Intentá de nuevo.';
       statusEl.style.color = 'var(--text-dim)';
     }
   }, 2000);
@@ -2416,50 +2372,22 @@ async function generateZapInvoice() {
     return;
   }
   selectedZapAmount = amount;
+  const msg = document.getElementById('zapMessage').value || '';
+  const memo = '⚡ Zap: ' + currentZapTarget.name + (msg ? ' — ' + msg : '');
   
   try {
-    // Resolve Lightning Address to LNURL-pay endpoint
-    const [user, domain] = LIGHTNING_ADDR.split('@');
-    const res = await fetch('https://' + domain + '/.well-known/lnurlp/' + user);
+    // Create invoice via LNbits
+    const res = await fetch(LNBITS_URL + '/api/v1/payments', {
+      method: 'POST',
+      headers: { 'X-Api-Key': LNBITS_ADMIN, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ out: false, amount: amount, memo: memo })
+    });
     const data = await res.json();
     
-    if (!data.callback) throw new Error('Invalid LNURL response');
+    if (!data.payment_request) throw new Error('No invoice received');
     
-    const msats = amount * 1000;
-    const msg = document.getElementById('zapMessage').value || '';
-    const sep = data.callback.includes('?') ? '&' : '?';
-    let invoiceUrl = data.callback + sep + 'amount=' + msats;
-    
-    // NIP-57: Build and sign zap request with ephemeral key
-    if (data.allowsNostr && data.nostrPubkey && window.NostrTools) {
-      try {
-        const sk = NostrTools.generateSecretKey();
-        const pk = NostrTools.getPublicKey(sk);
-        const zapEvent = NostrTools.finalizeEvent({
-          kind: 9734,
-          content: msg,
-          tags: [
-            ["relays", ...NOSTR_RELAYS],
-            ["amount", msats.toString()],
-            ["p", RECIPIENT_PUBKEY]
-          ],
-          created_at: Math.floor(Date.now() / 1000),
-        }, sk);
-        invoiceUrl += '&nostr=' + encodeURIComponent(JSON.stringify(zapEvent));
-      } catch(e) { console.warn('NIP-57 sign failed, fallback to plain LNURL:', e); }
-    }
-    
-    if (msg && data.commentAllowed && data.commentAllowed > 0) {
-      invoiceUrl += '&comment=' + encodeURIComponent(msg.slice(0, data.commentAllowed));
-    }
-    
-    const invRes = await fetch(invoiceUrl);
-    const invData = await invRes.json();
-    
-    if (!invData.pr) throw new Error('No invoice received');
-    
-    // Show QR and invoice
-    const invoice = invData.pr;
+    const invoice = data.payment_request;
+    zapPaymentHash = data.payment_hash;
     zapLnurl = 'lightning:' + invoice;
     
     document.getElementById('zapSelectPhase').style.display = 'none';
@@ -2474,16 +2402,15 @@ async function generateZapInvoice() {
     
     document.getElementById('zapInvoiceText').textContent = invoice;
     
-    // Start listening for payment on Nostr relays (NIP-57)
-    listenForZapReceipt(invoice, amount);
+    // Poll LNbits for payment confirmation
+    pollPayment(zapPaymentHash, amount);
     
   } catch(e) {
     console.error('Zap error:', e);
-    zapLnurl = 'lightning:' + LIGHTNING_ADDR;
+    const lang = document.documentElement.lang || 'es';
     document.getElementById('zapSelectPhase').style.display = 'none';
     document.getElementById('zapPayPhase').style.display = 'block';
-    document.getElementById('zapQR').innerHTML = '<p style="color:var(--gold);font-size:14px;">⚡ ' + LIGHTNING_ADDR + '</p>';
-    document.getElementById('zapInvoiceText').textContent = LIGHTNING_ADDR;
+    document.getElementById('zapQR').innerHTML = '<p style="color:var(--gold);font-size:14px;">' + (lang === 'en' ? 'Error generating invoice. Try again.' : 'Error generando invoice. Intentá de nuevo.') + '</p>';
   }
 }
 
