@@ -2233,6 +2233,7 @@ function handleSubscribe(e) {
       <div class="zap-invoice-text active" id="zapInvoiceText" onclick="copyZapInvoice()" title="Click to copy"></div>
       <p style="font-size:11px;color:var(--text-dim);margin-top:10px;cursor:pointer;" onclick="copyZapInvoice()" data-i18n="zap_copy">📋 Tap to copy invoice</p>
       <button class="zap-pay-btn" style="margin-top:15px;" onclick="window.open(zapLnurl,'_blank')" data-i18n="zap_open_wallet">Open in wallet</button>
+      <p id="zapStatusText" style="font-size:12px;margin-top:12px;min-height:18px;letter-spacing:1px;"></p>
     </div>
     
     <div class="zap-success" id="zapSuccess">
@@ -2245,13 +2246,20 @@ function handleSubscribe(e) {
 
 <!-- QR Code library -->
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+<!-- Nostr tools for NIP-57 zaps -->
+<script src="https://cdn.jsdelivr.net/npm/nostr-tools@1.17.0/lib/nostr.bundle.min.js"></script>
 
-<!-- ZAP SYSTEM JS -->
+<!-- ZAP SYSTEM JS (NIP-57) -->
 <script>
 const LIGHTNING_ADDR = "crustycoil11@walletofsatoshi.com";
+const RECIPIENT_PUBKEY = "a78a391888c6a7a2e114ad66dc0e473b9f561734c7f098c9552b2e5bb840d26c";
+const NOSTR_RELAYS = ["wss://relay.damus.io", "wss://relay.nostr.band", "wss://nos.lol", "wss://relay.primal.net"];
 let currentZapTarget = {};
 let selectedZapAmount = 1000;
 let zapLnurl = "";
+let zapPaymentHash = "";
+let zapCheckInterval = null;
+let zapRelaySocket = null;
 
 // Zap counts stored in localStorage
 function getZapCounts() {
@@ -2287,8 +2295,8 @@ function openZap(id, name, type) {
   document.getElementById('zapPayPhase').style.display = 'none';
   document.getElementById('zapSuccess').classList.remove('active');
   document.getElementById('zapModal').classList.add('active');
+  document.getElementById('zapStatusText').textContent = '';
   document.body.style.overflow = 'hidden';
-  // Reset selection
   document.querySelectorAll('.zap-amount-btn').forEach(b => b.classList.remove('selected'));
   document.getElementById('zapCustomAmount').value = '';
   selectedZapAmount = 0;
@@ -2297,6 +2305,9 @@ function openZap(id, name, type) {
 function closeZap() {
   document.getElementById('zapModal').classList.remove('active');
   document.body.style.overflow = '';
+  // Cleanup payment detection
+  if (zapCheckInterval) { clearInterval(zapCheckInterval); zapCheckInterval = null; }
+  if (zapRelaySocket) { try { zapRelaySocket.close(); } catch(e){} zapRelaySocket = null; }
 }
 
 function selectZapAmount(amount) {
@@ -2304,6 +2315,97 @@ function selectZapAmount(amount) {
   document.querySelectorAll('.zap-amount-btn').forEach(b => b.classList.remove('selected'));
   event.target.classList.add('selected');
   document.getElementById('zapCustomAmount').value = '';
+}
+
+// NIP-57: Listen for zap receipt on Nostr relays
+function listenForZapReceipt(paymentHash, amount) {
+  const statusEl = document.getElementById('zapStatusText');
+  const lang = document.documentElement.lang || 'es';
+  statusEl.textContent = lang === 'en' ? 'Waiting for payment...' : 'Esperando pago...';
+  statusEl.style.color = 'var(--gold)';
+  
+  let detected = false;
+  
+  // Try each relay
+  NOSTR_RELAYS.forEach(relayUrl => {
+    try {
+      const ws = new WebSocket(relayUrl);
+      zapRelaySocket = ws;
+      
+      ws.onopen = function() {
+        // Subscribe to zap receipts (kind 9735) for our pubkey
+        const subId = 'zap_' + Math.random().toString(36).slice(2, 8);
+        const filter = {
+          kinds: [9735],
+          "#p": [RECIPIENT_PUBKEY],
+          since: Math.floor(Date.now() / 1000) - 60,
+          limit: 10
+        };
+        ws.send(JSON.stringify(["REQ", subId, filter]));
+      };
+      
+      ws.onmessage = function(msg) {
+        try {
+          const data = JSON.parse(msg.data);
+          if (data[0] === 'EVENT' && data[2] && data[2].kind === 9735 && !detected) {
+            // Check if this zap receipt matches our invoice
+            const tags = data[2].tags || [];
+            const descTag = tags.find(t => t[0] === 'description');
+            const bolt11Tag = tags.find(t => t[0] === 'bolt11');
+            
+            if (descTag || bolt11Tag) {
+              // Zap receipt found — payment confirmed!
+              detected = true;
+              onZapConfirmed(amount);
+              ws.close();
+            }
+          }
+        } catch(e) {}
+      };
+      
+      ws.onerror = function() {};
+      
+      // Auto-close after 5 min
+      setTimeout(() => { try { ws.close(); } catch(e){} }, 300000);
+      
+    } catch(e) {}
+  });
+  
+  // Also poll via simple interval as fallback visual feedback
+  let elapsed = 0;
+  zapCheckInterval = setInterval(() => {
+    elapsed += 2;
+    if (detected) {
+      clearInterval(zapCheckInterval);
+      return;
+    }
+    // Animate waiting text
+    const dots = '.'.repeat((elapsed % 6) / 2 + 1);
+    statusEl.textContent = (lang === 'en' ? 'Waiting for payment' : 'Esperando pago') + dots;
+    
+    // After 3 minutes, show timeout message
+    if (elapsed > 180 && !detected) {
+      clearInterval(zapCheckInterval);
+      statusEl.textContent = lang === 'en' ? 'Payment not detected. If you paid, it will be registered shortly.' : 'Pago no detectado. Si pagaste, se registrará en breve.';
+      statusEl.style.color = 'var(--text-dim)';
+    }
+  }, 2000);
+}
+
+function onZapConfirmed(amount) {
+  if (zapCheckInterval) { clearInterval(zapCheckInterval); zapCheckInterval = null; }
+  
+  // Update count
+  addZapCount(currentZapTarget.id, amount);
+  
+  // Show success
+  document.getElementById('zapSelectPhase').style.display = 'none';
+  document.getElementById('zapPayPhase').style.display = 'none';
+  document.getElementById('zapSuccess').classList.add('active');
+  document.getElementById('zapStatusText').textContent = '';
+  
+  // Auto-close after 3 seconds
+  setTimeout(() => closeZap(), 3000);
 }
 
 async function generateZapInvoice() {
@@ -2323,14 +2425,35 @@ async function generateZapInvoice() {
     
     if (!data.callback) throw new Error('Invalid LNURL response');
     
-    // Request invoice for the amount (amount in millisats)
+    // Build NIP-57 zap request event (kind 9734)
     const msats = amount * 1000;
-    const sep = data.callback.includes('?') ? '&' : '?';
     const msg = document.getElementById('zapMessage').value || '';
+    
+    // Create zap request as JSON (unsigned - WoS will process it)
+    const zapRequest = {
+      kind: 9734,
+      content: msg,
+      tags: [
+        ["relays", ...NOSTR_RELAYS],
+        ["amount", msats.toString()],
+        ["p", RECIPIENT_PUBKEY]
+      ],
+      created_at: Math.floor(Date.now() / 1000),
+      pubkey: "0000000000000000000000000000000000000000000000000000000000000000"
+    };
+    
+    // Request invoice with nostr zap request
+    const sep = data.callback.includes('?') ? '&' : '?';
     let invoiceUrl = data.callback + sep + 'amount=' + msats;
+    
+    if (data.allowsNostr && data.nostrPubkey) {
+      invoiceUrl += '&nostr=' + encodeURIComponent(JSON.stringify(zapRequest));
+    }
+    
     if (msg && data.commentAllowed && data.commentAllowed > 0) {
       invoiceUrl += '&comment=' + encodeURIComponent(msg.slice(0, data.commentAllowed));
     }
+    
     const invRes = await fetch(invoiceUrl);
     const invData = await invRes.json();
     
@@ -2352,12 +2475,11 @@ async function generateZapInvoice() {
     
     document.getElementById('zapInvoiceText').textContent = invoice;
     
-    // Record zap (optimistic - we can't verify payment without a backend)
-    addZapCount(currentZapTarget.id, amount);
+    // Start listening for payment on Nostr relays (NIP-57)
+    listenForZapReceipt(invoice, amount);
     
   } catch(e) {
     console.error('Zap error:', e);
-    // Fallback: show Lightning address directly
     zapLnurl = 'lightning:' + LIGHTNING_ADDR;
     document.getElementById('zapSelectPhase').style.display = 'none';
     document.getElementById('zapPayPhase').style.display = 'block';
