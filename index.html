@@ -409,6 +409,28 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
   scroll-snap-align: start;
 }
 .collection-item:hover { box-shadow: 0 8px 40px rgba(176,141,87,0.1); }
+.collection-item .grid-zap {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(176,141,87,0.4);
+  color: var(--gold);
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Inter', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.3s, background 0.3s;
+}
+.collection-item:hover .grid-zap { opacity: 1; }
+.collection-item .grid-zap:hover { background: var(--gold); color: #1a1a1a; }
 .collection-item img {
   width: 100%;
   height: 420px;
@@ -1995,7 +2017,6 @@ function openLightbox(src, code, name, tech, status) {
   };
   var td = tagData[name] || {artist:'Lai⚡️', type_es:'Física', type_en:'Physical'};
   var typeName = lang === 'en' ? td.type_en : td.type_es;
-  var priceLabel = lang === 'en' ? 'Price TBA' : 'Precio próximamente';
   var statusLabel = '';
   if (td.status === 'available') statusLabel = lang === 'en' ? 'Available' : 'Disponible';
   else if (td.status === 'consult') statusLabel = lang === 'en' ? 'Inquire' : 'Consultar';
@@ -2370,6 +2391,8 @@ document.addEventListener('DOMContentLoaded', function() {
     { img: 'obra3.jpg', id: 'the-hole', name: 'The Hole' },
     { img: 'obra1.jpg', id: 'libertad', name: 'Libertad' },
     { img: 'obra2.jpg', id: 'horizonte-temporal', name: 'Horizonte Temporal' },
+    { img: 'roxy-paspartuz1.jpg', id: 'paspartuz-1', name: 'Paspartuz 1' },
+    { img: 'roxy-paspartuz2.jpg', id: 'paspartuz-2', name: 'Paspartuz 2' },
   ];
   
   document.querySelectorAll('.collection-item').forEach(item => {
@@ -2379,15 +2402,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const obra = obras.find(o => src.includes(o.img));
     if (!obra) return;
     
-    const info = item.querySelector('.info');
-    if (info) {
-      const btn = document.createElement('button');
-      btn.className = 'zap-btn';
-      btn.onclick = function(e) { e.stopPropagation(); openZap(obra.id, obra.name, 'obra'); };
-      btn.title = 'Zap';
-      btn.innerHTML = '<span class="zap-icon">⚡</span> Zap <span class="zap-count" id="zap-count-' + obra.id + '"></span>';
-      info.appendChild(btn);
-    }
+    // Zap overlay on image
+    const gridZap = document.createElement('button');
+    gridZap.className = 'grid-zap';
+    gridZap.onclick = function(e) { e.stopPropagation(); openZap(obra.id, obra.name, 'obra'); };
+    gridZap.innerHTML = '⚡ Zap';
+    item.appendChild(gridZap);
   });
   
   // Add tags to collection items
@@ -2412,10 +2432,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check if tags already added
     if (info.querySelector('.obra-tags')) return;
     const typeName = cLang === 'en' ? td.type_en : td.type_es;
-    const priceLabel = cLang === 'en' ? 'Price TBA' : 'Precio próx.';
     const tagsDiv = document.createElement('div');
     tagsDiv.className = 'obra-tags';
-    tagsDiv.innerHTML = '<span class="obra-tag tag-artist">👤 ' + td.artist + '</span><span class="obra-tag tag-type">🖼 ' + typeName + '</span><span class="obra-tag tag-price">₿ ' + priceLabel + '</span>';
+    tagsDiv.innerHTML = '<span class="obra-tag tag-artist">👤 ' + td.artist + '</span><span class="obra-tag tag-type">🖼 ' + typeName + '</span>';
     // Insert before zap button if exists
     const zapBtn = info.querySelector('.zap-btn');
     if (zapBtn) info.insertBefore(tagsDiv, zapBtn);
