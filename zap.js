@@ -1,6 +1,44 @@
 const LNBITS_URL = "https://demo.lnbits.com";
-const LNBITS_KEY = "50fe5632be8d4ec69e594f2b139f4c5c"; // Invoice/read key
-const LNBITS_ADMIN = "e5c9ee0d6f52425f8d029e76ad134acd"; // Admin key for creating invoices
+
+// Artist wallets — each artist receives zaps directly
+const ARTIST_WALLETS = {
+  'lai': {
+    adminKey: 'e5c9ee0d6f52425f8d029e76ad134acd',
+    invoiceKey: '50fe5632be8d4ec69e594f2b139f4c5c'
+  },
+  'roxy': {
+    adminKey: '5e47c77f26534d04a9a6b190fc3c0fc8',
+    invoiceKey: 'c237418e98bb48cca58eada9e1dedeac'
+  },
+  'martu': {
+    adminKey: '5635b93960134994a60b2d6fbf117fc0',
+    invoiceKey: '98a1a2b2ba314ec9886b3f04dbb3e64a'
+  },
+  'guadis': {
+    adminKey: '55a9d43de0204d6ba38f5cb14b5b4c7b',
+    invoiceKey: 'a42c502315d245f98baaa93c0ac9c484'
+  }
+};
+
+// Map obra/target to artist
+const TARGET_ARTIST = {
+  'the-rabbit': 'lai',
+  'the-hole': 'lai',
+  'libertad': 'lai',
+  'horizonte-temporal': 'lai',
+  'paspartuz-1': 'roxy',
+  'paspartuz-2': 'roxy',
+  'lai': 'lai',
+  'roxy': 'roxy',
+  'martu': 'martu',
+  'guadis': 'guadis'
+};
+
+function getArtistKeys(targetId) {
+  const artist = TARGET_ARTIST[targetId] || 'lai';
+  return ARTIST_WALLETS[artist] || ARTIST_WALLETS['lai'];
+}
+
 let currentZapTarget = {};
 let selectedZapAmount = 1000;
 let zapLnurl = "";
@@ -62,7 +100,7 @@ function selectZapAmount(amount) {
 }
 
 // Poll LNbits for payment status
-function pollPayment(paymentHash, amount) {
+function pollPayment(paymentHash, amount, invoiceKey) {
   const statusEl = document.getElementById('zapStatusText');
   const lang = document.documentElement.lang || 'es';
   statusEl.textContent = lang === 'en' ? 'Waiting for payment...' : 'Esperando pago...';
@@ -73,7 +111,7 @@ function pollPayment(paymentHash, amount) {
     elapsed += 2;
     try {
       const res = await fetch(LNBITS_URL + '/api/v1/payments/' + paymentHash, {
-        headers: { 'X-Api-Key': LNBITS_KEY }
+        headers: { 'X-Api-Key': invoiceKey }
       });
       const data = await res.json();
       if (data.paid === true) {
@@ -126,10 +164,13 @@ async function generateZapInvoice() {
   const memo = '⚡ Zap: ' + currentZapTarget.name + (msg ? ' — ' + msg : '');
   
   try {
-    // Create invoice via LNbits
+    // Get the correct artist wallet keys
+    const keys = getArtistKeys(currentZapTarget.id);
+    
+    // Create invoice via LNbits (artist's wallet)
     const res = await fetch(LNBITS_URL + '/api/v1/payments', {
       method: 'POST',
-      headers: { 'X-Api-Key': LNBITS_ADMIN, 'Content-Type': 'application/json' },
+      headers: { 'X-Api-Key': keys.adminKey, 'Content-Type': 'application/json' },
       body: JSON.stringify({ out: false, amount: amount, memo: memo })
     });
     const data = await res.json();
@@ -152,8 +193,8 @@ async function generateZapInvoice() {
     
     document.getElementById('zapInvoiceText').textContent = invoice;
     
-    // Poll LNbits for payment confirmation
-    pollPayment(zapPaymentHash, amount);
+    // Poll LNbits for payment confirmation (using artist's invoice key)
+    pollPayment(zapPaymentHash, amount, keys.invoiceKey);
     
   } catch(e) {
     console.error('Zap error:', e);
