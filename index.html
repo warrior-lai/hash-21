@@ -2021,10 +2021,7 @@ function openLightbox(src, code, name, tech, status) {
   if (td.status === 'available') statusLabel = lang === 'en' ? 'Available' : 'Disponible';
   else if (td.status === 'consult') statusLabel = lang === 'en' ? 'Inquire' : 'Consultar';
   var statusClass = td.status === 'available' ? 'badge-available' : 'badge-consult';
-  document.getElementById('lb-tags').innerHTML = 
-    '<span class="obra-tag tag-artist">👤 ' + td.artist + '</span>' +
-    '<span class="obra-tag tag-type">🖼 ' + typeName + '</span>' +
-    (statusLabel ? '<span class="obra-tag ' + statusClass + '">' + statusLabel + '</span>' : '');
+  document.getElementById('lb-tags').innerHTML = '';
 
   // Wire zap button
   var obraMap = {'The Rabbit':'the-rabbit','The Hole':'the-hole','Libertad':'libertad','Horizonte Temporal':'horizonte-temporal','Paspartuz 1':'paspartuz-1','Paspartuz 2':'paspartuz-2'};
@@ -2434,16 +2431,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const td = obraTagData[key];
     const info = item.querySelector('.info');
     if (!info) return;
-    // Check if tags already added
-    if (info.querySelector('.obra-tags')) return;
-    const typeName = cLang === 'en' ? td.type_en : td.type_es;
-    const tagsDiv = document.createElement('div');
-    tagsDiv.className = 'obra-tags';
-    tagsDiv.innerHTML = '<span class="obra-tag tag-artist">👤 ' + td.artist + '</span><span class="obra-tag tag-type">🖼 ' + typeName + '</span>';
-    // Insert before zap button if exists
-    const zapBtn = info.querySelector('.zap-btn');
-    if (zapBtn) info.insertBefore(tagsDiv, zapBtn);
-    else info.appendChild(tagsDiv);
   });
 
   // Add zap button to artist card
