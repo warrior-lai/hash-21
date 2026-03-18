@@ -86,7 +86,7 @@ function onZapConfirmed(amount) {
 }
 
 // Listen for zap receipt (kind 9735) on Nostr relays
-function listenForZapReceipt(zapRequestId, amount) {
+function listenForZapReceipt(zapRequestId, zapRequestPubkey, recipientPubkey, amount) {
   const statusEl = document.getElementById('zapStatusText');
   const lang = document.documentElement.lang || 'es';
   statusEl.textContent = lang === 'en' ? 'Waiting for payment...' : 'Esperando pago...';
@@ -118,11 +118,12 @@ function listenForZapReceipt(zapRequestId, amount) {
       zapRelaySockets.push(ws);
       
       ws.onopen = () => {
-        // Subscribe to zap receipts that reference our zap request
+        // Subscribe to zap receipts for the recipient, since our zap request time
         const subId = 'zap_' + Math.random().toString(36).substr(2, 8);
+        const sinceTime = Math.floor(Date.now() / 1000) - 10;
         ws.send(JSON.stringify([
           'REQ', subId,
-          { kinds: [9735], '#e': [zapRequestId], limit: 1 }
+          { kinds: [9735], '#p': [recipientPubkey], since: sinceTime, limit: 5 }
         ]));
       };
       
@@ -130,9 +131,18 @@ function listenForZapReceipt(zapRequestId, amount) {
         try {
           const data = JSON.parse(msg.data);
           if (data[0] === 'EVENT' && data[2] && data[2].kind === 9735 && !confirmed) {
-            confirmed = true;
-            clearInterval(dotInterval);
-            onZapConfirmed(amount);
+            // Verify this receipt matches our zap request
+            const descTag = data[2].tags.find(t => t[0] === 'description');
+            if (descTag) {
+              try {
+                const zapReq = JSON.parse(descTag[1]);
+                if (zapReq.id === zapRequestId || zapReq.pubkey === zapRequestPubkey) {
+                  confirmed = true;
+                  clearInterval(dotInterval);
+                  onZapConfirmed(amount);
+                }
+              } catch(e) {}
+            }
           }
         } catch(e) {}
       };
@@ -192,7 +202,8 @@ async function generateZapInvoice() {
     
     // Listen for zap receipt on Nostr relays
     if (data.zapRequest && data.zapRequest.id) {
-      listenForZapReceipt(data.zapRequest.id, amount);
+      const recipientPubkey = data.zapRequest.tags.find(t => t[0] === 'p');
+      listenForZapReceipt(data.zapRequest.id, data.zapRequest.pubkey, recipientPubkey ? recipientPubkey[1] : '', amount);
     } else {
       // Fallback: manual confirm
       const statusEl = document.getElementById('zapStatusText');
