@@ -11,58 +11,73 @@ Hash21 es una plataforma de arte curado sobre Bitcoin. Galería, certificación 
 ## Arquitectura
 
 ```
-hash21.studio/
-├── index.html        # Página principal (galería + creadores + blog + eventos)
-├── style.css         # Estilos globales
-├── app.js            # UI: particles, lightbox, carousel, menú, newsletter
-├── zap.js            # Sistema de Zaps (LNbits + QR + polling)
-├── lang.js           # i18n ES/EN
-├── shop/
-│   └── index.html    # Tienda de objetos de diseño (LNURL-pay checkout)
-├── verify/
-│   └── index.html    # Verificación pública de certificados on-chain
-├── blocklab/
-│   └── index.html    # Block Lab: arte, soberanía y Bitcoin
-├── faq/              # Preguntas frecuentes
-├── terms/            # Términos de uso
-├── privacy/          # Política de privacidad
-├── certification/    # Proceso de certificación
-└── img/              # Obras, avatares, assets
+Frontend (GitHub Pages)              Backend (Vercel)
+hash21.studio/                       hash21-backend.vercel.app/
+├── index.html    (galería)          ├── api/zap.js    (firma NIP-57 + invoice)
+├── style.css     (estilos)          ├── api/check.js  (verifica pago en relays)
+├── app.js        (UI)               └── api/health.js (health check)
+├── zap.js        (zap client)
+├── lang.js       (i18n ES/EN)
+├── shop/         (tienda LNURL-pay)
+├── verify/       (certificación on-chain)
+├── blocklab/     (arte + soberanía)
+├── test.sh       (28 tests automatizados)
+├── faq.html
+├── terms.html
+├── privacy.html
+├── certification.html
+└── img/          (obras, avatares)
 ```
 
 ## Stack Técnico
 
 | Capa | Tecnología |
 |------|-----------|
-| Frontend | HTML5, CSS3 (vanilla), JavaScript (ES6+) |
-| Pagos | LNbits API (invoice creation + polling), LNURL-pay |
+| Frontend | HTML5, CSS3, JavaScript ES6+ (vanilla, zero frameworks) |
+| Backend | Vercel Serverless (Node.js) |
+| Pagos (Zaps) | NIP-57, LNURL-pay, Lightning Address → Wallet of Satoshi |
+| Detección de pago | Nostr relays (kind 9734 / 9735) via WebSocket server-side |
 | Certificación | OpenTimestamps (SHA-256 → bloque Bitcoin) |
 | QR | qrcode.js v1.5.1 |
 | i18n | Sistema custom ES/EN (lang.js) |
 | Analytics | Google Analytics 4 |
-| Hosting | GitHub Pages |
+| Hosting | GitHub Pages (frontend) + Vercel (backend) |
 | DNS/SSL | Cloudflare |
-
-**Zero dependencies server-side. Zero frameworks. Pure web.**
 
 ## Features
 
-### ⚡ Zap System (Lightning Tips)
-- Botón ⚡ en cada obra y cada perfil de artista
+### ⚡ Zap System (NIP-57 — Lightning Tips)
+Propinas Lightning directas al artista, con detección automática de pago.
+
+**Flow:**
+```
+Usuario elige monto → Frontend pide invoice al backend
+    ↓
+Backend firma zap request (kind 9734) con key Nostr de Hash21
+    ↓
+Backend pide invoice a WoS del artista via Lightning Address
+    ↓
+Frontend muestra QR + invoice copiable + "Open in wallet"
+    ↓
+Usuario paga con cualquier Lightning wallet
+    ↓
+WoS recibe pago → publica zap receipt (kind 9735) en relays Nostr
+    ↓
+Backend pollea relays → detecta receipt → Frontend muestra "¡Gracias!" ⚡
+```
+
 - Montos predefinidos (21, 210, 2,100, 21K sats) + monto personalizado
 - Mensaje opcional del zapper
-- Invoice generado vía LNbits API
-- QR code client-side + copy invoice + open in wallet
-- **Detección automática de pago** via polling al endpoint LNbits
-- Confirmación visual instantánea al detectar pago
+- Sats van **directo** a la wallet del artista (no hay intermediarios)
 - Timeout a 5 min con mensaje de expiración
+- Fallback con botón "Ya pagué" si la detección falla
 
 ### 🛒 Shop — Objetos de Diseño
 - Tienda de joyas y objetos inspirados en Bitcoin
 - Checkout con LNURL-pay via Lightning Address
 - QR code generado client-side
 - Opciones post-pago: envío sin KYC (Telegram) o con dirección
-- Precios en sats, actualizados
+- Precios en sats
 
 ### 📜 Certificación On-Chain
 - Certificados de registro vinculados a un bloque de Bitcoin (OpenTimestamps)
@@ -75,27 +90,23 @@ hash21.studio/
 - Switcher persistente en toda la plataforma
 
 ### 👥 Hub de Creadores
-- Perfiles de artistas con avatar, bio, motto, links, Lightning Address
+- Perfiles de artistas con avatar, bio, motto, links
 - Galería individual por artista
 - Zap directo al artista
 
-## Payment Flow
+### 🧪 Tests Automatizados
+```bash
+./test.sh
+# 28 tests: backend, frontend, assets, SSL
+# ✅ 28/28 passed
+```
 
-```
-Usuario selecciona monto
-        ↓
-Frontend → LNbits API (POST /api/v1/payments)
-        ↓
-LNbits genera invoice (bolt11)
-        ↓
-Frontend muestra QR + invoice copiable
-        ↓
-Usuario paga con cualquier Lightning wallet
-        ↓
-Frontend polls LNbits (GET /api/v1/payments/{hash})
-        ↓
-paid: true → confirmación visual ⚡
-```
+## Repos
+
+| Repo | Descripción |
+|------|------------|
+| [hash-21](https://github.com/warrior-lai/hash-21) | Frontend (GitHub Pages → hash21.studio) |
+| [Hash21-Backend](https://github.com/warrior-lai/Hash21-Backend) | Backend API (Vercel → hash21-backend.vercel.app) |
 
 ## Filosofía
 
@@ -111,17 +122,20 @@ El artista mantiene el control. La blockchain provee la permanencia.
 ## Desarrollo Local
 
 ```bash
-# Clonar
+# Frontend
 git clone https://github.com/warrior-lai/hash-21.git
 cd hash-21
-
-# Servir (cualquier servidor estático)
 python3 -m http.server 8000
-# o
-npx serve .
+
+# Backend
+git clone https://github.com/warrior-lai/Hash21-Backend.git
+cd Hash21-Backend
+npm install
+# Agregar HASH21_NOSTR_NSEC en .env
+vercel dev
 ```
 
-No hay build step. No hay bundler. Abrí `index.html` y funciona.
+No hay build step en el frontend. No hay bundler. Abrí `index.html` y funciona.
 
 ## Licencia
 
