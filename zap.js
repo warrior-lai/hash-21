@@ -1,40 +1,20 @@
-// Hash21 Zap System — Direct to artist's wallet via Lightning Address
-const ARTIST_LN_ADDRESS = {
-  'lai': 'crustycoil11@walletofsatoshi.com',
-  'roxy': 'crustycoil11@walletofsatoshi.com',   // TODO: replace with Roxy's Lightning Address
-  'martu': 'crustycoil11@walletofsatoshi.com',   // TODO: replace with Martu's Lightning Address
-  'guadis': 'crustycoil11@walletofsatoshi.com'   // TODO: replace with Guadis's Lightning Address
-};
+// Hash21 Zap System — NIP-57 with backend signing
+// Sats go direct to artist's Wallet of Satoshi
+// Backend signs zap requests, frontend listens for zap receipts on Nostr relays
 
-const TARGET_ARTIST = {
-  'the-rabbit': 'lai',
-  'the-hole': 'lai',
-  'libertad': 'lai',
-  'horizonte-temporal': 'lai',
-  'paspartuz-1': 'roxy',
-  'paspartuz-2': 'roxy',
-  'lai': 'lai',
-  'roxy': 'roxy',
-  'martu': 'martu',
-  'guadis': 'guadis'
-};
+const ZAP_API = 'https://hash21-backend.vercel.app/api/zap';
 
-function getArtistLnAddress(targetId) {
-  const artist = TARGET_ARTIST[targetId] || 'lai';
-  return ARTIST_LN_ADDRESS[artist] || ARTIST_LN_ADDRESS['lai'];
-}
-
-// Resolve Lightning Address to LNURL-pay endpoint
-async function resolveLnAddress(address) {
-  const [user, domain] = address.split('@');
-  const res = await fetch('https://' + domain + '/.well-known/lnurlp/' + user);
-  return await res.json();
-}
+const NOSTR_RELAYS = [
+  'wss://relay.damus.io',
+  'wss://relay.nostr.band',
+  'wss://nos.lol',
+  'wss://relay.primal.net'
+];
 
 let currentZapTarget = {};
 let selectedZapAmount = 0;
 let zapLnurl = "";
-let zapCheckInterval = null;
+let zapRelaySockets = [];
 
 // Zap counts stored in localStorage
 function getZapCounts() {
@@ -80,6 +60,12 @@ function openZap(id, name, type) {
 function closeZap() {
   document.getElementById('zapModal').classList.remove('active');
   document.body.style.overflow = '';
+  closeRelays();
+}
+
+function closeRelays() {
+  zapRelaySockets.forEach(ws => { try { ws.close(); } catch(e) {} });
+  zapRelaySockets = [];
 }
 
 function selectZapAmount(amount) {
@@ -90,12 +76,70 @@ function selectZapAmount(amount) {
 }
 
 function onZapConfirmed(amount) {
+  closeRelays();
   addZapCount(currentZapTarget.id, amount);
   document.getElementById('zapSelectPhase').style.display = 'none';
   document.getElementById('zapPayPhase').style.display = 'none';
   document.getElementById('zapSuccess').classList.add('active');
   document.getElementById('zapStatusText').textContent = '';
   setTimeout(() => closeZap(), 5000);
+}
+
+// Listen for zap receipt (kind 9735) on Nostr relays
+function listenForZapReceipt(zapRequestId, amount) {
+  const statusEl = document.getElementById('zapStatusText');
+  const lang = document.documentElement.lang || 'es';
+  statusEl.textContent = lang === 'en' ? 'Waiting for payment...' : 'Esperando pago...';
+  statusEl.style.color = 'var(--gold)';
+  
+  let confirmed = false;
+  let elapsed = 0;
+  
+  // Animate dots
+  const dotInterval = setInterval(() => {
+    if (confirmed) { clearInterval(dotInterval); return; }
+    elapsed += 1;
+    const dots = '.'.repeat((elapsed % 3) + 1);
+    statusEl.textContent = (lang === 'en' ? 'Waiting for payment' : 'Esperando pago') + dots;
+    
+    // Timeout after 5 min
+    if (elapsed > 300) {
+      clearInterval(dotInterval);
+      closeRelays();
+      statusEl.textContent = lang === 'en' ? 'Invoice expired. Try again.' : 'Invoice expirado. Intentá de nuevo.';
+      statusEl.style.color = 'var(--text-dim)';
+    }
+  }, 1000);
+  
+  // Connect to relays and subscribe for kind 9735
+  NOSTR_RELAYS.forEach(relayUrl => {
+    try {
+      const ws = new WebSocket(relayUrl);
+      zapRelaySockets.push(ws);
+      
+      ws.onopen = () => {
+        // Subscribe to zap receipts that reference our zap request
+        const subId = 'zap_' + Math.random().toString(36).substr(2, 8);
+        ws.send(JSON.stringify([
+          'REQ', subId,
+          { kinds: [9735], '#e': [zapRequestId], limit: 1 }
+        ]));
+      };
+      
+      ws.onmessage = (msg) => {
+        try {
+          const data = JSON.parse(msg.data);
+          if (data[0] === 'EVENT' && data[2] && data[2].kind === 9735 && !confirmed) {
+            confirmed = true;
+            clearInterval(dotInterval);
+            onZapConfirmed(amount);
+          }
+        } catch(e) {}
+      };
+      
+      ws.onerror = () => {};
+    } catch(e) {}
+  });
 }
 
 async function generateZapInvoice() {
@@ -107,25 +151,31 @@ async function generateZapInvoice() {
   }
   selectedZapAmount = amount;
   const msg = document.getElementById('zapMessage').value || '';
+  const lang = document.documentElement.lang || 'es';
+  
+  // Show loading state
+  const payBtn = document.querySelector('#zapSelectPhase .zap-pay-btn');
+  if (payBtn) {
+    payBtn.disabled = true;
+    payBtn.textContent = lang === 'en' ? 'Generating...' : 'Generando...';
+  }
   
   try {
-    // Resolve artist's Lightning Address
-    const lnAddress = getArtistLnAddress(currentZapTarget.id);
-    const lnurlData = await resolveLnAddress(lnAddress);
+    // Call backend to sign zap request and get invoice
+    const res = await fetch(ZAP_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        target: currentZapTarget.id,
+        amount: amount,
+        message: msg
+      })
+    });
+    const data = await res.json();
     
-    // Request invoice from artist's wallet (amount in millisats)
-    const amountMsat = amount * 1000;
-    let callbackUrl = lnurlData.callback + '?amount=' + amountMsat;
-    if (msg && lnurlData.commentAllowed > 0) {
-      callbackUrl += '&comment=' + encodeURIComponent(msg);
-    }
+    if (!data.invoice) throw new Error(data.error || 'No invoice received');
     
-    const invoiceRes = await fetch(callbackUrl);
-    const invoiceData = await invoiceRes.json();
-    
-    if (!invoiceData.pr) throw new Error('No invoice received');
-    
-    const invoice = invoiceData.pr;
+    const invoice = data.invoice;
     zapLnurl = 'lightning:' + invoice;
     
     document.getElementById('zapSelectPhase').style.display = 'none';
@@ -140,18 +190,27 @@ async function generateZapInvoice() {
     
     document.getElementById('zapInvoiceText').textContent = invoice;
     
-    // Show status with confirm button
-    const lang = document.documentElement.lang || 'es';
-    const statusEl = document.getElementById('zapStatusText');
-    statusEl.innerHTML = '<button onclick="onZapConfirmed(' + amount + ')" style="margin-top:10px;padding:8px 24px;background:var(--gold);color:var(--bg);border:none;cursor:pointer;font-family:Inter,sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;">' + 
-      (lang === 'en' ? '✓ I already paid' : '✓ Ya pagué') + '</button>';
+    // Listen for zap receipt on Nostr relays
+    if (data.zapRequest && data.zapRequest.id) {
+      listenForZapReceipt(data.zapRequest.id, amount);
+    } else {
+      // Fallback: manual confirm
+      const statusEl = document.getElementById('zapStatusText');
+      statusEl.innerHTML = '<button onclick="onZapConfirmed(' + amount + ')" style="margin-top:10px;padding:8px 24px;background:var(--gold);color:var(--bg);border:none;cursor:pointer;font-family:Inter,sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;">' + 
+        (lang === 'en' ? '✓ I already paid' : '✓ Ya pagué') + '</button>';
+    }
     
   } catch(e) {
     console.error('Zap error:', e);
-    const lang = document.documentElement.lang || 'es';
     document.getElementById('zapSelectPhase').style.display = 'none';
     document.getElementById('zapPayPhase').style.display = 'block';
-    document.getElementById('zapQR').innerHTML = '<p style="color:var(--gold);font-size:14px;">' + (lang === 'en' ? 'Error generating invoice. Try again.' : 'Error generando invoice. Intentá de nuevo.') + '</p>';
+    document.getElementById('zapQR').innerHTML = '<p style="color:var(--gold);font-size:14px;">' + 
+      (lang === 'en' ? 'Error generating invoice. Try again.' : 'Error generando invoice. Intentá de nuevo.') + '</p>';
+  } finally {
+    if (payBtn) {
+      payBtn.disabled = false;
+      payBtn.textContent = lang === 'en' ? '⚡ Generate Invoice' : '⚡ Generar Invoice';
+    }
   }
 }
 
@@ -203,7 +262,6 @@ document.addEventListener('DOMContentLoaded', function() {
     'obra1.jpg': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', status:'consult'},
     'obra2.jpg': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', status:'available'},
   };
-  const cLang = document.documentElement.lang || 'es';
   document.querySelectorAll('.collection-item').forEach(item => {
     const imgEl = item.querySelector('img');
     if (!imgEl) return;
