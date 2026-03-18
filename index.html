@@ -2400,14 +2400,19 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!imgEl) return;
     const src = imgEl.getAttribute('src') || '';
     const obra = obras.find(o => src.includes(o.img));
-    if (!obra) return;
+    // Extract name from info p tag as fallback
+    const infoP = item.querySelector('.info p');
+    const obraName = obra ? obra.name : (infoP ? infoP.textContent : 'obra');
+    const obraId = obra ? obra.id : obraName.toLowerCase().replace(/ /g, '-');
     
     // Zap overlay on image
-    const gridZap = document.createElement('button');
-    gridZap.className = 'grid-zap';
-    gridZap.onclick = function(e) { e.stopPropagation(); openZap(obra.id, obra.name, 'obra'); };
-    gridZap.innerHTML = '⚡ Zap';
-    item.appendChild(gridZap);
+    if (!item.querySelector('.grid-zap')) {
+      const gridZap = document.createElement('button');
+      gridZap.className = 'grid-zap';
+      gridZap.onclick = function(e) { e.stopPropagation(); openZap(obraId, obraName, 'obra'); };
+      gridZap.innerHTML = '⚡ Zap';
+      item.appendChild(gridZap);
+    }
   });
   
   // Add tags to collection items
