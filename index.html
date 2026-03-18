@@ -398,7 +398,7 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
 .collection-carousel::-webkit-scrollbar { display: none; }
 .collection-carousel:active { cursor: grabbing; }
 .collection-item {
-  min-width: 350px;
+  min-width: 200px;
   background: var(--bg2);
   position: relative;
   overflow: hidden;
@@ -432,7 +432,7 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
 .collection-item .grid-zap:hover { background: var(--gold); color: #1a1a1a; }
 .collection-item img {
   width: 100%;
-  height: 420px;
+  height: 280px;
   object-fit: cover;
   display: block;
   transition: transform 0.6s ease;
@@ -441,7 +441,7 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
 }
 .collection-item:hover img { transform: scale(1.02); }
 .collection-item .info {
-  padding: 25px 30px;
+  padding: 15px 20px;
   border-top: 1px solid var(--border);
 }
 .collection-item .info h4 {
@@ -588,8 +588,8 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
 /* COLLECTION GRID (expanded) */
 .collection-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 30px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 .collection-grid.hidden { display: none; }
 
@@ -1180,9 +1180,9 @@ footer {
   .pillar { padding: 40px 30px; }
   
   /* Collection responsive */
-  .collection-grid { grid-template-columns: 1fr; gap: 20px; }
-  .collection-item { min-width: 260px; }
-  .collection-item img { height: 300px; }
+  .collection-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+  .collection-item { min-width: auto; }
+  .collection-item img { height: 220px; }
   
   /* Carousel touch-swipeable */
   .carousel-item { min-width: 260px; }
@@ -1235,8 +1235,8 @@ footer {
   .hero h1 { font-size: 36px; letter-spacing: 6px; }
   .hero .hero-subtitle { font-size: 18px; }
   section { padding: 60px 16px; }
-  .collection-item { min-width: 240px; }
-  .collection-item img { height: 280px; }
+  .collection-item { min-width: auto; }
+  .collection-item img { height: 180px; }
   .artist-img { width: 160px; height: 160px; }
   
   /* Footer single column on very small screens */
