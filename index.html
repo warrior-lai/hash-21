@@ -2360,8 +2360,8 @@ function onZapConfirmed(amount) {
   document.getElementById('zapSuccess').classList.add('active');
   document.getElementById('zapStatusText').textContent = '';
   
-  // Auto-close after 3 seconds
-  setTimeout(() => closeZap(), 3000);
+  // Auto-close after 5 seconds
+  setTimeout(() => closeZap(), 5000);
 }
 
 async function generateZapInvoice() {
