@@ -2425,29 +2425,31 @@ async function generateZapInvoice() {
     
     if (!data.callback) throw new Error('Invalid LNURL response');
     
-    // Build NIP-57 zap request event (kind 9734)
     const msats = amount * 1000;
     const msg = document.getElementById('zapMessage').value || '';
-    
-    // Create zap request as JSON (unsigned - WoS will process it)
-    const zapRequest = {
-      kind: 9734,
-      content: msg,
-      tags: [
-        ["relays", ...NOSTR_RELAYS],
-        ["amount", msats.toString()],
-        ["p", RECIPIENT_PUBKEY]
-      ],
-      created_at: Math.floor(Date.now() / 1000),
-      pubkey: "0000000000000000000000000000000000000000000000000000000000000000"
-    };
-    
-    // Request invoice with nostr zap request
     const sep = data.callback.includes('?') ? '&' : '?';
     let invoiceUrl = data.callback + sep + 'amount=' + msats;
     
-    if (data.allowsNostr && data.nostrPubkey) {
-      invoiceUrl += '&nostr=' + encodeURIComponent(JSON.stringify(zapRequest));
+    // NIP-57: Build and sign zap request with ephemeral key
+    if (data.allowsNostr && data.nostrPubkey && window.NostrTools) {
+      try {
+        const sk = NostrTools.generatePrivateKey();
+        const pk = NostrTools.getPublicKey(sk);
+        const zapEvent = {
+          kind: 9734,
+          content: msg,
+          tags: [
+            ["relays", ...NOSTR_RELAYS],
+            ["amount", msats.toString()],
+            ["p", RECIPIENT_PUBKEY]
+          ],
+          created_at: Math.floor(Date.now() / 1000),
+          pubkey: pk
+        };
+        zapEvent.id = NostrTools.getEventHash(zapEvent);
+        zapEvent.sig = NostrTools.signEvent(zapEvent, sk);
+        invoiceUrl += '&nostr=' + encodeURIComponent(JSON.stringify(zapEvent));
+      } catch(e) { console.warn('NIP-57 sign failed, fallback to plain LNURL:', e); }
     }
     
     if (msg && data.commentAllowed && data.commentAllowed > 0) {
