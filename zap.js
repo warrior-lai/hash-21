@@ -146,6 +146,25 @@ async function generateZapInvoice() {
     const invoice = data.invoice;
     zapLnurl = 'lightning:' + invoice;
     
+    // WebLN: if browser has Lightning extension (Alby), pay with 1 click
+    if (window.webln) {
+      try {
+        await window.webln.enable();
+        document.getElementById('zapSelectPhase').style.display = 'none';
+        document.getElementById('zapPayPhase').style.display = 'block';
+        document.getElementById('zapStatusText').textContent = lang === 'en' ? 'Confirming in wallet...' : 'Confirmando en wallet...';
+        document.getElementById('zapStatusText').style.color = 'var(--gold)';
+        await window.webln.sendPayment(invoice);
+        // Payment confirmed instantly via WebLN
+        onZapConfirmed(amount);
+        return;
+      } catch(webLnErr) {
+        // User rejected or WebLN failed — fall through to QR
+        console.log('WebLN failed, falling back to QR:', webLnErr.message);
+      }
+    }
+    
+    // Standard flow: show QR + poll for payment
     document.getElementById('zapSelectPhase').style.display = 'none';
     document.getElementById('zapPayPhase').style.display = 'block';
     
