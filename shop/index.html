@@ -844,9 +844,12 @@
     ];
 
     const LIGHTNING_ADDRESS = "crustycoil11@walletofsatoshi.com";
+    const ZAP_API = "https://hash21-backend.vercel.app/api/zap";
+    const ZAP_CHECK = "https://hash21-backend.vercel.app/api/check";
 
     let currentProduct = null;
     let currentInvoice = null;
+    let shopPollInterval = null;
 
     // ── Render ────────────────────────────────
     function formatSats(n) {
@@ -911,7 +914,28 @@
       document.getElementById("overlay").classList.remove("open");
       document.body.style.overflow = "";
       currentInvoice = null;
+      if (shopPollInterval) { clearInterval(shopPollInterval); shopPollInterval = null; }
     };
+
+    // Poll backend for NIP-57 payment confirmation
+    function pollShopPayment(zapRequestId, recipientPubkey, since) {
+      if (shopPollInterval) clearInterval(shopPollInterval);
+      shopPollInterval = setInterval(async () => {
+        try {
+          const res = await fetch(ZAP_CHECK + '?zapRequestId=' + zapRequestId + '&recipientPubkey=' + recipientPubkey + '&since=' + since);
+          const data = await res.json();
+          if (data.paid) {
+            clearInterval(shopPollInterval);
+            shopPollInterval = null;
+            confirmPayment('nip57-' + data.receiptId);
+          }
+        } catch(e) {}
+      }, 3000);
+      // Timeout after 5 min
+      setTimeout(() => {
+        if (shopPollInterval) { clearInterval(shopPollInterval); shopPollInterval = null; }
+      }, 300000);
+    }
 
     window.closeOnOverlay = function(e) {
       if (e.target === document.getElementById("overlay")) closeModal();
@@ -930,23 +954,21 @@
       document.getElementById("modal-title").textContent = "Escanear para pagar";
 
       try {
-        const [user, domain] = LIGHTNING_ADDRESS.split("@");
-        const lnurlRes = await fetch(`https://${domain}/.well-known/lnurlp/${user}`);
-        if (!lnurlRes.ok) throw new Error("No se pudo conectar con la wallet");
-        const lnurlData = await lnurlRes.json();
+        // Generate invoice via backend (NIP-57 signed)
+        const productSlug = currentProduct.id || currentProduct.name.en.toLowerCase().replace(/ /g, '-');
+        const res = await fetch(ZAP_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            target: productSlug,
+            amount: currentProduct.sats,
+            message: 'Hash21 Shop — ' + currentProduct.name.en
+          })
+        });
+        const data = await res.json();
+        if (!data.invoice) throw new Error(data.error || "No invoice received");
 
-        const amountMsat = currentProduct.sats * 1000;
-        let callbackUrl = `${lnurlData.callback}?amount=${amountMsat}`;
-        if (lnurlData.commentAllowed && lnurlData.commentAllowed > 0) {
-          const comment = encodeURIComponent(`Hash21 Shop — ${currentProduct.name.en}`);
-          callbackUrl += `&comment=${comment}`;
-        }
-        const invoiceRes = await fetch(callbackUrl);
-        if (!invoiceRes.ok) throw new Error("Error al generar invoice");
-        const invoiceData = await invoiceRes.json();
-        if (invoiceData.status === "ERROR") throw new Error(invoiceData.reason);
-
-        currentInvoice = invoiceData.pr;
+        currentInvoice = data.invoice;
 
         // QR via API (sin librería)
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(currentInvoice.toUpperCase())}&bgcolor=ffffff&color=1a1a1a&margin=8`;
@@ -956,13 +978,21 @@
         document.getElementById("loading-state").style.display = "none";
         document.getElementById("qr-wrapper").style.display = "flex";
 
-        // Intentar WebLN si está disponible (extensión Alby)
+        // WebLN: 1-click payment with Alby
         if (window.webln) {
           try {
             await window.webln.enable();
             const result = await window.webln.sendPayment(currentInvoice);
-            if (result?.preimage) confirmPayment(result.preimage);
-          } catch (_) { /* pago manual */ }
+            if (result?.preimage) { confirmPayment(result.preimage); return; }
+          } catch (_) { /* fall through to polling */ }
+        }
+
+        // Poll for NIP-57 payment confirmation
+        if (data.zapRequest && data.zapRequest.id) {
+          const recipientTag = data.zapRequest.tags.find(t => t[0] === 'p');
+          const recipientPubkey = recipientTag ? recipientTag[1] : '';
+          const since = data.zapRequest.created_at - 5;
+          pollShopPayment(data.zapRequest.id, recipientPubkey, since);
         }
 
       } catch (err) {
