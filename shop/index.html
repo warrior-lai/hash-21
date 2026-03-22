@@ -832,14 +832,24 @@
         available: true,
       },
       {
-        id: "dije-006",
-        name: { es: "Próximamente", en: "Coming soon" },
-        label: { es: "Nueva pieza · En desarrollo", en: "New piece · In development" },
-        desc: { es: "Una nueva pieza está en camino. Seguinos para enterarte primero.", en: "A new piece is on its way. Follow us to be the first to know." },
+        id: "hashioki-gold",
+        name: { es: "Hashioki Bitcoin · Dorado", en: "Bitcoin Hashioki · Gold" },
+        label: { es: "Objeto de diseño", en: "Design object" },
+        desc: { es: "Apoyapalillos de diseño con moneda Bitcoin y rayo Lightning. Pieza única, acabado dorado.", en: "Designer chopstick rest featuring Bitcoin coin and Lightning bolt. Unique piece, gold finish." },
         sats: null,
-        icon: "✦",
-        image: null,
-        available: false,
+        icon: "₿",
+        image: "/img/hashioki-gold.jpg",
+        available: "consult",
+      },
+      {
+        id: "hashioki-black",
+        name: { es: "Hashioki Bitcoin · Negro", en: "Bitcoin Hashioki · Black" },
+        label: { es: "Objeto de diseño", en: "Design object" },
+        desc: { es: "Apoyapalillos de diseño con moneda Bitcoin y rayo Lightning. Pieza única, acabado negro mate.", en: "Designer chopstick rest featuring Bitcoin coin and Lightning bolt. Unique piece, matte black finish." },
+        sats: null,
+        icon: "₿",
+        image: "/img/hashioki-black.jpg",
+        available: "consult",
       },
     ];
 
@@ -859,8 +869,15 @@
     function renderProducts() {
       const t = (typeof T !== 'undefined' && T[currentLang]) ? T[currentLang] : {badge_available:"● Disponible",badge_soon:"◌ Próximamente",placeholder_soon:"Próximamente",price_soon:"Precio próximamente",btn_buy:"⚡ Comprar",btn_soon:"Próximamente"};
       const lang = currentLang || 'es';
-      document.getElementById("shop-grid").innerHTML = PRODUCTS.map(p => `
-        <article class="card" onclick="${p.available ? `openCheckout('${p.id}')` : ''}">
+      const btnConsult = lang === 'en' ? '✉ Inquire' : '✉ Consultar';
+      const badgeConsult = lang === 'en' ? '● Inquire' : '● Consultar';
+      const priceConsult = lang === 'en' ? 'Price on request' : 'Precio a consultar';
+      document.getElementById("shop-grid").innerHTML = PRODUCTS.map(p => {
+        const isConsult = p.available === 'consult';
+        const isAvailable = p.available === true;
+        const cardAction = isAvailable ? `openCheckout('${p.id}')` : (isConsult ? `window.open('https://t.me/abstract_lai','_blank')` : '');
+        return `
+        <article class="card" onclick="${cardAction}">
           <div class="card-image">
             ${p.image
               ? `<img src="${p.image}" alt="${p.name[lang]}" loading="lazy" class="img-main">
@@ -870,8 +887,8 @@
                    <div class="placeholder-text">${t.placeholder_soon}</div>
                  </div>`
             }
-            <span class="card-badge ${p.available ? 'badge-available' : 'badge-soon'}">
-              ${p.available ? t.badge_available : t.badge_soon}
+            <span class="card-badge ${isAvailable ? 'badge-available' : isConsult ? 'badge-available' : 'badge-soon'}">
+              ${isAvailable ? t.badge_available : isConsult ? badgeConsult : t.badge_soon}
             </span>
           </div>
           <div class="card-body">
@@ -879,17 +896,21 @@
             <h2 class="card-title">${p.name[lang]}</h2>
             <p class="card-desc">${p.desc[lang]}</p>
             <div class="card-footer">
-              <span class="price-sats">${p.sats ? `${formatSats(p.sats)} <em>sats ⚡</em>` : `<em style="font-size:0.8rem">${t.price_soon}</em>`}</span>
-              ${p.available
+              <span class="price-sats">${p.sats ? `${formatSats(p.sats)} <em>sats ⚡</em>` : `<em style="font-size:0.8rem">${isConsult ? priceConsult : t.price_soon}</em>`}</span>
+              ${isAvailable
                 ? `<button class="btn-buy" onclick="event.stopPropagation(); openCheckout('${p.id}')">
                      ${t.btn_buy}
+                   </button>`
+                : isConsult
+                ? `<button class="btn-buy" onclick="event.stopPropagation(); window.open('https://t.me/abstract_lai','_blank')">
+                     ${btnConsult}
                    </button>`
                 : `<button class="btn-buy" disabled>${t.btn_soon}</button>`
               }
             </div>
           </div>
         </article>
-      `).join("");
+      `}).join("");
     }
 
     // renderProducts() se llama desde setLang() al cargar
