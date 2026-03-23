@@ -8,6 +8,44 @@ Hash21 es una plataforma de arte curado sobre Bitcoin. Galería, certificación 
 
 ---
 
+## ✅ Lo que funciona HOY (en producción)
+
+| Feature | Estado | Detalles |
+|---------|--------|----------|
+| **Zap System (NIP-57)** | ✅ Live | Firma server-side + detección automática via Nostr relays |
+| **WebLN (Alby)** | ✅ Live | 1-click payment desde extensión del navegador |
+| **LNURL-pay** | ✅ Live | Invoice directo desde WoS del artista — sats sin intermediarios |
+| **Shop Lightning** | ✅ Live | 8 productos, checkout con QR, precios en sats |
+| **Certificación On-Chain** | ✅ Live | OpenTimestamps, 2 certificados emitidos (bloques #936387, #936793) |
+| **Verificación pública** | ✅ Live | hash21.studio/verify |
+| **Hub de Artistas** | ✅ Live | 4 artistas con perfil, bio, links, Lightning Address |
+| **Galería** | ✅ Live | 6 obras con lightbox, carousel, grid expandible |
+| **Backend API** | ✅ Live | CRUD artistas, obras, productos (Vercel + Supabase) |
+| **Admin Panel** | ✅ Live | Login con Supabase Auth, gestión completa |
+| **CMS dinámico** | ✅ Live | Shop carga desde Supabase, no hardcodeado |
+| **Staging** | ✅ Live | staging.hash21.studio para preview |
+| **Tests** | ✅ Live | 47 automatizados (28 frontend + 19 backend) |
+| **Bilingüe** | ✅ Live | ES/EN completo en toda la plataforma |
+| **Responsive** | ✅ Live | Mobile + desktop, touch targets ≥44px |
+| **SSL** | ✅ Live | Cloudflare, ambos dominios |
+
+## 🔜 Roadmap
+
+| Feature | Prioridad | Descripción |
+|---------|-----------|-------------|
+| **Autogestión artistas** | 🔴 Alta | Registro, login, subir obras, gestionar perfil |
+| **E-commerce completo** | 🔴 Alta | Stock, checkout con detección, envío integrado |
+| **Upload imágenes** | 🔴 Alta | Subir fotos desde admin panel (endpoint ya existe) |
+| **Certificación self-service** | 🟡 Media | Emitir certificados on-chain desde el admin |
+| **Dashboard analytics** | 🟡 Media | Métricas de zaps, visitas, revenue por artista |
+| **Notificaciones** | 🟡 Media | Email/Telegram al recibir zap o aprobación |
+| **Lightning Address por artista** | 🟡 Media | Cada artista configura su wallet |
+| **Stock management** | 🟡 Media | Control de inventario en tienda |
+| **Galería dinámica** | 🟢 En staging | Obras cargan desde Supabase (ya funciona en staging) |
+| **PWA** | 🟢 Baja | Installable en celular |
+
+---
+
 ## Arquitectura
 
 ```
