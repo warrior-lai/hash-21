@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hash21 Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root { --bg:#0a0a0a; --bg2:#141414; --bg3:#1e1e1e; --text:#f0f0f0; --dim:#888; --gold:#b08d57; --green:#2dd4a8; --red:#e74c3c; --border:#2a2a2a; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); font-size:14px; }
+.app { display:flex; min-height:100vh; }
+.sidebar { width:220px; background:var(--bg2); border-right:1px solid var(--border); padding:20px 0; position:fixed; height:100vh; }
+.sidebar h1 { font-size:16px; padding:0 20px 20px; color:var(--gold); font-weight:600; letter-spacing:1px; }
+.sidebar a { display:block; padding:10px 20px; color:var(--dim); text-decoration:none; font-size:13px; transition:all 0.2s; cursor:pointer; }
+.sidebar a:hover, .sidebar a.active { color:var(--text); background:var(--bg3); border-left:2px solid var(--gold); }
+.main { margin-left:220px; flex:1; padding:30px; }
+h2 { font-size:18px; font-weight:500; margin-bottom:20px; color:var(--gold); }
+.card { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:20px; margin-bottom:15px; }
+.card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.card-header h3 { font-size:15px; font-weight:500; }
+.badge { font-size:11px; padding:3px 10px; border-radius:10px; font-weight:500; }
+.badge-active { background:rgba(45,212,168,0.15); color:var(--green); }
+.badge-pending { background:rgba(176,141,87,0.15); color:var(--gold); }
+.badge-consult { background:rgba(176,141,87,0.15); color:var(--gold); }
+.badge-available { background:rgba(45,212,168,0.15); color:var(--green); }
+.badge-hidden { background:rgba(136,136,136,0.15); color:var(--dim); }
+.meta { color:var(--dim); font-size:12px; margin-top:5px; }
+.actions { display:flex; gap:8px; margin-top:12px; }
+.btn { padding:6px 16px; border:none; border-radius:4px; font-family:'Inter',sans-serif; font-size:12px; cursor:pointer; transition:all 0.2s; }
+.btn-gold { background:var(--gold); color:var(--bg); }
+.btn-gold:hover { opacity:0.85; }
+.btn-outline { background:transparent; border:1px solid var(--border); color:var(--dim); }
+.btn-outline:hover { border-color:var(--gold); color:var(--gold); }
+.btn-danger { background:transparent; border:1px solid var(--red); color:var(--red); }
+.btn-danger:hover { background:var(--red); color:white; }
+.btn-add { background:var(--gold); color:var(--bg); padding:8px 20px; font-size:13px; border:none; border-radius:4px; cursor:pointer; font-family:'Inter',sans-serif; }
+
+/* Modal */
+.modal-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); z-index:100; justify-content:center; align-items:center; }
+.modal-overlay.active { display:flex; }
+.modal { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:30px; width:90%; max-width:500px; max-height:90vh; overflow-y:auto; }
+.modal h3 { font-size:16px; margin-bottom:20px; color:var(--gold); }
+.form-group { margin-bottom:15px; }
+.form-group label { display:block; font-size:12px; color:var(--dim); margin-bottom:5px; text-transform:uppercase; letter-spacing:0.5px; }
+.form-group input, .form-group textarea, .form-group select { width:100%; padding:10px; background:var(--bg3); border:1px solid var(--border); color:var(--text); font-family:'Inter',sans-serif; font-size:13px; border-radius:4px; }
+.form-group textarea { height:80px; resize:vertical; }
+.form-group input:focus, .form-group textarea:focus { border-color:var(--gold); outline:none; }
+.form-actions { display:flex; gap:10px; margin-top:20px; }
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:15px; margin-bottom:30px; }
+.stat { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:20px; text-align:center; }
+.stat-number { font-size:28px; font-weight:600; color:var(--gold); }
+.stat-label { font-size:11px; color:var(--dim); text-transform:uppercase; letter-spacing:1px; margin-top:5px; }
+.card-img { width:60px; height:60px; border-radius:4px; object-fit:cover; margin-right:12px; }
+.card-row { display:flex; align-items:center; }
+.empty { text-align:center; color:var(--dim); padding:40px; }
+
+@media (max-width:768px) {
+  .sidebar { width:100%; height:auto; position:relative; display:flex; flex-wrap:wrap; padding:10px; }
+  .sidebar h1 { width:100%; padding:5px 10px 10px; }
+  .sidebar a { padding:8px 12px; }
+  .main { margin-left:0; padding:15px; }
+  .stats { grid-template-columns:repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="sidebar">
+    <h1>HASH21 ADMIN</h1>
+    <a class="active" onclick="showSection('dashboard')">📊 Dashboard</a>
+    <a onclick="showSection('artists')">👥 Artistas</a>
+    <a onclick="showSection('works')">🎨 Obras</a>
+    <a onclick="showSection('products')">🛒 Productos</a>
+  </nav>
+
+  <div class="main">
+    <!-- Dashboard -->
+    <div id="sec-dashboard">
+      <h2>Dashboard</h2>
+      <div class="stats">
+        <div class="stat"><div class="stat-number" id="stat-artists">-</div><div class="stat-label">Artistas</div></div>
+        <div class="stat"><div class="stat-number" id="stat-works">-</div><div class="stat-label">Obras</div></div>
+        <div class="stat"><div class="stat-number" id="stat-products">-</div><div class="stat-label">Productos</div></div>
+        <div class="stat"><div class="stat-number" id="stat-zaps">-</div><div class="stat-label">Zaps</div></div>
+      </div>
+      <div id="dashboard-recent"></div>
+    </div>
+
+    <!-- Artists -->
+    <div id="sec-artists" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <h2 style="margin:0">Artistas</h2>
+        <button class="btn-add" onclick="openModal('artist')">+ Nuevo Artista</button>
+      </div>
+      <div id="artists-list"></div>
+    </div>
+
+    <!-- Works -->
+    <div id="sec-works" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <h2 style="margin:0">Obras</h2>
+        <button class="btn-add" onclick="openModal('work')">+ Nueva Obra</button>
+      </div>
+      <div id="works-list"></div>
+    </div>
+
+    <!-- Products -->
+    <div id="sec-products" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <h2 style="margin:0">Productos</h2>
+        <button class="btn-add" onclick="openModal('product')">+ Nuevo Producto</button>
+      </div>
+      <div id="products-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h3 id="modal-title">Nuevo</h3>
+    <form id="modal-form" onsubmit="handleSubmit(event)">
+      <div id="modal-fields"></div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-gold">Guardar</button>
+        <button type="button" class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const API = 'https://hash21-backend.vercel.app/api';
+let currentSection = 'dashboard';
+let currentModal = null;
+let editingId = null;
+let artistsCache = [];
+
+// Navigation
+function showSection(name) {
+  document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+  event.target.classList.add('active');
+  ['dashboard','artists','works','products'].forEach(s => {
+    document.getElementById('sec-' + s).style.display = s === name ? 'block' : 'none';
+  });
+  currentSection = name;
+  loadSection(name);
+}
+
+// Load data
+async function loadSection(name) {
+  if (name === 'dashboard') await loadDashboard();
+  if (name === 'artists') await loadArtists();
+  if (name === 'works') await loadWorks();
+  if (name === 'products') await loadProducts();
+}
+
+async function api(endpoint, method, body) {
+  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(API + endpoint, opts);
+  return await res.json();
+}
+
+async function loadDashboard() {
+  const [artists, works, products] = await Promise.all([
+    api('/artists'), api('/works'), api('/products')
+  ]);
+  artistsCache = artists;
+  document.getElementById('stat-artists').textContent = artists.length;
+  document.getElementById('stat-works').textContent = works.length;
+  document.getElementById('stat-products').textContent = products.length;
+  document.getElementById('stat-zaps').textContent = '—';
+}
+
+async function loadArtists() {
+  const artists = await api('/artists');
+  artistsCache = artists;
+  if (!artists.length) { document.getElementById('artists-list').innerHTML = '<div class="empty">No hay artistas. Creá el primero.</div>'; return; }
+  document.getElementById('artists-list').innerHTML = artists.map(a => `
+    <div class="card">
+      <div class="card-header">
+        <div class="card-row">
+          ${a.photo_url ? `<img src="${a.photo_url}" class="card-img">` : ''}
+          <div>
+            <h3>${a.name}</h3>
+            <div class="meta">${a.lightning_address || ''} · ${a.slug}</div>
+          </div>
+        </div>
+        <span class="badge badge-${a.status}">${a.status}</span>
+      </div>
+      <div class="meta">${a.bio_es || ''}</div>
+      <div class="actions">
+        <button class="btn btn-outline" onclick='editArtist(${JSON.stringify(a)})'>Editar</button>
+        <button class="btn btn-danger" onclick="deleteItem('artists','${a.id}','${a.name}')">Eliminar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function loadWorks() {
+  const works = await api('/works');
+  if (!works.length) { document.getElementById('works-list').innerHTML = '<div class="empty">No hay obras. Creá la primera.</div>'; return; }
+  document.getElementById('works-list').innerHTML = works.map(w => `
+    <div class="card">
+      <div class="card-header">
+        <div class="card-row">
+          ${w.image_url ? `<img src="${w.image_url}" class="card-img">` : ''}
+          <div>
+            <h3>${w.title_es}</h3>
+            <div class="meta">${w.technique || ''} ${w.artists ? '· ' + w.artists.name : ''}</div>
+          </div>
+        </div>
+        <span class="badge badge-${w.status}">${w.status}</span>
+      </div>
+      <div class="actions">
+        <button class="btn btn-outline" onclick='editWork(${JSON.stringify(w)})'>Editar</button>
+        <button class="btn btn-outline" onclick="changeStatus('works','${w.id}','${w.status === 'available' ? 'consult' : 'available'}')">${w.status === 'available' ? 'Poner en Consultar' : 'Poner Disponible'}</button>
+        <button class="btn btn-danger" onclick="deleteItem('works','${w.id}','${w.title_es}')">Eliminar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function loadProducts() {
+  const products = await api('/products');
+  if (!products.length) { document.getElementById('products-list').innerHTML = '<div class="empty">No hay productos. Creá el primero.</div>'; return; }
+  document.getElementById('products-list').innerHTML = products.map(p => `
+    <div class="card">
+      <div class="card-header">
+        <div class="card-row">
+          ${p.image_url ? `<img src="${p.image_url}" class="card-img">` : ''}
+          <div>
+            <h3>${p.name_es}</h3>
+            <div class="meta">${p.price_sats ? p.price_sats.toLocaleString() + ' sats' : 'Precio a consultar'}</div>
+          </div>
+        </div>
+        <span class="badge badge-${p.status}">${p.status}</span>
+      </div>
+      <div class="meta">${p.desc_es || ''}</div>
+      <div class="actions">
+        <button class="btn btn-outline" onclick='editProduct(${JSON.stringify(p)})'>Editar</button>
+        <button class="btn btn-danger" onclick="deleteItem('products','${p.id}','${p.name_es}')">Eliminar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Modal
+function openModal(type, data) {
+  currentModal = type;
+  editingId = data ? data.id : null;
+  document.getElementById('modal-title').textContent = (editingId ? 'Editar ' : 'Nuevo ') + 
+    (type === 'artist' ? 'Artista' : type === 'work' ? 'Obra' : 'Producto');
+  
+  const fields = getFields(type, data);
+  document.getElementById('modal-fields').innerHTML = fields;
+  document.getElementById('modal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+  editingId = null;
+}
+
+function getFields(type, d) {
+  d = d || {};
+  if (type === 'artist') return `
+    <div class="form-group"><label>Nombre</label><input name="name" value="${d.name||''}" required></div>
+    <div class="form-group"><label>Slug (URL)</label><input name="slug" value="${d.slug||''}" required></div>
+    <div class="form-group"><label>Bio (ES)</label><textarea name="bio_es">${d.bio_es||''}</textarea></div>
+    <div class="form-group"><label>Bio (EN)</label><textarea name="bio_en">${d.bio_en||''}</textarea></div>
+    <div class="form-group"><label>Motto</label><input name="motto" value="${d.motto||''}"></div>
+    <div class="form-group"><label>Lightning Address</label><input name="lightning_address" value="${d.lightning_address||''}"></div>
+    <div class="form-group"><label>Instagram</label><input name="instagram" value="${d.links?.instagram||''}"></div>
+    <div class="form-group"><label>Twitter/X</label><input name="twitter" value="${d.links?.twitter||''}"></div>
+    <div class="form-group"><label>Estado</label><select name="status">
+      <option value="active" ${d.status==='active'?'selected':''}>Activo</option>
+      <option value="pending" ${d.status==='pending'?'selected':''}>Pendiente</option>
+      <option value="inactive" ${d.status==='inactive'?'selected':''}>Inactivo</option>
+    </select></div>`;
+  
+  if (type === 'work') {
+    const artistOpts = artistsCache.map(a => `<option value="${a.id}" ${d.artist_id===a.id?'selected':''}>${a.name}</option>`).join('');
+    return `
+    <div class="form-group"><label>Artista</label><select name="artist_id" required>${artistOpts}</select></div>
+    <div class="form-group"><label>Título (ES)</label><input name="title_es" value="${d.title_es||''}" required></div>
+    <div class="form-group"><label>Título (EN)</label><input name="title_en" value="${d.title_en||''}"></div>
+    <div class="form-group"><label>Técnica</label><input name="technique" value="${d.technique||''}"></div>
+    <div class="form-group"><label>Dimensiones</label><input name="dimensions" value="${d.dimensions||''}"></div>
+    <div class="form-group"><label>URL Imagen</label><input name="image_url" value="${d.image_url||''}"></div>
+    <div class="form-group"><label>Tipo</label><select name="type">
+      <option value="physical" ${d.type==='physical'?'selected':''}>Física</option>
+      <option value="digital" ${d.type==='digital'?'selected':''}>Digital</option>
+    </select></div>
+    <div class="form-group"><label>Estado</label><select name="status">
+      <option value="available" ${d.status==='available'?'selected':''}>Disponible</option>
+      <option value="consult" ${d.status==='consult'?'selected':''}>Consultar</option>
+      <option value="hidden" ${d.status==='hidden'?'selected':''}>Oculta</option>
+    </select></div>`;
+  }
+  
+  if (type === 'product') return `
+    <div class="form-group"><label>Nombre (ES)</label><input name="name_es" value="${d.name_es||''}" required></div>
+    <div class="form-group"><label>Nombre (EN)</label><input name="name_en" value="${d.name_en||''}"></div>
+    <div class="form-group"><label>Etiqueta (ES)</label><input name="label_es" value="${d.label_es||''}"></div>
+    <div class="form-group"><label>Etiqueta (EN)</label><input name="label_en" value="${d.label_en||''}"></div>
+    <div class="form-group"><label>Descripción (ES)</label><textarea name="desc_es">${d.desc_es||''}</textarea></div>
+    <div class="form-group"><label>Descripción (EN)</label><textarea name="desc_en">${d.desc_en||''}</textarea></div>
+    <div class="form-group"><label>Precio (sats) — dejar vacío para "consultar"</label><input name="price_sats" type="number" value="${d.price_sats||''}"></div>
+    <div class="form-group"><label>URL Imagen</label><input name="image_url" value="${d.image_url||''}"></div>
+    <div class="form-group"><label>Estado</label><select name="status">
+      <option value="available" ${d.status==='available'?'selected':''}>Disponible</option>
+      <option value="consult" ${d.status==='consult'?'selected':''}>Consultar</option>
+      <option value="hidden" ${d.status==='hidden'?'selected':''}>Oculto</option>
+    </select></div>`;
+}
+
+// Edit helpers
+function editArtist(a) { openModal('artist', a); }
+function editWork(w) { openModal('work', w); }
+function editProduct(p) { openModal('product', p); }
+
+// Submit
+async function handleSubmit(e) {
+  e.preventDefault();
+  const form = new FormData(e.target);
+  const data = Object.fromEntries(form);
+  
+  // Clean up
+  if (data.price_sats === '') data.price_sats = null;
+  else if (data.price_sats) data.price_sats = parseInt(data.price_sats);
+  
+  // Handle artist links
+  if (currentModal === 'artist') {
+    data.links = { instagram: data.instagram || '', twitter: data.twitter || '' };
+    delete data.instagram;
+    delete data.twitter;
+  }
+  
+  const endpoint = currentModal === 'artist' ? '/artists' : currentModal === 'work' ? '/works' : '/products';
+  
+  if (editingId) {
+    data.id = editingId;
+    await api(endpoint, 'PUT', data);
+  } else {
+    await api(endpoint, 'POST', data);
+  }
+  
+  closeModal();
+  loadSection(currentSection);
+}
+
+// Delete
+async function deleteItem(endpoint, id, name) {
+  if (!confirm(`¿Eliminar "${name}"?`)) return;
+  await api('/' + endpoint + '?id=' + id, 'DELETE');
+  loadSection(currentSection);
+}
+
+// Change status
+async function changeStatus(endpoint, id, newStatus) {
+  await api('/' + endpoint, 'PUT', { id, status: newStatus });
+  loadSection(currentSection);
+}
+
+// Init
+loadDashboard();
+</script>
+</body>
+</html>
