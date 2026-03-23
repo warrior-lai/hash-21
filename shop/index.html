@@ -866,10 +866,37 @@
     const LIGHTNING_ADDRESS = "crustycoil11@walletofsatoshi.com";
     const ZAP_API = "https://hash21-backend.vercel.app/api/zap";
     const ZAP_CHECK = "https://hash21-backend.vercel.app/api/check";
+    const PRODUCTS_API = "https://hash21-backend.vercel.app/api/products";
 
     let currentProduct = null;
     let currentInvoice = null;
     let shopPollInterval = null;
+
+    // Load products from API, fallback to hardcoded
+    async function loadProducts() {
+      try {
+        const res = await fetch(PRODUCTS_API);
+        const data = await res.json();
+        if (data && data.length > 0) {
+          PRODUCTS.length = 0;
+          data.forEach(p => {
+            if (p.status === 'hidden') return;
+            PRODUCTS.push({
+              id: p.id,
+              name: { es: p.name_es, en: p.name_en || p.name_es },
+              label: { es: p.label_es || '', en: p.label_en || '' },
+              desc: { es: p.desc_es || '', en: p.desc_en || '' },
+              sats: p.price_sats,
+              icon: p.price_sats ? '⚡' : '₿',
+              image: p.image_url,
+              available: p.status === 'available' ? true : p.status === 'consult' ? 'consult' : false,
+            });
+          });
+          renderProducts();
+        }
+      } catch(e) { console.log('Using hardcoded products (API unavailable)'); }
+    }
+    loadProducts();
 
     // ── Render ────────────────────────────────
     function formatSats(n) {
