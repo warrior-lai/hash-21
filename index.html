@@ -553,15 +553,15 @@
     
     const lang = currentLang || 'es';
     
-    // Get existing image srcs to avoid duplicates
+    // Get existing image srcs to avoid duplicates (normalize paths)
     const existingImgs = new Set();
     document.querySelectorAll('.collection-item img').forEach(img => {
-      const src = img.getAttribute('src') || '';
+      const src = (img.getAttribute('src') || '').replace(/^\//, '');
       existingImgs.add(src);
     });
     
-    // Filter only NEW works not already in HTML
-    const newWorks = works.filter(w => w.status !== 'hidden' && w.image_url && !existingImgs.has(w.image_url));
+    // Filter only NEW works not already in HTML (normalize paths)
+    const newWorks = works.filter(w => w.status !== 'hidden' && w.image_url && !existingImgs.has(w.image_url.replace(/^\//, '')));
     if (!newWorks.length) return;
     
     function renderWork(w) {
