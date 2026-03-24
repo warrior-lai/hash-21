@@ -68,6 +68,19 @@ function selectZapAmount(amount) {
 function onZapConfirmed(amount) {
   if (zapPollInterval) { clearInterval(zapPollInterval); zapPollInterval = null; }
   addZapCount(currentZapTarget.id, amount);
+  
+  // Log zap to Supabase
+  fetch(ZAP_API.replace('/zap', '/log-zap'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      target_type: currentZapTarget.type || 'work',
+      target_id: currentZapTarget.id,
+      amount_sats: amount,
+      message: document.getElementById('zapMessage') ? document.getElementById('zapMessage').value : ''
+    })
+  }).catch(() => {}); // fire and forget
+  
   document.getElementById('zapSelectPhase').style.display = 'none';
   document.getElementById('zapPayPhase').style.display = 'none';
   document.getElementById('zapSuccess').classList.add('active');
