@@ -63,6 +63,7 @@ function formatSatsShort(n) {
 }
 
 function openZap(id, name, type) {
+  zapConfirmed = false; // reset for new zap
   currentZapTarget = { id, name, type };
   document.getElementById('zapTargetName').textContent = name;
   document.getElementById('zapSelectPhase').style.display = 'block';
@@ -89,11 +90,15 @@ function selectZapAmount(amount) {
   document.getElementById('zapCustomAmount').value = '';
 }
 
+let zapConfirmed = false; // prevent duplicate logging
+
 function onZapConfirmed(amount) {
+  if (zapConfirmed) return; // already confirmed this zap
+  zapConfirmed = true;
   if (zapPollInterval) { clearInterval(zapPollInterval); zapPollInterval = null; }
   addZapCount(currentZapTarget.id, amount);
   
-  // Log zap to Supabase
+  // Log zap to Supabase (once)
   fetch(ZAP_API.replace('/zap', '/log-zap'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -103,7 +108,7 @@ function onZapConfirmed(amount) {
       amount_sats: amount,
       message: document.getElementById('zapMessage') ? document.getElementById('zapMessage').value : ''
     })
-  }).catch(() => {}); // fire and forget
+  }).catch(() => {});
   
   document.getElementById('zapSelectPhase').style.display = 'none';
   document.getElementById('zapPayPhase').style.display = 'none';
