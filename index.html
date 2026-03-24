@@ -544,14 +544,25 @@
 <script src="lang.js"></script>
 <script src="app.js"></script>
 <script>
-// Dynamic gallery — load works from API, fallback to hardcoded HTML
-(async function loadGalleryFromAPI() {
+// Dynamic gallery — append NEW works from API (don't touch existing HTML)
+(async function loadNewWorksFromAPI() {
   try {
     const res = await fetch('https://hash21-backend.vercel.app/api/works');
     const works = await res.json();
     if (!works || !works.length) return;
     
     const lang = currentLang || 'es';
+    
+    // Get existing image srcs to avoid duplicates
+    const existingImgs = new Set();
+    document.querySelectorAll('.collection-item img').forEach(img => {
+      const src = img.getAttribute('src') || '';
+      existingImgs.add(src);
+    });
+    
+    // Filter only NEW works not already in HTML
+    const newWorks = works.filter(w => w.status !== 'hidden' && w.image_url && !existingImgs.has(w.image_url));
+    if (!newWorks.length) return;
     
     function renderWork(w) {
       const title = lang === 'en' ? (w.title_en || w.title_es) : w.title_es;
@@ -562,32 +573,24 @@
       const slug = title.toLowerCase().replace(/ /g, '-');
       return '<div class="collection-item" onclick="openLightbox(\'' + img + '\',\'\',\'' + title.replace(/'/g,"\\'") + '\',\'' + technique.replace(/'/g,"\\'") + '\',\'' + status + '\')">' +
         '<img src="' + img + '" alt="' + title + '" loading="lazy" decoding="async">' +
-        '<div class="info"><h4>' + (artist || '') + '</h4><p>' + title + '</p><span>' + technique + '</span></div>' +
+        '<div class="info"><h4>' + (artist || '') + '</h4><p>' + title + '</p><span>' + technique + '</span>' +
+        '<button class="grid-zap" onclick="event.stopPropagation(); openZap(\'' + slug + '\',\'' + title.replace(/'/g,"\\'") + '\',\'obra\')">⚡ Zap</button></div>' +
         '</div>';
     }
     
-    // Shop CTA card
-    const shopCard = '<div class="collection-item" onclick="window.location.href=\'/shop/\'" style="cursor:pointer;">' +
-      '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:420px;padding:40px;text-align:center;">' +
-      '<span style="font-size:32px;margin-bottom:15px;">✦</span>' +
-      '<p style="font-family:\'Cormorant Garamond\',serif;font-size:22px;color:var(--text);margin-bottom:10px;" data-i18n="shop_explore_title">Objetos de diseño</p>' +
-      '<span style="font-size:12px;color:var(--text-dim);line-height:1.6;max-width:260px;" data-i18n="shop_explore_desc">Explorá objetos únicos creados por los artistas de Hash21</span>' +
-      '<a href="/shop/" style="margin-top:20px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;border:1px solid rgba(176,141,87,0.3);padding:8px 20px;transition:all 0.3s;" data-i18n="shop_explore_cta">Ver tienda →</a>' +
-      '</div></div>';
+    const newHtml = newWorks.map(renderWork).join('');
     
-    const worksHtml = works.filter(w => w.status !== 'hidden').map(renderWork).join('') + shopCard;
-    const gridHtml = works.filter(w => w.status !== 'hidden').map(renderWork).join('');
-    
-    // Update carousel
+    // Append to carousel (before shop CTA card)
     const carousel = document.getElementById('collCarousel');
-    if (carousel) carousel.innerHTML = worksHtml;
+    if (carousel) {
+      const shopCard = carousel.querySelector('[onclick*="shop"]');
+      if (shopCard) shopCard.insertAdjacentHTML('beforebegin', newHtml);
+      else carousel.insertAdjacentHTML('beforeend', newHtml);
+    }
     
-    // Update grid
+    // Append to grid
     const grid = document.getElementById('collectionGrid');
-    if (grid) grid.innerHTML = gridHtml;
-    
-    // Re-apply i18n
-    if (typeof applyLang === 'function') applyLang(lang);
+    if (grid) grid.insertAdjacentHTML('beforeend', newHtml);
     
   } catch(e) {
     console.log('Using hardcoded gallery (API unavailable)');
