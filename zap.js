@@ -24,15 +24,7 @@ function addZapCount(id, amount) {
   updateZapDisplays();
 }
 function updateZapDisplays() {
-  // First show localStorage counts (instant)
-  const counts = getZapCounts();
-  document.querySelectorAll('.zap-count').forEach(el => {
-    const id = el.id.replace('zap-count-', '');
-    if (counts[id] && counts[id].count > 0) {
-      el.textContent = formatSatsShort(counts[id].total);
-    }
-  });
-  // Then fetch real counts from Supabase (async update)
+  // Fetch real counts from Supabase only
   fetchZapStats();
 }
 
