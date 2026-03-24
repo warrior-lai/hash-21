@@ -24,6 +24,7 @@ function addZapCount(id, amount) {
   updateZapDisplays();
 }
 function updateZapDisplays() {
+  // First show localStorage counts (instant)
   const counts = getZapCounts();
   document.querySelectorAll('.zap-count').forEach(el => {
     const id = el.id.replace('zap-count-', '');
@@ -31,6 +32,29 @@ function updateZapDisplays() {
       el.textContent = formatSatsShort(counts[id].total);
     }
   });
+  // Then fetch real counts from Supabase (async update)
+  fetchZapStats();
+}
+
+async function fetchZapStats() {
+  try {
+    const res = await fetch(ZAP_API.replace('/zap', '/log-zap'));
+    const data = await res.json();
+    if (!data.zaps) return;
+    // Group by target_id
+    const byTarget = {};
+    data.zaps.forEach(z => {
+      if (!byTarget[z.target_id]) byTarget[z.target_id] = { total: 0, count: 0 };
+      byTarget[z.target_id].total += z.amount_sats;
+      byTarget[z.target_id].count += 1;
+    });
+    document.querySelectorAll('.zap-count').forEach(el => {
+      const id = el.id.replace('zap-count-', '');
+      if (byTarget[id]) {
+        el.textContent = formatSatsShort(byTarget[id].total);
+      }
+    });
+  } catch(e) {}
 }
 function formatSatsShort(n) {
   if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
@@ -85,6 +109,10 @@ function onZapConfirmed(amount) {
   document.getElementById('zapPayPhase').style.display = 'none';
   document.getElementById('zapSuccess').classList.add('active');
   document.getElementById('zapStatusText').textContent = '';
+  
+  // Confetti effect
+  zapConfetti();
+  
   setTimeout(() => closeZap(), 5000);
 }
 
@@ -291,3 +319,35 @@ document.addEventListener('DOMContentLoaded', function() {
   
   updateZapDisplays();
 });
+
+// Confetti animation on zap confirmation
+function zapConfetti() {
+  const colors = ['#b08d57', '#d4af37', '#f0d78c', '#fff8e7', '#c9a84c'];
+  const container = document.querySelector('.zap-modal') || document.body;
+  const rect = container.getBoundingClientRect();
+  
+  for (let i = 0; i < 30; i++) {
+    const confetti = document.createElement('div');
+    confetti.style.cssText = `
+      position:fixed;
+      width:${Math.random()*8+4}px;
+      height:${Math.random()*8+4}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      left:${rect.left + rect.width/2 + (Math.random()-0.5)*200}px;
+      top:${rect.top + rect.height/2}px;
+      border-radius:${Math.random()>0.5?'50%':'0'};
+      pointer-events:none;
+      z-index:10000;
+      opacity:1;
+      transition:all ${1+Math.random()}s ease-out;
+    `;
+    document.body.appendChild(confetti);
+    
+    requestAnimationFrame(() => {
+      confetti.style.transform = `translate(${(Math.random()-0.5)*300}px, ${-200-Math.random()*200}px) rotate(${Math.random()*720}deg)`;
+      confetti.style.opacity = '0';
+    });
+    
+    setTimeout(() => confetti.remove(), 2000);
+  }
+}
