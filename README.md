@@ -261,14 +261,28 @@ vercel dev
 
 ## 🔜 Roadmap
 
+### Alineado con [Hackathons La Crypta 2026](https://hackaton.lacrypta.ar/hackathons.html)
+
+| Hackathon | Tema | Feature para Hash21 | Estado |
+|-----------|------|---------------------|--------|
+| **#1 FOUNDATIONS** | Lightning Payments | ⚡ Zaps NIP-57 + LNURL-pay | ✅ Live |
+| **#2 IDENTITY** | Nostr Identity | 👤 Login con Nostr (NIP-07) | 🔜 Pendiente |
+| **#3 ZAPS** | Lightning + Nostr | 💜 Zap receipts en galería, rankings | 🔜 Pendiente |
+| **#4 COMMERCE** | Lightning Stores | 🛒 Checkout completo, stock, envíos | 🔜 Parcial |
+| **#5 MEDIA** | Decentralized Storage | 📸 Upload a Blossom, IPFS para obras | 🔜 Pendiente |
+| **#6 AI AGENTS** | Bots & Automation | 🤖 Bot Telegram para zaps, notificaciones | 🔜 Pendiente |
+| **#7 INFRASTRUCTURE** | Nodes & Routing | 🏗️ BTCPay Server propio, LNbits | 🔜 Pendiente |
+| **#8 INTEGRATION** | Full-Stack | 🌐 App completa multi-artista | 🔜 En desarrollo |
+
+### Otros features planeados
+
 | Feature | Prioridad | Estado |
 |---------|-----------|--------|
-| Autogestión artistas | 🔴 Alta | En desarrollo |
+| Autogestión artistas (registro, login, perfil) | 🔴 Alta | En desarrollo |
 | Upload imágenes desde admin | 🔴 Alta | Endpoint listo |
-| E-commerce completo | 🔴 Alta | Parcial |
-| Dashboard analytics | 🟡 Media | Pendiente |
+| Dashboard analytics por artista | 🟡 Media | Pendiente |
 | Notificaciones (email/Telegram) | 🟡 Media | Pendiente |
-| PWA | 🟢 Baja | Pendiente |
+| PWA (installable) | 🟢 Baja | Pendiente |
 
 ---
 
