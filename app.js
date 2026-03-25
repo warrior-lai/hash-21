@@ -31,7 +31,7 @@ function drawDust() {
 }
 drawDust();
 
-function openLightbox(src, code, name, tech, status) {
+function openLightbox(src, code, name, tech, status, block) {
   document.getElementById('lb-img').src = src;
   document.getElementById('lb-code').textContent = code;
   document.getElementById('lb-name').textContent = name;
@@ -77,6 +77,16 @@ function openLightbox(src, code, name, tech, status) {
   } else {
     countEl.textContent = '';
   }
+  
+  // Show block number if certified
+  var blockEl = document.getElementById('lb-block');
+  if (block && blockEl) {
+    blockEl.innerHTML = '<a href="https://mempool.space/block/' + block + '" target="_blank" style="color:var(--gold);text-decoration:none;font-size:13px;letter-spacing:1px;" onclick="event.stopPropagation();">⛓ Bloque #' + block + '</a>';
+    blockEl.style.display = 'block';
+  } else if (blockEl) {
+    blockEl.style.display = 'none';
+  }
+  
   document.getElementById('lightbox').classList.add('active');
   document.body.style.overflow = 'hidden';
 }
