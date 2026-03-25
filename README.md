@@ -232,21 +232,29 @@ Frontend detecta receipt → ¡Gracias! ⚡
 
 ## 🔜 Roadmap
 
-### Hackathons La Crypta 2026
+### Alineado con [Hackathons La Crypta 2026](https://hackaton.lacrypta.ar/hackathons.html)
 
-| Hackathon | Feature | Estado |
-|-----------|---------|--------|
-| **#1 FOUNDATIONS** | ⚡ Zaps NIP-57 + LNURL-pay | ✅ Live |
-| **#2 IDENTITY** | 👤 Login con Nostr (NIP-07) | 🔜 |
-| **#3 ZAPS** | 💜 Zap receipts en galería | 🔜 |
-| **#4 COMMERCE** | 🛒 Checkout completo | 🔜 |
+| Hackathon | Tema | Feature para Hash21 | Estado |
+|-----------|------|---------------------|--------|
+| **#1 FOUNDATIONS** | Lightning Payments | ⚡ Zaps NIP-57 + LNURL-pay | ✅ Live |
+| **#2 IDENTITY** | Nostr Identity | 👤 Login con Nostr (NIP-07), NIP-05 verificado | 🔜 Pendiente |
+| **#3 ZAPS** | Lightning + Nostr | 💜 Zap receipts en galería, rankings | 🔜 Pendiente |
+| **#4 COMMERCE** | Lightning Stores | 🛒 Checkout completo, stock, envíos | 🔜 Parcial |
+| **#5 MEDIA** | Decentralized Storage | 📸 Upload a Blossom, IPFS para obras | 🔜 Pendiente |
+| **#6 AI AGENTS** | Bots & Automation | 🤖 Bot Telegram para zaps, notificaciones | 🔜 Pendiente |
+| **#7 INFRASTRUCTURE** | Nodes & Routing | 🏗️ BTCPay Server propio, LNbits | 🔜 Pendiente |
+| **#8 INTEGRATION** | Full-Stack | 🌐 App completa multi-artista | 🔜 En desarrollo |
 
-### Próximos features
+### Otros features planeados
 
-- [ ] Autenticidad real (firma Nostr + OP_RETURN)
-- [ ] Autogestión completa de artistas
-- [ ] Dashboard analytics
-- [ ] Notificaciones Telegram
+| Feature | Prioridad | Estado |
+|---------|-----------|--------|
+| **Autenticidad real** (firma Nostr + identidad verificada + OP_RETURN) | 🔴 Alta | Roadmap |
+| Autogestión artistas (registro, login, perfil) | 🔴 Alta | En desarrollo |
+| Upload imágenes desde admin | 🔴 Alta | Endpoint listo |
+| Dashboard analytics por artista | 🟡 Media | Pendiente |
+| Notificaciones (email/Telegram) | 🟡 Media | Pendiente |
+| PWA (installable) | 🟢 Baja | Pendiente |
 
 ---
 
