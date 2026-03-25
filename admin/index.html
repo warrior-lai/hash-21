@@ -547,8 +547,8 @@ function getFields(type, d) {
     const artistOpts = '<option value="">— Sin vincular —</option>' + artistsCache.map(a => `<option value="${a.id}" ${d.artist_id===a.id?'selected':''}>${esc(a.name)}</option>`).join('');
     const isNew = !d.id;
     return `
-    <div class="form-group"><label>Email</label><input name="email" type="email" value="${d.email||''}" ${isNew ? 'required' : 'readonly style="opacity:0.6"'}></div>
-    <div class="form-group"><label>${isNew ? 'Contraseña' : 'Nueva Contraseña (dejar vacío para no cambiar)'}</label><input name="password" type="password" ${isNew ? 'required minlength="6"' : ''} placeholder="${isNew ? 'Mínimo 6 caracteres' : 'Dejar vacío para mantener actual'}"></div>
+    <div class="form-group"><label>Email</label><input name="email" type="email" value="${d.email||''}" ${isNew ? 'required' : 'readonly style="opacity:0.6"'} autocomplete="off"></div>
+    <div class="form-group"><label>${isNew ? 'Contraseña' : 'Nueva Contraseña (dejar vacío para no cambiar)'}</label><input name="password" type="password" ${isNew ? 'required minlength="6"' : ''} placeholder="${isNew ? 'Mínimo 6 caracteres' : 'Dejar vacío para mantener actual'}" autocomplete="new-password"></div>
     <div class="form-group"><label>Rol</label><select name="role">
       <option value="artist" ${d.role==='artist'?'selected':''}>Artista</option>
       <option value="collaborator" ${d.role==='collaborator'?'selected':''}>Colaborador</option>
