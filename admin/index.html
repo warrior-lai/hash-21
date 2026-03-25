@@ -475,11 +475,16 @@ async function loadCerts() {
 }
 
 // Modal
-function openModal(type, data) {
+async function openModal(type, data) {
   currentModal = type;
   editingId = data ? data.id : null;
   document.getElementById('modal-title').textContent = (editingId ? 'Editar ' : 'Nuevo ') + 
     (type === 'artist' ? 'Artista' : type === 'work' ? 'Obra' : type === 'user' ? 'Usuario' : 'Producto');
+  
+  // Ensure artists are loaded for work/user modals
+  if ((type === 'work' || type === 'user') && !artistsCache.length) {
+    artistsCache = await api('/artists') || [];
+  }
   
   const fields = getFields(type, data);
   document.getElementById('modal-fields').innerHTML = fields;
