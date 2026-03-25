@@ -79,76 +79,6 @@ Sin intermediarios. Sin permisos. Sin censura.
 
 ---
 
-## 🚀 Quick Start
-
-### Prerequisitos
-
-- Node.js 18+
-- npm
-
-### Instalación
-
-```bash
-# Clonar
-git clone https://github.com/warrior-lai/hash-21.git
-cd hash-21
-
-# Instalar dependencias
-npm install
-
-# Correr tests
-npm test
-
-# Levantar dev server
-npm run dev
-```
-
-### Variables de entorno
-
-Copiá `.env.example` a `.env` y completá:
-
-```env
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=eyJ...
-SUPABASE_SERVICE_ROLE_KEY=eyJ...
-HASH21_NOSTR_NSEC=nsec1...
-```
-
----
-
-## 🧪 Testing
-
-```bash
-npm test              # Correr todos los tests
-npm run test:watch    # Watch mode
-npm run test:coverage # Coverage report
-```
-
-### Estructura de Tests
-
-```
-/tests
-  /api              # Tests de endpoints
-    artists.test.js
-    works.test.js
-    products.test.js
-    verify.test.js
-    integration.test.js
-  /helpers          # Tests de utilidades
-    hash.test.js
-    validation.test.js
-```
-
-### Cobertura
-
-| Área | Cobertura |
-|------|-----------|
-| API endpoints | ✅ |
-| Hash generation | ✅ |
-| Input validation | ✅ |
-| XSS sanitization | ✅ |
-| Integration | ✅ |
-
 ---
 
 ## 🏗️ Arquitectura
@@ -355,11 +285,7 @@ Plataforma completa multi-artista:
 
 ## 🤝 Contribuir
 
-1. Fork el repo
-2. Creá tu branch (`git checkout -b feature/amazing`)
-3. Commit (`git commit -m 'Add amazing feature'`)
-4. Push (`git push origin feature/amazing`)
-5. Abrí un Pull Request
+Ver [CONTRIBUTING.md](CONTRIBUTING.md) para instrucciones de instalación, testing y desarrollo.
 
 ---
 

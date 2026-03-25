@@ -1,62 +1,73 @@
-# Contributing to Hash21
+# Contribuir a Hash21
 
-Thanks for your interest in contributing to Hash21! 🪓
+¡Gracias por tu interés en contribuir! 🧡
 
-## How to contribute
+## 🚀 Quick Start
 
-1. **Fork** the repo
-2. **Clone** your fork: `git clone https://github.com/YOUR-USER/hash-21.git`
-3. **Create a branch**: `git checkout -b feature/your-feature`
-4. **Make changes** and test locally
-5. **Run tests**: `./test.sh`
-6. **Commit**: `git commit -m "feat: description"`
-7. **Push**: `git push origin feature/your-feature`
-8. **Open a PR** against `main`
+### Prerequisitos
 
-## Development
+- Node.js 18+
+- npm
+
+### Instalación
 
 ```bash
-# Frontend
-python3 -m http.server 8000
-# Open http://localhost:8000
+# Clonar
+git clone https://github.com/warrior-lai/hash-21.git
+cd hash-21
 
-# Backend
-cd Hash21-Backend
+# Instalar dependencias
 npm install
-vercel dev
+
+# Correr tests
+npm test
+
+# Levantar dev server
+npm run dev
 ```
 
-## Commit convention
+### Variables de entorno
 
-- `feat:` — new feature
-- `fix:` — bug fix
-- `docs:` — documentation
-- `test:` — tests
-- `refactor:` — code refactoring
+Copiá `.env.example` a `.env` y completá:
 
-## Testing
+```env
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=eyJ...
+SUPABASE_SERVICE_ROLE_KEY=eyJ...
+HASH21_NOSTR_NSEC=nsec1...
+```
+
+## 🧪 Testing
 
 ```bash
-# Frontend (28 tests)
-./test.sh
-
-# Backend (19+ tests)
-cd Hash21-Backend && ./test.sh
+npm test              # Correr todos los tests
+npm run test:watch    # Watch mode
+npm run test:coverage # Coverage report
 ```
 
-All tests must pass before merging.
+### Estructura de Tests
 
-## Code style
+```
+/tests
+  /api              # Tests de endpoints
+  /helpers          # Tests de utilidades
+```
 
-- Vanilla JS (no frameworks)
-- Keep it simple
-- Functions should do one thing
-- Comment why, not what
+## 📝 Pull Requests
 
-## Need help?
+1. Fork el repo
+2. Creá tu branch (`git checkout -b feature/amazing`)
+3. Commit (`git commit -m 'Add amazing feature'`)
+4. Push (`git push origin feature/amazing`)
+5. Abrí un Pull Request
 
-Open an issue or reach out on [Telegram](https://t.me/abstract_lai).
+## 📚 Documentación
 
----
+- [docs/architecture.md](docs/architecture.md) — Arquitectura
+- [docs/api.md](docs/api.md) — Referencia de API
+- [docs/security.md](docs/security.md) — Seguridad
+- [docs/deployment.md](docs/deployment.md) — Deploy
 
-MIT License — Build freely ⚡
+## 💬 Contacto
+
+¿Preguntas? Abrí un issue o contactá a [@warrior-lai](https://github.com/warrior-lai).
