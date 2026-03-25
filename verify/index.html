@@ -411,12 +411,16 @@ function showSuccess(data) {
     `;
   }
   
+  const blockDisplay = cert.block 
+    ? `<span style="color:var(--gold);font-size:14px;font-weight:500;margin-left:15px;">⛓ Bloque #${cert.block}</span>`
+    : `<span style="color:var(--warning);font-size:12px;margin-left:15px;">⏳ Pendiente</span>`;
+
   resultDiv.innerHTML = `
     ${badgeHtml}
     <div class="artwork-details">
       ${imgUrl ? `<img src="${imgUrl}" alt="${title}" class="artwork-image" />` : ''}
       <div class="artwork-info">
-        <h3>${escHtml(title)}</h3>
+        <h3 style="display:flex;align-items:center;flex-wrap:wrap;">${escHtml(title)} ${blockDisplay}</h3>
         <div class="artwork-meta">
           <strong>${escHtml(data.artist)}</strong> (${data.year || '—'})<br>
           ${escHtml(data.technique) || '—'}
