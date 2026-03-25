@@ -420,18 +420,21 @@ async function loadCerts() {
   const certified = works.filter(w => w.certificate_hash);
   if (!certified.length) { document.getElementById('certs-list').innerHTML = '<div class="empty">No hay certificados emitidos.</div>'; return; }
   document.getElementById('certs-list').innerHTML = certified.map(w => `
-    <div class="card">
+    <div class="card" style="border-left:3px solid ${w.certificate_status === 'certified' ? 'var(--green)' : 'var(--gold)'};">
       <div class="card-header">
         <div class="card-row">
-          ${w.image_url ? `<img src="${w.image_url}" class="card-img">` : ''}
+          ${w.image_url ? `<img src="${w.image_url}" class="card-img" style="width:80px;height:80px;object-fit:cover;border-radius:4px;">` : ''}
           <div>
-            <h3>${esc(w.title_es)}</h3>
+            <h3 style="display:flex;align-items:center;gap:10px;">
+              ${esc(w.title_es)}
+              ${w.certificate_block ? `<a href="https://mempool.space/block/${w.certificate_block}" target="_blank" style="color:var(--gold);font-size:12px;text-decoration:none;">⛓ #${w.certificate_block}</a>` : ''}
+            </h3>
             <div class="meta">${w.artists ? esc(w.artists.name) : '—'}</div>
           </div>
         </div>
-        <span class="badge badge-${w.certificate_status}">${w.certificate_status === 'certified' ? '✓ Confirmado' : '⏳ Pendiente'}</span>
+        <span class="badge badge-${w.certificate_status}" style="font-size:12px;padding:5px 12px;">${w.certificate_status === 'certified' ? '✓ Bloque Confirmado' : '⏳ Pendiente'}</span>
       </div>
-      <div class="meta" style="margin-top:10px;">
+      <div class="meta" style="margin-top:12px;padding:12px;background:var(--bg3);border-radius:4px;">
         <strong>Hash:</strong> <code style="font-size:10px;">${w.certificate_hash}</code><br>
         <strong>Fecha:</strong> ${w.certificate_date ? new Date(w.certificate_date).toLocaleString() : '—'}<br>
         ${w.certificate_block ? `<strong>Bloque:</strong> #${w.certificate_block}` : ''}
