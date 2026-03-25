@@ -197,6 +197,7 @@ let currentSection = 'dashboard';
 let currentModal = null;
 let editingId = null;
 let artistsCache = [];
+let currentUser = null; // { id, email, role, artist_id }
 
 // Auth
 async function checkAuth() {
@@ -239,9 +240,23 @@ async function handleLogout() {
   document.getElementById('admin-app').style.display = 'none';
 }
 
-function showApp() {
+async function showApp() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('admin-app').style.display = 'flex';
+  
+  // Get current user role
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    const users = await api('/users');
+    currentUser = users.find(u => u.email === session.user.email) || { role: 'artist' };
+    
+    // Hide sections based on role
+    if (currentUser.role !== 'admin') {
+      document.querySelector('a[onclick*="users"]').style.display = 'none';
+      document.querySelector('a[onclick*="artists"]').style.display = 'none';
+    }
+  }
+  
   loadDashboard();
 }
 
@@ -326,7 +341,11 @@ async function loadArtists() {
 }
 
 async function loadWorks() {
-  const works = await api('/works');
+  let works = await api('/works');
+  // Filter by artist if not admin
+  if (currentUser && currentUser.role !== 'admin' && currentUser.artist_id) {
+    works = works.filter(w => w.artist_id === currentUser.artist_id);
+  }
   if (!works.length) { document.getElementById('works-list').innerHTML = '<div class="empty">No hay obras. Creá la primera.</div>'; return; }
   document.getElementById('works-list').innerHTML = works.map(w => `
     <div class="card">
@@ -359,7 +378,11 @@ async function loadWorks() {
 }
 
 async function loadProducts() {
-  const products = await api('/products');
+  let products = await api('/products');
+  // Filter by artist if not admin (assuming products have artist_id)
+  if (currentUser && currentUser.role !== 'admin' && currentUser.artist_id) {
+    products = products.filter(p => p.artist_id === currentUser.artist_id);
+  }
   if (!products.length) { document.getElementById('products-list').innerHTML = '<div class="empty">No hay productos. Creá el primero.</div>'; return; }
   document.getElementById('products-list').innerHTML = products.map(p => `
     <div class="card">
@@ -416,7 +439,11 @@ function editUser(u) { openModal('user', u); }
 
 // Load Certificates
 async function loadCerts() {
-  const works = await api('/works');
+  let works = await api('/works');
+  // Filter by artist if not admin
+  if (currentUser && currentUser.role !== 'admin' && currentUser.artist_id) {
+    works = works.filter(w => w.artist_id === currentUser.artist_id);
+  }
   const certified = works.filter(w => w.certificate_hash);
   if (!certified.length) { document.getElementById('certs-list').innerHTML = '<div class="empty">No hay certificados emitidos.</div>'; return; }
   document.getElementById('certs-list').innerHTML = certified.map(w => `
