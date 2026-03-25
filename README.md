@@ -363,6 +363,15 @@ Plataforma completa multi-artista:
 
 ---
 
+## 👥 Equipo
+
+| Rol | Nombre | GitHub |
+|-----|--------|--------|
+| **Founder & Lead Dev** | Lai⚡️ | [@warrior-lai](https://github.com/warrior-lai) |
+| **AI Dev** | Ragnar 🪓 | — |
+
+---
+
 ## 📄 Licencia
 
 [MIT License](LICENSE) — El código es open source.
@@ -370,6 +379,10 @@ Plataforma completa multi-artista:
 Las obras de arte son propiedad de sus respectivos artistas.
 
 ---
+
+<p align="center">
+  <strong>Permanencia para la obra. Soberanía para el artista. ⚡</strong>
+</p>
 
 <p align="center">
   <a href="https://hash21.studio">hash21.studio</a> •
