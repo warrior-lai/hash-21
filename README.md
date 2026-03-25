@@ -49,21 +49,18 @@ Hash21 es una plataforma de arte curado sobre Bitcoin. Galería, certificación 
 ## Arquitectura
 
 ```
-Frontend (GitHub Pages)              Backend (Vercel)
-hash21.studio/                       hash21-backend.vercel.app/
-├── index.html    (galería)          ├── api/zap.js    (firma NIP-57 + invoice)
-├── style.css     (estilos)          ├── api/check.js  (verifica pago en relays)
-├── app.js        (UI)               └── api/health.js (health check)
-├── zap.js        (zap client)
-├── lang.js       (i18n ES/EN)
-├── shop/         (tienda LNURL-pay)
-├── verify/       (certificación on-chain)
-├── blocklab/     (arte + soberanía)
-├── test.sh       (28 tests automatizados)
-├── faq.html
-├── terms.html
-├── privacy.html
-├── certification.html
+Frontend (GitHub Pages)              Backend (Vercel + Supabase)
+hash21.studio/                       hash21-backend.vercel.app/api/
+├── index.html    (galería)          ├── zap.js         (firma NIP-57 + invoice)
+├── style.css     (estilos)          ├── check.js       (verifica pago en relays)
+├── app.js        (UI)               ├── certify.js     (certificación OTS)
+├── zap.js        (zap client)       ├── verify.js      (verificación pública)
+├── lang.js       (i18n ES/EN)       ├── certificate-pdf.js (genera certificado)
+├── shop/         (tienda)           ├── artists.js     (CRUD artistas)
+├── admin/        (panel admin)      ├── works.js       (CRUD obras)
+├── verify/       (verificación)     ├── products.js    (CRUD productos)
+├── blocklab/     (arte + soberanía) ├── log-zap.js     (registro de zaps)
+├── test.sh       (tests)            └── upload.js      (subida de imágenes)
 └── img/          (obras, avatares)
 ```
 
@@ -117,11 +114,58 @@ Backend pollea relays → detecta receipt → Frontend muestra "¡Gracias!" ⚡
 - Opciones post-pago: envío sin KYC (Telegram) o con dirección
 - Precios en sats
 
-### 📜 Certificación On-Chain
-- Certificados de registro vinculados a un bloque de Bitcoin (OpenTimestamps)
-- SHA-256 del archivo original → timestamp en blockchain
-- Prueba de existencia en el tiempo, permanente e incensurable
-- Verificación pública en [hash21.studio/verify](https://hash21.studio/verify)
+### 📜 Certificación On-Chain (OpenTimestamps)
+
+Hash21 certifica obras usando **OpenTimestamps**, el estándar abierto para timestamps en Bitcoin.
+
+**¿Qué certifica?**
+- Prueba de que un archivo específico (la imagen de la obra) existía en un momento determinado
+- No certifica autoría — certifica **existencia en el tiempo**
+- Inmutable: una vez anclado en un bloque de Bitcoin, no se puede alterar
+
+**Flow técnico:**
+```
+1. Usuario hace click en "Certificar" en el admin
+   ↓
+2. Backend descarga la imagen de la obra
+   ↓
+3. Calcula el SHA-256 (huella digital única de 64 caracteres)
+   Ejemplo: de7c5e1b744c9339d4aeef4703ca17f10e9991913fab8b83f0cb4279547be44d
+   ↓
+4. Envía el hash a servidores de OpenTimestamps (calendar servers)
+   - a.pool.opentimestamps.org
+   - b.pool.opentimestamps.org
+   - a.pool.eternitywall.com
+   ↓
+5. OTS agrupa miles de hashes en un árbol Merkle
+   ↓
+6. La raíz del árbol se incluye en una transacción de Bitcoin
+   ↓
+7. Un minero incluye esa transacción en un bloque (1-12 horas)
+   ↓
+8. El bloque se mina → el hash queda grabado PARA SIEMPRE
+   ↓
+9. La obra aparece como "Certificada · Bloque #XXXXXX"
+```
+
+**¿Por qué OpenTimestamps?**
+- Estándar abierto, no propietario
+- Gratuito (no requiere transacciones on-chain por cada hash)
+- Verificable por cualquiera sin confiar en Hash21
+- Usado por: Internet Archive, Wikileaks, Tierion, Chainpoint
+
+**Verificación pública:**
+- [hash21.studio/verify](https://hash21.studio/verify) — ingresá el hash SHA-256
+- También verificable con `ots verify` (CLI de OpenTimestamps)
+
+**Endpoints:**
+```
+POST /api/certify     → Calcula hash + envía a OTS
+GET  /api/verify      → Busca hash en la base de datos
+GET  /api/certificate-pdf → Genera certificado visual
+```
+
+**Certificados emitidos:** 3 obras certificadas (The Rabbit, The Hole, Libertad)
 
 ### 🌐 Bilingüe
 - Español / English completo
