@@ -266,7 +266,7 @@ vercel dev
 | Hackathon | Tema | Feature para Hash21 | Estado |
 |-----------|------|---------------------|--------|
 | **#1 FOUNDATIONS** | Lightning Payments | ⚡ Zaps NIP-57 + LNURL-pay | ✅ Live |
-| **#2 IDENTITY** | Nostr Identity | 👤 Login con Nostr (NIP-07) | 🔜 Pendiente |
+| **#2 IDENTITY** | Nostr Identity | 👤 Login con Nostr (NIP-07), NIP-05 verificado | 🔜 Pendiente |
 | **#3 ZAPS** | Lightning + Nostr | 💜 Zap receipts en galería, rankings | 🔜 Pendiente |
 | **#4 COMMERCE** | Lightning Stores | 🛒 Checkout completo, stock, envíos | 🔜 Parcial |
 | **#5 MEDIA** | Decentralized Storage | 📸 Upload a Blossom, IPFS para obras | 🔜 Pendiente |
@@ -278,6 +278,7 @@ vercel dev
 
 | Feature | Prioridad | Estado |
 |---------|-----------|--------|
+| **Autenticidad real** (firma Nostr + identidad verificada + OP_RETURN) | 🔴 Alta | Roadmap |
 | Autogestión artistas (registro, login, perfil) | 🔴 Alta | En desarrollo |
 | Upload imágenes desde admin | 🔴 Alta | Endpoint listo |
 | Dashboard analytics por artista | 🟡 Media | Pendiente |
