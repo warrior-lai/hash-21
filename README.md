@@ -84,22 +84,57 @@ Sin intermediarios. Sin permisos. Sin censura.
 ## 🏗️ Arquitectura
 
 ```
-┌─────────────────┐     ┌─────────────────┐     ┌──────────────┐
-│    Frontend     │────▶│  Vercel API     │────▶│   Supabase   │
-│  GitHub Pages   │     │  (Serverless)   │     │  (Postgres)  │
-└─────────────────┘     └─────────────────┘     └──────────────┘
-                                │
-                        ┌───────┴───────┐
-                        ▼               ▼
-                ┌───────────┐   ┌─────────────┐
-                │   Nostr   │   │OpenTimestamps│
-                │  Relays   │   │  (Bitcoin)   │
-                └───────────┘   └─────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                         FRONTEND                                 │
+│                    (GitHub Pages)                                │
+│                                                                  │
+│  hash21.studio/                                                  │
+│  ├── index.html    (galería dinámica)                           │
+│  ├── shop/         (tienda Lightning)                           │
+│  ├── admin/        (panel de gestión)                           │
+│  ├── verify/       (verificación pública)                       │
+│  └── blocklab/     (laboratorio)                                │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                          BACKEND                                 │
+│                  (Vercel Serverless)                             │
+│                                                                  │
+│  hash21-backend.vercel.app/api/                                 │
+│  ├── zap.js          (firma NIP-57 + invoice)                   │
+│  ├── check.js        (detecta pago en relays)                   │
+│  ├── certify.js      (certificación OTS)                        │
+│  ├── verify.js       (verificación pública)                     │
+│  ├── certificate-pdf.js                                         │
+│  ├── artists.js      (CRUD)                                     │
+│  ├── works.js        (CRUD)                                     │
+│  ├── products.js     (CRUD)                                     │
+│  ├── users.js        (CRUD + roles)                             │
+│  ├── log-zap.js      (stats)                                    │
+│  └── invoice.js      (LNURL-pay)                                │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                         DATABASE                                 │
+│                        (Supabase)                                │
+│                                                                  │
+│  Tables: artists, works, products, users, zap_logs              │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                      ┌───────┴───────┐
+                      ▼               ▼
+              ┌───────────┐   ┌─────────────┐
+              │   Nostr   │   │OpenTimestamps│
+              │  Relays   │   │  (Bitcoin)   │
+              └───────────┘   └─────────────┘
 ```
 
 Ver documentación completa en [`/docs`](docs/):
 - [architecture.md](docs/architecture.md) — Arquitectura detallada
 - [api.md](docs/api.md) — Referencia de API
+- [docs/api/openapi.yaml](docs/api/openapi.yaml) — OpenAPI 3.0 spec
 - [security.md](docs/security.md) — Seguridad y manejo de secrets
 - [deployment.md](docs/deployment.md) — Guía de deploy
 
@@ -109,32 +144,66 @@ Ver documentación completa en [`/docs`](docs/):
 
 | Capa | Tecnología |
 |------|-----------|
-| Frontend | HTML5, CSS3, JavaScript ES6+ (vanilla) |
+| Frontend | HTML5, CSS3, JavaScript ES6+ (vanilla, zero frameworks) |
 | Backend | Vercel Serverless (Node.js) |
 | Database | Supabase (PostgreSQL) |
 | Auth | Supabase Auth |
-| Pagos | NIP-57, LNURL-pay, Lightning Address |
-| Certificación | OpenTimestamps (SHA-256 → Bitcoin) |
-| Testing | Vitest + coverage |
-| Hosting | GitHub Pages + Vercel |
+| Pagos | NIP-57, LNURL-pay, Lightning Address → Wallet of Satoshi |
+| Detección de pago | Nostr relays (kind 9734/9735) via WebSocket |
+| Certificación | OpenTimestamps (SHA-256 → bloque Bitcoin) |
+| QR | qrcode.js v1.5.1 |
+| Testing | Vitest (59 tests) + coverage |
+| API Docs | OpenAPI 3.0 / Swagger |
+| Hosting | GitHub Pages (frontend) + Vercel (backend) |
+| DNS/SSL | Cloudflare |
 
 ---
 
-## 📜 Certificación On-Chain
+## 📜 Certificación On-Chain (OpenTimestamps)
 
 Hash21 certifica obras usando **OpenTimestamps**, el estándar abierto para timestamps en Bitcoin.
 
 ### ¿Qué certifica?
 
-- ✅ Prueba de que un archivo existía en un momento determinado
+- ✅ Prueba de que un archivo específico existía en un momento determinado
 - ✅ Inmutable: una vez anclado en Bitcoin, no se puede alterar
 - ✅ Verificable por cualquiera sin confiar en Hash21
+- ❌ No certifica autoría — certifica **existencia en el tiempo**
+
+### Flow técnico
+
+```
+1. Usuario hace click en "Certificar" en el admin
+                    ↓
+2. Backend descarga la imagen y calcula SHA-256
+   Ejemplo: de7c5e1b744c9339d4aeef4703ca17f10e9991913fab8b83f0cb4279547be44d
+                    ↓
+3. Envía el hash a servidores de OpenTimestamps
+   • a.pool.opentimestamps.org
+   • b.pool.opentimestamps.org  
+   • a.pool.eternitywall.com
+                    ↓
+4. OTS agrupa miles de hashes en un árbol Merkle
+                    ↓
+5. La raíz del árbol se incluye en una transacción de Bitcoin
+                    ↓
+6. Un minero incluye esa transacción en un bloque (1-12 horas)
+                    ↓
+7. El hash queda grabado PARA SIEMPRE en la blockchain
+```
+
+### ¿Por qué OpenTimestamps?
+
+- 🔓 Estándar abierto, no propietario
+- 💸 Gratuito (no requiere transacciones on-chain por cada hash)
+- ✅ Verificable con `ots verify` (CLI) o en hash21.studio/verify
+- 🏛️ Usado por: Internet Archive, Wikileaks, Tierion
 
 ### Verificación
 
 ```bash
 # Via web
-https://hash21.studio/verify?hash=de7c5e1b...
+https://hash21.studio/verify?hash=de7c5e1b744c9339d4aeef4703ca17f10e9991913fab8b83f0cb4279547be44d
 
 # Via API
 curl https://hash21-backend.vercel.app/api/verify?hash=de7c5e1b...
@@ -147,13 +216,19 @@ curl https://hash21-backend.vercel.app/api/verify?hash=de7c5e1b...
 Propinas Lightning directas al artista con detección automática de pago.
 
 ```
-Usuario elige monto → Backend firma zap request (kind 9734)
-         ↓
-Backend pide invoice via Lightning Address del artista
-         ↓
-Usuario paga → WoS publica zap receipt (kind 9735)
-         ↓
-Frontend detecta receipt → ¡Gracias! ⚡
+Usuario elige monto → Frontend pide invoice al backend
+                              ↓
+Backend firma zap request (kind 9734) con key Nostr de Hash21
+                              ↓
+Backend pide invoice a WoS del artista via Lightning Address
+                              ↓
+Frontend muestra QR + invoice + "Open in wallet"
+                              ↓
+Usuario paga con cualquier Lightning wallet
+                              ↓
+WoS publica zap receipt (kind 9735) en relays Nostr
+                              ↓
+Backend detecta receipt → Frontend muestra "¡Gracias!" ⚡
 ```
 
 **Sats van directo a la wallet del artista — cero intermediarios.**
