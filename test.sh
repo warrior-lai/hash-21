@@ -19,9 +19,9 @@ echo ""
 # --- Backend ---
 echo "🔧 Backend ($API)"
 
-# Health
-HEALTH=$(curl -s -o /dev/null -w "%{http_code}" "$API/api/health")
-check "$([ "$HEALTH" = "200" ] && echo true)" "Health endpoint → $HEALTH"
+# API available (check via artists endpoint)
+API_OK=$(curl -s -o /dev/null -w "%{http_code}" "$API/api/artists")
+check "$([ "$API_OK" = "200" ] && echo true)" "API available → $API_OK"
 
 # Zap invoice generation
 ZAP=$(curl -s -X POST "$API/api/zap" \
@@ -52,6 +52,59 @@ RPUB=$(echo "$ZAP" | python3 -c "import json,sys; d=json.load(sys.stdin); tags=d
 CHECK=$(curl -s "$API/api/check?zapRequestId=$ZRID&recipientPubkey=$RPUB&since=$(date +%s)" 2>&1)
 NOT_PAID=$(echo "$CHECK" | python3 -c "import json,sys; d=json.load(sys.stdin); print('true' if d.get('paid')==False else 'false')" 2>/dev/null)
 check "$NOT_PAID" "Check endpoint → paid:false for unpaid invoice"
+
+echo ""
+
+# --- Certification ---
+echo "📜 Certification"
+
+# Verify endpoint with known hash
+VERIFY=$(curl -s "$API/api/verify?hash=de7c5e1b744c9339d4aeef4703ca17f10e9991913fab8b83f0cb4279547be44d" 2>&1)
+IS_VERIFIED=$(echo "$VERIFY" | python3 -c "import json,sys; d=json.load(sys.stdin); print('true' if d.get('verified')==True else 'false')" 2>/dev/null)
+check "$IS_VERIFIED" "Verify endpoint → known hash found"
+
+HAS_TITLE=$(echo "$VERIFY" | python3 -c "import json,sys; d=json.load(sys.stdin); print('true' if d.get('title') else 'false')" 2>/dev/null)
+check "$HAS_TITLE" "Verify response has title"
+
+HAS_ARTIST=$(echo "$VERIFY" | python3 -c "import json,sys; d=json.load(sys.stdin); print('true' if d.get('artist') else 'false')" 2>/dev/null)
+check "$HAS_ARTIST" "Verify response has artist"
+
+HAS_CERT=$(echo "$VERIFY" | python3 -c "import json,sys; d=json.load(sys.stdin); print('true' if d.get('certification',{}).get('service')=='OpenTimestamps' else 'false')" 2>/dev/null)
+check "$HAS_CERT" "Verify response has OpenTimestamps service"
+
+# Verify with invalid hash
+INVALID=$(curl -s "$API/api/verify?hash=0000000000000000000000000000000000000000000000000000000000000000" 2>&1)
+NOT_FOUND=$(echo "$INVALID" | python3 -c "import json,sys; d=json.load(sys.stdin); print('true' if d.get('verified')==False else 'false')" 2>/dev/null)
+check "$NOT_FOUND" "Verify endpoint → unknown hash returns verified:false"
+
+# Certificate PDF endpoint
+PDF_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$API/api/certificate-pdf?work_id=611a7443-232d-4cad-aa7e-cab9b0c6029a")
+check "$([ "$PDF_CODE" = "200" ] && echo true)" "Certificate PDF endpoint → $PDF_CODE"
+
+echo ""
+
+# --- Database API ---
+echo "🗄️ Database API"
+
+# Artists
+ARTISTS=$(curl -s "$API/api/artists" 2>&1)
+HAS_ARTISTS=$(echo "$ARTISTS" | python3 -c "import json,sys; d=json.load(sys.stdin); print('true' if isinstance(d,list) and len(d)>0 else 'false')" 2>/dev/null)
+check "$HAS_ARTISTS" "Artists endpoint returns array"
+
+# Works
+WORKS=$(curl -s "$API/api/works" 2>&1)
+HAS_WORKS=$(echo "$WORKS" | python3 -c "import json,sys; d=json.load(sys.stdin); print('true' if isinstance(d,list) and len(d)>0 else 'false')" 2>/dev/null)
+check "$HAS_WORKS" "Works endpoint returns array"
+
+# Products
+PRODUCTS=$(curl -s "$API/api/products" 2>&1)
+HAS_PRODUCTS=$(echo "$PRODUCTS" | python3 -c "import json,sys; d=json.load(sys.stdin); print('true' if isinstance(d,list) and len(d)>0 else 'false')" 2>/dev/null)
+check "$HAS_PRODUCTS" "Products endpoint returns array"
+
+# Zap log
+ZAPLOG=$(curl -s "$API/api/log-zap" 2>&1)
+HAS_STATS=$(echo "$ZAPLOG" | python3 -c "import json,sys; d=json.load(sys.stdin); print('true' if 'total_zaps' in d else 'false')" 2>/dev/null)
+check "$HAS_STATS" "Zap log endpoint returns stats"
 
 echo ""
 
@@ -89,7 +142,7 @@ echo "🔒 SSL"
 SSL_VALID=$(curl -s -o /dev/null -w "%{ssl_verify_result}" "$SITE")
 check "$([ "$SSL_VALID" = "0" ] && echo true)" "SSL certificate valid"
 
-SSL_BACKEND=$(curl -s -o /dev/null -w "%{ssl_verify_result}" "$API/api/health")
+SSL_BACKEND=$(curl -s -o /dev/null -w "%{ssl_verify_result}" "$API/api/artists")
 check "$([ "$SSL_BACKEND" = "0" ] && echo true)" "Backend SSL valid"
 
 echo ""
