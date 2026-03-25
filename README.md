@@ -26,9 +26,16 @@
 
 ## 🎯 ¿Qué es Hash21?
 
-Hash21 es una plataforma de arte curado sobre Bitcoin. Galería, certificación on-chain y tienda Lightning-native — sin intermediarios, sin permisos, sin censura.
+Hash21 es una plataforma de arte inspirado en Bitcoin.
 
-**El artista mantiene el control. La blockchain provee la permanencia.**
+Una galería viva donde los artistas publican, certifican y venden sus obras y objetos de diseño directamente.
+
+- 📜 **Certificación on-chain** para garantizar existencia y permanencia
+- ⚡ **Pagos Lightning-native** para una economía sin fricción
+
+Sin intermediarios. Sin permisos. Sin censura.
+
+**El artista se convierte en soberano. Bitcoin asegura la permanencia.**
 
 ---
 
