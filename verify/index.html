@@ -9,7 +9,6 @@
 <title>Verificación de Autenticidad — Hash21</title>
 <meta name="description" content="Verifica la autenticidad de obras certificadas on-chain en Hash21. Ingresa el hash SHA-256 para confirmar la certificación de la obra.">
 
-<!-- Open Graph Meta Tags -->
 <meta property="og:title" content="Verificación de Autenticidad - Hash21">
 <meta property="og:description" content="Verifica la autenticidad de obras certificadas on-chain en Hash21.">
 <meta property="og:image" content="https://hash21.studio/img/obra1.jpg">
@@ -31,6 +30,7 @@
   --gold: #b08d57;
   --border: rgba(0,0,0,0.07);
   --success: #22c55e;
+  --warning: #f59e0b;
   --error: #ef4444;
 }
 
@@ -41,14 +41,12 @@ body {
   color: var(--text);
   font-family: 'Inter', sans-serif;
   line-height: 1.6;
-  overflow-x: hidden;
   font-weight: 300;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-/* HEADER */
 header {
   position: fixed;
   top: 0;
@@ -73,7 +71,6 @@ header {
 }
 .logo span { color: var(--gold); }
 
-/* LANG SWITCH */
 .lang-switch { display: flex; gap: 4px; align-items: center; }
 .lang-btn {
   background: transparent;
@@ -88,7 +85,6 @@ header {
 }
 .lang-btn.active { border-color: var(--gold); color: var(--gold); }
 
-/* MAIN CONTENT */
 main {
   flex: 1;
   display: flex;
@@ -98,269 +94,206 @@ main {
   padding: 120px 60px 80px;
   max-width: 800px;
   margin: 0 auto;
-  width: 100%;
 }
 
-.verify-header {
-  text-align: center;
-  margin-bottom: 60px;
-}
-
+.verify-header { text-align: center; margin-bottom: 50px; }
 .verify-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 42px;
-  font-weight: 400;
-  letter-spacing: 2px;
-  margin-bottom: 20px;
-  color: var(--text);
+  font-size: 38px;
+  font-weight: 300;
+  margin-bottom: 15px;
 }
-
 .verify-subtitle {
-  font-size: 16px;
+  font-size: 14px;
   color: var(--text-dim);
-  line-height: 1.6;
-  max-width: 600px;
-  margin: 0 auto;
+  line-height: 1.8;
 }
 
 .verify-form {
   width: 100%;
-  max-width: 500px;
-  margin-bottom: 40px;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
-
-.input-group {
-  margin-bottom: 20px;
-}
-
+.hash-input-wrapper { position: relative; }
 .hash-input {
   width: 100%;
-  padding: 20px;
+  padding: 18px 20px;
+  font-family: monospace;
+  font-size: 13px;
   border: 1px solid var(--border);
-  background: #fff;
-  font-family: 'Inter', monospace;
-  font-size: 14px;
-  border-radius: 8px;
+  background: var(--bg2);
+  color: var(--text);
+  letter-spacing: 1px;
   transition: all 0.3s;
-  resize: none;
-  min-height: 80px;
 }
-
 .hash-input:focus {
   outline: none;
   border-color: var(--gold);
-  box-shadow: 0 0 0 2px rgba(176, 141, 87, 0.1);
+  background: #fff;
 }
-
-.hash-input::placeholder {
-  color: var(--text-dim);
-  font-family: 'Inter', sans-serif;
-}
+.hash-input::placeholder { color: var(--text-dim); }
 
 .verify-btn {
-  width: 100%;
-  padding: 16px 32px;
+  padding: 16px 40px;
   background: var(--text);
   color: #fff;
   border: none;
   font-family: 'Inter', sans-serif;
-  font-size: 12px;
-  letter-spacing: 2px;
+  font-size: 11px;
+  letter-spacing: 3px;
   text-transform: uppercase;
   cursor: pointer;
   transition: all 0.3s;
-  border-radius: 4px;
-  font-weight: 400;
 }
+.verify-btn:hover { background: var(--gold); }
+.verify-btn:disabled { background: var(--text-dim); cursor: not-allowed; }
 
-.verify-btn:hover {
-  background: var(--gold);
-}
-
-.verify-btn:disabled {
-  background: var(--text-dim);
-  cursor: not-allowed;
-}
-
-.qr-note {
-  text-align: center;
-  color: var(--text-dim);
-  font-size: 12px;
-  margin-top: 15px;
-  padding: 15px;
-  background: var(--bg2);
-  border-radius: 4px;
-  border-left: 3px solid var(--gold);
-}
-
-/* RESULTS */
-.result {
-  width: 100%;
+#result {
   margin-top: 40px;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.5s ease;
-}
-
-.result.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.result.success {
-  border: 1px solid var(--success);
-  background: rgba(34, 197, 94, 0.05);
-  border-radius: 8px;
-  padding: 30px;
-}
-
-.result.error {
-  border: 1px solid var(--error);
-  background: rgba(239, 68, 68, 0.05);
-  border-radius: 8px;
-  padding: 30px;
-  text-align: center;
+  width: 100%;
+  max-width: 600px;
 }
 
 .success-badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  color: var(--success);
+  display: inline-block;
+  padding: 12px 25px;
+  background: var(--success);
+  color: #fff;
+  font-size: 13px;
   font-weight: 500;
-  font-size: 16px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 25px;
+}
+.pending-badge {
+  display: inline-block;
+  padding: 12px 25px;
+  background: var(--warning);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 25px;
+}
+.error-badge {
+  display: inline-block;
+  padding: 12px 25px;
+  background: var(--error);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
   margin-bottom: 25px;
 }
 
 .artwork-details {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 30px;
-  align-items: start;
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 30px;
 }
-
 .artwork-image {
   width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 4px;
-  border: 1px solid var(--border);
+  max-height: 300px;
+  object-fit: contain;
+  margin-bottom: 20px;
 }
-
 .artwork-info h3 {
   font-family: 'Cormorant Garamond', serif;
   font-size: 24px;
   font-weight: 400;
-  margin-bottom: 5px;
-}
-
-.artwork-meta {
-  color: var(--text-dim);
-  font-size: 14px;
-  line-height: 1.8;
-  margin-bottom: 20px;
-}
-
-.artwork-meta strong {
-  color: var(--text);
-  font-weight: 400;
-}
-
-.cert-info {
-  background: var(--bg);
-  padding: 20px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  font-size: 12px;
-  color: var(--text-dim);
-  line-height: 1.6;
-}
-
-.cert-info strong {
-  color: var(--text);
-}
-
-.error-message {
-  font-size: 16px;
-  color: var(--error);
   margin-bottom: 10px;
 }
-
-.error-description {
-  font-size: 14px;
-  color: var(--text-dim);
+.artwork-meta {
+  font-size: 13px;
+  color: var(--text-mid);
+  margin-bottom: 20px;
+  line-height: 1.8;
+}
+.cert-info {
+  font-size: 12px;
+  color: var(--text-mid);
+  line-height: 2;
+}
+.cert-info code {
+  font-size: 10px;
+  background: var(--bg2);
+  padding: 2px 6px;
+  word-break: break-all;
 }
 
-/* FOOTER */
-footer {
-  padding: 40px 60px 20px;
-  border-top: 1px solid var(--border);
-  background: var(--bg2);
-  margin-top: auto;
+.error-msg {
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 30px;
   text-align: center;
 }
-
-.footer-text {
+.error-msg h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+.error-msg p {
+  font-size: 13px;
   color: var(--text-dim);
-  font-size: 10px;
+}
+
+.bitcoin-anchor {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.bitcoin-anchor h4 {
+  color: var(--gold);
+  font-size: 12px;
   letter-spacing: 2px;
   text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.mempool-btn {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 12px 24px;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+.mempool-btn:hover {
+  background: var(--gold);
+  color: #fff;
 }
 
-/* RESPONSIVE */
+footer {
+  padding: 40px 60px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-dim);
+  border-top: 1px solid var(--border);
+}
+
 @media (max-width: 768px) {
-  header {
-    padding: 20px 20px;
-  }
-  
-  main {
-    padding: 100px 20px 60px;
-  }
-  
-  .verify-title {
-    font-size: 32px;
-  }
-  
-  .verify-subtitle {
-    font-size: 14px;
-  }
-  
-  .artwork-details {
-    grid-template-columns: 1fr;
-    gap: 20px;
-    text-align: center;
-  }
-  
-  .artwork-image {
-    max-width: 250px;
-    margin: 0 auto;
-  }
-  
-  footer {
-    padding: 30px 20px 15px;
-  }
+  header { padding: 20px 25px; }
+  main { padding: 100px 25px 60px; }
+  .verify-title { font-size: 28px; }
+  .verify-subtitle { font-size: 13px; }
+  footer { padding: 30px 25px; }
 }
 </style>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GB0GQ5P9NE"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-GB0GQ5P9NE');
-</script>
 </head>
 <body>
 
 <header>
-  <div style="display: flex; align-items: center; gap: 20px;">
-    <a href="https://hash21.studio" style="color: var(--text-dim); text-decoration: none; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">← Volver a Hash21</a>
-    <a href="https://hash21.studio" class="logo">HASH<span>21</span></a>
-  </div>
+  <a href="/" class="logo">HASH<span>21</span></a>
   <div class="lang-switch">
-    <button class="lang-btn active" data-lang="es" onclick="setLang('es')">ES</button>
-    <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    <button class="lang-btn active" onclick="setLang('es')">ES</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
   </div>
 </header>
 
@@ -368,44 +301,41 @@ footer {
   <div class="verify-header">
     <h1 class="verify-title" data-i18n="verify_title">Verificación de Autenticidad</h1>
     <p class="verify-subtitle" data-i18n="verify_subtitle">
-      Ingresá el hash SHA-256 de la obra para verificar su certificación on-chain
+      Ingresá el hash SHA-256 de una obra para verificar su autenticidad y certificación on-chain.
     </p>
   </div>
 
   <form class="verify-form" onsubmit="verifyHash(event)">
-    <div class="input-group">
-      <textarea 
-        class="hash-input" 
+    <div class="hash-input-wrapper">
+      <input 
+        type="text" 
         id="hashInput" 
-        placeholder="Pegá aquí el hash SHA-256 (64 caracteres hexadecimales)" 
-        data-i18n-placeholder="verify_input_placeholder"
-        maxlength="128"
-        required
-      ></textarea>
+        class="hash-input"
+        placeholder="e.g. de7c5e1b744c9339d4aeef4703ca17f10e9991913fab8b83f0cb4279547be44d"
+        autocomplete="off"
+        spellcheck="false"
+      >
     </div>
     <button type="submit" class="verify-btn" data-i18n="verify_button">
-      Verificar
+      Verificar Autenticidad
     </button>
   </form>
 
-  <div class="qr-note" data-i18n="verify_qr_note">
-    💡 <strong>Consejo:</strong> Escaneá el QR del certificado para obtener el hash automáticamente
-  </div>
+  <div id="result"></div>
 
-  <div id="result" class="result"></div>
-
-  <div style="text-align:center;margin-top:60px;padding-top:30px;border-top:1px solid var(--border);">
+  <div style="margin-top:50px; text-align:center;">
     <a href="https://t.me/abstract_lai" target="_blank" style="display:inline-block;padding:14px 30px;border:1px solid var(--gold);color:var(--gold);font-size:12px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:all 0.3s;" onmouseover="this.style.background='#b08d57';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#b08d57'" data-i18n="verify_cta_certify">Quiero certificar mi obra →</a>
   </div>
 </main>
 
 <footer>
-  <div class="footer-text">Hash21 © 2026 — Powered by proof of work ⚡</div>
+  Hash21 — Permanencia para la obra. Soberanía para el artista. ⚡
 </footer>
 
 <script src="../lang.js"></script>
 <script>
-// Verificación de hash
+const API = 'https://hash21-backend.vercel.app/api';
+
 async function verifyHash(event) {
   event.preventDefault();
   
@@ -413,130 +343,151 @@ async function verifyHash(event) {
   const resultDiv = document.getElementById('result');
   const hash = hashInput.value.replace(/[\s\n\r\t]/g, '').trim().toLowerCase();
   
-  // Validar formato del hash
-  if (!isValidSHA256(hash)) {
-    showError('verify_error_invalid', 'verify_error_invalid_desc');
+  if (!/^[a-fA-F0-9]{64}$/.test(hash)) {
+    showError('Hash inválido', 'El hash debe ser una cadena hexadecimal de 64 caracteres (SHA-256).');
     return;
   }
   
-  // Cargar base de datos y verificar
+  resultDiv.innerHTML = '<p style="text-align:center;color:var(--text-dim);">Verificando...</p>';
+  
   try {
-    const response = await fetch('./db.json?t=' + Date.now());
-    const artworks = await response.json();
+    const response = await fetch(`${API}/verify?hash=${hash}`);
+    const data = await response.json();
     
-    const found = artworks.find(artwork => artwork.hash.toLowerCase() === hash);
-    
-    if (found) {
-      showSuccess(found);
+    if (data.verified) {
+      showSuccess(data);
     } else {
-      showError('verify_error_not_found', 'verify_error_not_found_desc');
+      showError('Hash no encontrado', 'Este hash no está registrado en la base de datos de Hash21. Verificá que el hash sea correcto.');
     }
   } catch (error) {
-    console.error('Error loading database:', error);
-    showError('verify_error_database', 'verify_error_database_desc');
+    console.error('Verification error:', error);
+    showError('Error de conexión', 'No se pudo conectar con el servidor. Intentá de nuevo.');
   }
 }
 
-function isValidSHA256(hash) {
-  return /^[a-fA-F0-9]{64}$/.test(hash);
-}
-
-function showSuccess(artwork) {
+function showSuccess(data) {
   const resultDiv = document.getElementById('result');
-  const currentLang = getCurrentLang();
+  const lang = getCurrentLang();
+  const cert = data.certification;
   
-  const successBadgeText = currentLang === 'es' 
-    ? '✓ Autenticidad Verificada' 
-    : '✓ Authenticity Verified';
-    
-  const certDateText = currentLang === 'es'
-    ? 'Fecha de certificación'
-    : 'Certification date';
-    
-  const timestampText = currentLang === 'es'
-    ? 'Servicio de timestamp'
-    : 'Timestamp service';
+  const isPending = cert.status === 'pending' || cert.status === 'hash_only';
+  const isCertified = cert.status === 'certified';
+  
+  let badgeHtml, badgeText;
+  if (isCertified) {
+    badgeText = lang === 'es' ? '✓ Autenticidad Verificada' : '✓ Authenticity Verified';
+    badgeHtml = `<div class="success-badge">${badgeText}</div>`;
+  } else {
+    badgeText = lang === 'es' ? '⏳ Pendiente de Confirmación' : '⏳ Pending Confirmation';
+    badgeHtml = `<div class="pending-badge">${badgeText}</div>`;
+  }
+  
+  const title = lang === 'en' && data.title_en ? data.title_en : data.title;
+  const certDateLabel = lang === 'es' ? 'Fecha de certificación' : 'Certification date';
+  const serviceLabel = lang === 'es' ? 'Servicio' : 'Service';
+  const algorithmLabel = lang === 'es' ? 'Algoritmo' : 'Algorithm';
+  const statusLabel = lang === 'es' ? 'Estado' : 'Status';
+  
+  const statusText = isCertified 
+    ? (lang === 'es' ? 'Anclado en Bitcoin' : 'Anchored in Bitcoin')
+    : (lang === 'es' ? 'Esperando confirmación en blockchain' : 'Awaiting blockchain confirmation');
+  
+  const imgUrl = data.image && data.image.startsWith('/') 
+    ? `https://hash21.studio${data.image}` 
+    : data.image;
+  
+  let bitcoinHtml = '';
+  if (cert.block) {
+    const blockLabel = lang === 'es' ? 'Bloque Bitcoin' : 'Bitcoin Block';
+    const viewLabel = lang === 'es' ? '🔍 Ver en Mempool.space' : '🔍 View on Mempool.space';
+    bitcoinHtml = `
+      <div class="bitcoin-anchor">
+        <h4>⛓ ${lang === 'es' ? 'Anclaje en Bitcoin' : 'Bitcoin Anchor'}</h4>
+        <strong>${blockLabel}:</strong> #${cert.block}<br>
+        <a href="${cert.mempool_url}" target="_blank" class="mempool-btn">${viewLabel}</a>
+      </div>
+    `;
+  }
   
   resultDiv.innerHTML = `
-    <div class="success-badge">${successBadgeText}</div>
+    ${badgeHtml}
     <div class="artwork-details">
-      <img src="${artwork.image}" alt="${artwork.title}" class="artwork-image" />
+      ${imgUrl ? `<img src="${imgUrl}" alt="${title}" class="artwork-image" />` : ''}
       <div class="artwork-info">
-        <h3>${artwork.title}</h3>
+        <h3>${escHtml(title)}</h3>
         <div class="artwork-meta">
-          <strong>${artwork.artist}</strong> (${artwork.year})<br>
-          ${artwork.technique}<br>
-          <em>${artwork.series}</em>
+          <strong>${escHtml(data.artist)}</strong> (${data.year || '—'})<br>
+          ${escHtml(data.technique) || '—'}
         </div>
         <div class="cert-info">
-          <strong>${certDateText}:</strong> ${formatDate(artwork.certification_date)}<br>
-          <strong>${timestampText}:</strong> ${artwork.timestamp_service}<br>
-          <strong>Hash:</strong> <code style="font-size:10px; word-break: break-all;">${artwork.hash}</code>
+          <strong>${certDateLabel}:</strong> ${formatDate(cert.date)}<br>
+          <strong>${serviceLabel}:</strong> ${cert.service}<br>
+          <strong>${algorithmLabel}:</strong> ${cert.algorithm}<br>
+          <strong>${statusLabel}:</strong> ${statusText}<br>
+          <strong>Hash:</strong> <code>${data.hash}</code>
         </div>
-        ${artwork.bitcoin_block ? `
-        <div class="cert-info" style="margin-top:15px;padding-top:15px;border-top:1px solid var(--border);">
-          <strong style="color:var(--gold);">⛓ ${currentLang === 'es' ? 'Anclaje en Bitcoin' : 'Bitcoin Anchor'}</strong><br>
-          <strong>Block:</strong> #${artwork.bitcoin_block}<br>
-          <strong>Merkle Root:</strong> <code style="font-size:9px;word-break:break-all;">${artwork.merkle_root}</code><br>
-          <a href="${artwork.mempool_url}" target="_blank" style="display:inline-block;margin-top:10px;padding:10px 20px;border:1px solid var(--gold);color:var(--gold);text-decoration:none;font-size:11px;letter-spacing:2px;text-transform:uppercase;transition:all 0.3s;"
-            onmouseover="this.style.background='var(--gold)';this.style.color='#fff';"
-            onmouseout="this.style.background='transparent';this.style.color='var(--gold)';">
-            ${currentLang === 'es' ? '🔍 Ver en Mempool.space' : '🔍 View on Mempool.space'}
-          </a>
-        </div>
-        ` : ''}
+        ${bitcoinHtml}
       </div>
     </div>
   `;
-  
-  resultDiv.className = 'result success show';
 }
 
-function showError(titleKey, descKey) {
+function showError(title, desc) {
   const resultDiv = document.getElementById('result');
-  const title = translations[getCurrentLang()][titleKey] || titleKey;
-  const desc = translations[getCurrentLang()][descKey] || descKey;
+  const lang = getCurrentLang();
+  const errorLabel = lang === 'es' ? '✗ No Verificado' : '✗ Not Verified';
   
   resultDiv.innerHTML = `
-    <div class="error-message">${title}</div>
-    <div class="error-description">${desc}</div>
+    <div class="error-badge">${errorLabel}</div>
+    <div class="error-msg">
+      <h4>${escHtml(title)}</h4>
+      <p>${escHtml(desc)}</p>
+    </div>
   `;
-  
-  resultDiv.className = 'result error show';
+}
+
+function escHtml(s) { 
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
 function formatDate(dateStr) {
-  const date = new Date(dateStr);
-  const currentLang = getCurrentLang();
-  
-  return date.toLocaleDateString(currentLang === 'es' ? 'es-AR' : 'en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
+  if (!dateStr) return '—';
+  try {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString(getCurrentLang() === 'es' ? 'es-AR' : 'en-US', {
+      year: 'numeric', month: 'long', day: 'numeric'
+    });
+  } catch(e) {
+    return dateStr;
+  }
 }
 
 function getCurrentLang() {
   return localStorage.getItem('hash21-lang') || 'es';
 }
 
-// Limpiar resultado cuando se modifica el input
-document.getElementById('hashInput').addEventListener('input', function() {
-  const resultDiv = document.getElementById('result');
-  resultDiv.className = 'result';
-});
+function setLang(lang) {
+  localStorage.setItem('hash21-lang', lang);
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.toLowerCase() === lang);
+  });
+}
 
-// Inicializar idioma
-document.addEventListener('DOMContentLoaded', function() {
-  const savedLang = getCurrentLang();
-  setLang(savedLang);
-  // Auto-verify if hash is in URL
+// Auto-verify from URL
+window.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
-  const hashParam = params.get('hash');
-  if (hashParam) {
-    document.getElementById('hashInput').value = hashParam;
+  const hash = params.get('hash') || params.get('h');
+  if (hash) {
+    document.getElementById('hashInput').value = hash;
     verifyHash(new Event('submit'));
   }
+  
+  // Set initial lang
+  const lang = getCurrentLang();
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.toLowerCase() === lang);
+  });
 });
 </script>
 
