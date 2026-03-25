@@ -112,7 +112,9 @@ h2 { font-size:18px; font-weight:500; margin-bottom:20px; color:var(--gold); }
         <div class="stat"><div class="stat-number" id="stat-artists">-</div><div class="stat-label">Artistas</div></div>
         <div class="stat"><div class="stat-number" id="stat-works">-</div><div class="stat-label">Obras</div></div>
         <div class="stat"><div class="stat-number" id="stat-products">-</div><div class="stat-label">Productos</div></div>
+        <div class="stat"><div class="stat-number" id="stat-certs">-</div><div class="stat-label">Certificados</div></div>
         <div class="stat"><div class="stat-number" id="stat-zaps">-</div><div class="stat-label">Zaps</div></div>
+        <div class="stat"><div class="stat-number" id="stat-sats">-</div><div class="stat-label">Sats ⚡</div></div>
       </div>
       <div id="dashboard-recent"></div>
     </div>
@@ -254,7 +256,21 @@ async function loadDashboard() {
   document.getElementById('stat-artists').textContent = artists.length;
   document.getElementById('stat-works').textContent = works.length;
   document.getElementById('stat-products').textContent = products.length;
-  document.getElementById('stat-zaps').textContent = '—';
+  
+  // Certificates count
+  const certs = works.filter(w => w.certificate_hash).length;
+  document.getElementById('stat-certs').textContent = certs;
+  
+  // Zap stats
+  try {
+    const zapRes = await fetch(API + '/log-zap');
+    const zapData = await zapRes.json();
+    document.getElementById('stat-zaps').textContent = zapData.total_zaps || 0;
+    document.getElementById('stat-sats').textContent = (zapData.total_sats || 0).toLocaleString();
+  } catch(e) {
+    document.getElementById('stat-zaps').textContent = '—';
+    document.getElementById('stat-sats').textContent = '—';
+  }
 }
 
 async function loadArtists() {
