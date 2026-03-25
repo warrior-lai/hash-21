@@ -221,5 +221,6 @@ No hay build step en el frontend. No hay bundler. Abrí `index.html` y funciona.
 
 ## Licencia
 
-© 2025-2026 Hash21. Todos los derechos reservados.
-Las obras de arte son propiedad de sus respectivos artistas.
+MIT License — ver [LICENSE](LICENSE)
+
+El código es open source. Las obras de arte son propiedad de sus respectivos artistas.
