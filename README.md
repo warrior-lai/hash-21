@@ -79,8 +79,6 @@ Sin intermediarios. Sin permisos. Sin censura.
 
 ---
 
----
-
 ## 🏗️ Arquitectura
 
 ```
