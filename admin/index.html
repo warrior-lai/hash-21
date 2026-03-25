@@ -101,6 +101,8 @@ h2 { font-size:18px; font-weight:500; margin-bottom:20px; color:var(--gold); }
     <a onclick="showSection('artists')">👥 Artistas</a>
     <a onclick="showSection('works')">🎨 Obras</a>
     <a onclick="showSection('products')">🛒 Productos</a>
+    <a onclick="showSection('users')">👤 Usuarios</a>
+    <a onclick="showSection('certs')">📜 Certificados</a>
     <a class="logout-btn" onclick="handleLogout()">🚪 Cerrar sesión</a>
   </nav>
 
@@ -144,6 +146,23 @@ h2 { font-size:18px; font-weight:500; margin-bottom:20px; color:var(--gold); }
         <button class="btn-add" onclick="openModal('product')">+ Nuevo Producto</button>
       </div>
       <div id="products-list"></div>
+    </div>
+
+    <!-- Users -->
+    <div id="sec-users" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <h2 style="margin:0">Usuarios</h2>
+        <button class="btn-add" onclick="openModal('user')">+ Nuevo Usuario</button>
+      </div>
+      <div id="users-list"></div>
+    </div>
+
+    <!-- Certificates -->
+    <div id="sec-certs" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <h2 style="margin:0">Certificados</h2>
+      </div>
+      <div id="certs-list"></div>
     </div>
   </div>
 </div>
@@ -232,7 +251,7 @@ checkAuth();
 function showSection(name) {
   document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
   event.target.classList.add('active');
-  ['dashboard','artists','works','products'].forEach(s => {
+  ['dashboard','artists','works','products','users','certs'].forEach(s => {
     document.getElementById('sec-' + s).style.display = s === name ? 'block' : 'none';
   });
   currentSection = name;
@@ -245,6 +264,8 @@ async function loadSection(name) {
   if (name === 'artists') await loadArtists();
   if (name === 'works') await loadWorks();
   if (name === 'products') await loadProducts();
+  if (name === 'users') await loadUsers();
+  if (name === 'certs') await loadCerts();
 }
 
 async function api(endpoint, method, body) {
@@ -361,12 +382,74 @@ async function loadProducts() {
   `).join('');
 }
 
+// Load Users
+async function loadUsers() {
+  const users = await api('/users');
+  if (!users || !users.length) { document.getElementById('users-list').innerHTML = '<div class="empty">No hay usuarios registrados.</div>'; return; }
+  document.getElementById('users-list').innerHTML = users.map(u => `
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3>${esc(u.email)}</h3>
+          <div class="meta">Rol: ${u.role} ${u.artists ? '· Artista: ' + esc(u.artists.name) : ''}</div>
+        </div>
+        <span class="badge badge-${u.status}">${u.status}</span>
+      </div>
+      <div class="meta">Creado: ${new Date(u.created_at).toLocaleDateString()}</div>
+      <div class="actions">
+        ${u.status === 'pending' ? `<button class="btn btn-gold" onclick="updateUserStatus('${u.id}','active')">✓ Aprobar</button>` : ''}
+        ${u.status === 'active' ? `<button class="btn btn-outline" onclick="updateUserStatus('${u.id}','suspended')">Suspender</button>` : ''}
+        ${u.status === 'suspended' ? `<button class="btn btn-outline" onclick="updateUserStatus('${u.id}','active')">Reactivar</button>` : ''}
+        <button class="btn btn-outline" onclick='editUser(${JSON.stringify(u)})'>Editar</button>
+        <button class="btn btn-danger" onclick="deleteItem('users','${u.id}','${esc(u.email)}')">Eliminar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function updateUserStatus(id, status) {
+  await api('/users', 'PUT', { id, status });
+  loadUsers();
+}
+
+function editUser(u) { openModal('user', u); }
+
+// Load Certificates
+async function loadCerts() {
+  const works = await api('/works');
+  const certified = works.filter(w => w.certificate_hash);
+  if (!certified.length) { document.getElementById('certs-list').innerHTML = '<div class="empty">No hay certificados emitidos.</div>'; return; }
+  document.getElementById('certs-list').innerHTML = certified.map(w => `
+    <div class="card">
+      <div class="card-header">
+        <div class="card-row">
+          ${w.image_url ? `<img src="${w.image_url}" class="card-img">` : ''}
+          <div>
+            <h3>${esc(w.title_es)}</h3>
+            <div class="meta">${w.artists ? esc(w.artists.name) : '—'}</div>
+          </div>
+        </div>
+        <span class="badge badge-${w.certificate_status}">${w.certificate_status === 'certified' ? '✓ Confirmado' : '⏳ Pendiente'}</span>
+      </div>
+      <div class="meta" style="margin-top:10px;">
+        <strong>Hash:</strong> <code style="font-size:10px;">${w.certificate_hash}</code><br>
+        <strong>Fecha:</strong> ${w.certificate_date ? new Date(w.certificate_date).toLocaleString() : '—'}<br>
+        ${w.certificate_block ? `<strong>Bloque:</strong> #${w.certificate_block}` : ''}
+      </div>
+      <div class="actions">
+        <a href="${API}/certificate-pdf?work_id=${w.id}" target="_blank" class="btn btn-outline">📄 Ver Certificado</a>
+        ${w.certificate_status === 'pending' ? `<button class="btn btn-outline" onclick="certifyWork('${w.id}', true)">🔄 Re-enviar</button>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
 // Modal
 function openModal(type, data) {
   currentModal = type;
   editingId = data ? data.id : null;
   document.getElementById('modal-title').textContent = (editingId ? 'Editar ' : 'Nuevo ') + 
-    (type === 'artist' ? 'Artista' : type === 'work' ? 'Obra' : 'Producto');
+    (type === 'artist' ? 'Artista' : type === 'work' ? 'Obra' : type === 'user' ? 'Usuario' : 'Producto');
   
   const fields = getFields(type, data);
   document.getElementById('modal-fields').innerHTML = fields;
@@ -429,6 +512,23 @@ function getFields(type, d) {
       <option value="consult" ${d.status==='consult'?'selected':''}>Consultar</option>
       <option value="hidden" ${d.status==='hidden'?'selected':''}>Oculto</option>
     </select></div>`;
+
+  if (type === 'user') {
+    const artistOpts = '<option value="">— Sin vincular —</option>' + artistsCache.map(a => `<option value="${a.id}" ${d.artist_id===a.id?'selected':''}>${esc(a.name)}</option>`).join('');
+    return `
+    <div class="form-group"><label>Email</label><input name="email" type="email" value="${d.email||''}" required></div>
+    <div class="form-group"><label>Rol</label><select name="role">
+      <option value="artist" ${d.role==='artist'?'selected':''}>Artista</option>
+      <option value="collaborator" ${d.role==='collaborator'?'selected':''}>Colaborador</option>
+      <option value="admin" ${d.role==='admin'?'selected':''}>Admin</option>
+    </select></div>
+    <div class="form-group"><label>Vincular a Artista</label><select name="artist_id">${artistOpts}</select></div>
+    <div class="form-group"><label>Estado</label><select name="status">
+      <option value="pending" ${d.status==='pending'?'selected':''}>Pendiente</option>
+      <option value="active" ${d.status==='active'?'selected':''}>Activo</option>
+      <option value="suspended" ${d.status==='suspended'?'selected':''}>Suspendido</option>
+    </select></div>`;
+  }
 }
 
 // Edit helpers
@@ -453,7 +553,7 @@ async function handleSubmit(e) {
     delete data.twitter;
   }
   
-  const endpoint = currentModal === 'artist' ? '/artists' : currentModal === 'work' ? '/works' : '/products';
+  const endpoint = currentModal === 'artist' ? '/artists' : currentModal === 'work' ? '/works' : currentModal === 'user' ? '/users' : '/products';
   
   if (editingId) {
     data.id = editingId;
