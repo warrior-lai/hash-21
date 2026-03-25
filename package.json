@@ -9,13 +9,14 @@
     "test:watch": "vitest --watch",
     "test:coverage": "vitest run --coverage",
     "test:legacy": "./test.sh",
-    "lint": "eslint . --ext .js"
+    "lint": "eslint . --ext .js",
+    "docs": "npx serve docs/api"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/warrior-lai/hash-21"
   },
-  "keywords": ["bitcoin", "lightning", "art", "nostr", "certification"],
+  "keywords": ["bitcoin", "lightning", "art", "nostr", "certification", "opentimestamps"],
   "author": "Lai⚡️",
   "license": "MIT",
   "devDependencies": {

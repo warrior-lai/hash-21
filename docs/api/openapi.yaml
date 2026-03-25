@@ -1,0 +1,448 @@
+openapi: 3.0.3
+info:
+  title: Hash21 API
+  description: |
+    API para Hash21 — Plataforma de arte soberano sobre Bitcoin.
+    
+    ## Features
+    - Gestión de artistas, obras y productos
+    - Certificación on-chain con OpenTimestamps
+    - Zaps Lightning (NIP-57)
+    - Verificación pública de certificados
+  version: 0.3.0
+  contact:
+    name: Hash21
+    url: https://hash21.studio
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://hash21-backend.vercel.app/api
+    description: Production
+
+tags:
+  - name: Artists
+    description: Gestión de artistas
+  - name: Works
+    description: Gestión de obras
+  - name: Products
+    description: Gestión de productos
+  - name: Users
+    description: Gestión de usuarios
+  - name: Certification
+    description: Certificación on-chain
+  - name: Payments
+    description: Lightning payments
+
+paths:
+  /artists:
+    get:
+      tags: [Artists]
+      summary: Listar artistas
+      responses:
+        '200':
+          description: Lista de artistas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Artist'
+    post:
+      tags: [Artists]
+      summary: Crear artista
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArtistInput'
+      responses:
+        '201':
+          description: Artista creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Artist'
+    put:
+      tags: [Artists]
+      summary: Actualizar artista
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                  required: [id]
+                - $ref: '#/components/schemas/ArtistInput'
+      responses:
+        '200':
+          description: Artista actualizado
+
+  /works:
+    get:
+      tags: [Works]
+      summary: Listar obras
+      responses:
+        '200':
+          description: Lista de obras con info de artista
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Work'
+    post:
+      tags: [Works]
+      summary: Crear obra
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkInput'
+      responses:
+        '201':
+          description: Obra creada
+
+  /products:
+    get:
+      tags: [Products]
+      summary: Listar productos
+      responses:
+        '200':
+          description: Lista de productos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+
+  /users:
+    get:
+      tags: [Users]
+      summary: Listar usuarios
+      responses:
+        '200':
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      tags: [Users]
+      summary: Crear usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '201':
+          description: Usuario creado
+
+  /verify:
+    get:
+      tags: [Certification]
+      summary: Verificar certificado por hash
+      parameters:
+        - name: hash
+          in: query
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-f0-9]{64}$'
+          description: SHA-256 hash de la obra
+      responses:
+        '200':
+          description: Resultado de verificación
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyResponse'
+
+  /certify:
+    post:
+      tags: [Certification]
+      summary: Certificar obra on-chain
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                work_id:
+                  type: string
+                  format: uuid
+              required: [work_id]
+      responses:
+        '200':
+          description: Certificación iniciada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  hash:
+                    type: string
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /zap:
+    post:
+      tags: [Payments]
+      summary: Crear zap request (NIP-57)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                artist_id:
+                  type: string
+                  format: uuid
+                amount:
+                  type: integer
+                  minimum: 1
+                  description: Monto en sats
+                comment:
+                  type: string
+                  maxLength: 280
+              required: [artist_id, amount]
+      responses:
+        '200':
+          description: Invoice generado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  invoice:
+                    type: string
+                  payment_hash:
+                    type: string
+
+  /invoice:
+    post:
+      tags: [Payments]
+      summary: Generar invoice LNURL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_id:
+                  type: string
+                  format: uuid
+                amount_sats:
+                  type: integer
+                  minimum: 1
+              required: [product_id, amount_sats]
+      responses:
+        '200':
+          description: Invoice generado
+
+components:
+  schemas:
+    Artist:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        slug:
+          type: string
+        bio_es:
+          type: string
+        bio_en:
+          type: string
+        lightning_address:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive]
+        links:
+          type: object
+          properties:
+            instagram:
+              type: string
+            twitter:
+              type: string
+        created_at:
+          type: string
+          format: date-time
+
+    ArtistInput:
+      type: object
+      properties:
+        name:
+          type: string
+        slug:
+          type: string
+        bio_es:
+          type: string
+        bio_en:
+          type: string
+        lightning_address:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive]
+      required: [name, slug]
+
+    Work:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title_es:
+          type: string
+        title_en:
+          type: string
+        description_es:
+          type: string
+        description_en:
+          type: string
+        image_url:
+          type: string
+          format: uri
+        technique:
+          type: string
+        dimensions:
+          type: string
+        year:
+          type: integer
+        price_sats:
+          type: integer
+        status:
+          type: string
+          enum: [available, sold, consult]
+        certificate_hash:
+          type: string
+        certificate_block:
+          type: integer
+        certificate_status:
+          type: string
+          enum: [none, pending, certified]
+        artist_id:
+          type: string
+          format: uuid
+        artists:
+          $ref: '#/components/schemas/Artist'
+
+    WorkInput:
+      type: object
+      properties:
+        title_es:
+          type: string
+        title_en:
+          type: string
+        description_es:
+          type: string
+        image_url:
+          type: string
+        technique:
+          type: string
+        dimensions:
+          type: string
+        year:
+          type: integer
+        price_sats:
+          type: integer
+        status:
+          type: string
+        artist_id:
+          type: string
+          format: uuid
+      required: [title_es, artist_id]
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name_es:
+          type: string
+        name_en:
+          type: string
+        description_es:
+          type: string
+        image_url:
+          type: string
+        price_sats:
+          type: integer
+        status:
+          type: string
+        artist_id:
+          type: string
+          format: uuid
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [admin, artist, collaborator]
+        artist_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending, active, suspended]
+        created_at:
+          type: string
+          format: date-time
+
+    UserInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [admin, artist, collaborator]
+        artist_id:
+          type: string
+          format: uuid
+      required: [email]
+
+    VerifyResponse:
+      type: object
+      properties:
+        found:
+          type: boolean
+        work:
+          $ref: '#/components/schemas/Work'
+        artist:
+          $ref: '#/components/schemas/Artist'
+        block:
+          type: integer
+          description: Bitcoin block number

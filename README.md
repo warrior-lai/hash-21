@@ -20,7 +20,7 @@
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
   <img src="https://img.shields.io/badge/Bitcoin-Lightning-orange" alt="Lightning">
   <img src="https://img.shields.io/badge/Nostr-NIP--57-purple" alt="Nostr">
-  <img src="https://img.shields.io/badge/tests-30%2B-brightgreen" alt="Tests">
+  <img src="https://img.shields.io/badge/tests-59-brightgreen" alt="Tests">
   <img src="https://img.shields.io/badge/coverage-70%25-yellowgreen" alt="Coverage">
 </p>
 
