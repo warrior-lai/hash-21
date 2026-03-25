@@ -318,3 +318,38 @@ Hash21 nace de una premisa: **el arte necesita soberanía, no plataformas**.
   <a href="https://hash21.studio">hash21.studio</a> •
   Built with 🧡 on Bitcoin
 </p>
+
+---
+
+## 🧪 Testing
+
+```bash
+# Install dependencies
+npm install
+
+# Run tests
+npm test
+
+# Watch mode
+npm run test:watch
+
+# Coverage report
+npm run test:coverage
+```
+
+### Test Structure
+
+```
+/tests
+  /api          # API endpoint tests
+  /helpers      # Validation & utility tests
+  /components   # Frontend tests (future)
+```
+
+### Coverage Target
+
+Goal: 60-70% coverage on critical paths:
+- API endpoints
+- Hash generation
+- Input validation
+- Certification logic

@@ -1,0 +1,26 @@
+{
+  "name": "hash21",
+  "version": "0.3.0",
+  "description": "Bitcoin Art Gallery with Lightning payments and on-chain certification",
+  "type": "module",
+  "scripts": {
+    "dev": "npx serve .",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest run --coverage",
+    "test:legacy": "./test.sh",
+    "lint": "eslint . --ext .js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/warrior-lai/hash-21"
+  },
+  "keywords": ["bitcoin", "lightning", "art", "nostr", "certification"],
+  "author": "Lai⚡️",
+  "license": "MIT",
+  "devDependencies": {
+    "vitest": "^1.6.0",
+    "@vitest/coverage-v8": "^1.6.0",
+    "eslint": "^8.57.0"
+  }
+}
