@@ -6,8 +6,8 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verificación de Existencia On-Chain — Hash21</title>
-<meta name="description" content="Verifica la existencia on-chain de obras certificadas en Hash21. Ingresa el hash SHA-256 para confirmar que existía en una fecha específica, anclado en Bitcoin.">
+<title>Verificá tu Obra — Hash21</title>
+<meta name="description" content="Encontrá el bloque de Bitcoin donde quedó registrada tu obra. Ingresa el hash SHA-256 para ver el timestamp permanente.">
 
 <meta property="og:title" content="Verificación de Autenticidad - Hash21">
 <meta property="og:description" content="Verifica la autenticidad de obras certificadas on-chain en Hash21.">
@@ -299,9 +299,9 @@ footer {
 
 <main>
   <div class="verify-header">
-    <h1 class="verify-title" data-i18n="verify_title">Verificación de Existencia On-Chain</h1>
+    <h1 class="verify-title" data-i18n="verify_title">Verificá tu Obra</h1>
     <p class="verify-subtitle" data-i18n="verify_subtitle">
-      Ingresá el hash SHA-256 de una obra para verificar su existencia y timestamp on-chain.
+      Ingresá el hash SHA-256 para encontrar el bloque de Bitcoin donde quedó registrada tu obra.
     </p>
   </div>
 
@@ -317,7 +317,7 @@ footer {
       >
     </div>
     <button type="submit" class="verify-btn" data-i18n="verify_button">
-      Verificar Existencia
+      Buscar en Bitcoin
     </button>
   </form>
 
@@ -375,7 +375,9 @@ function showSuccess(data) {
   
   let badgeHtml, badgeText;
   if (isCertified) {
-    badgeText = lang === 'es' ? '✓ Existencia Verificada' : '✓ Existence Verified';
+    badgeText = cert.block 
+      ? (lang === 'es' ? '✓ Bloque #' + cert.block : '✓ Block #' + cert.block)
+      : (lang === 'es' ? '⏳ Pendiente de Bloque' : '⏳ Awaiting Block');
     badgeHtml = `<div class="success-badge">${badgeText}</div>`;
   } else {
     badgeText = lang === 'es' ? '⏳ Pendiente de Confirmación' : '⏳ Pending Confirmation';
