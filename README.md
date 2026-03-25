@@ -293,7 +293,7 @@ Ver [CONTRIBUTING.md](CONTRIBUTING.md) para instrucciones de instalación, testi
 
 | Rol | Nombre | GitHub |
 |-----|--------|--------|
-| **Founder & Lead Dev** | Lai⚡️ | [@warrior-lai](https://github.com/warrior-lai) |
+| **Founder & Artist** | Lai⚡️ | [@warrior-lai](https://github.com/warrior-lai) |
 | **AI Dev** | Ragnar 🪓 | — |
 
 ---
