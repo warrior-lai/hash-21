@@ -371,19 +371,6 @@ Las obras de arte son propiedad de sus respectivos artistas.
 
 ---
 
-## 🧡 Filosofía
-
-Hash21 nace de una premisa: **el arte necesita soberanía, no plataformas**.
-
-- Sin custody de las obras
-- Sin intermediarios en los pagos  
-- Sin permisos para publicar
-- Certificación vinculada a Bitcoin, no a una empresa
-
-**Permanencia para la obra. Soberanía para el artista. ⚡**
-
----
-
 <p align="center">
   <a href="https://hash21.studio">hash21.studio</a> •
   Built with 🧡 on Bitcoin
