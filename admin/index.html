@@ -112,7 +112,9 @@ h2 { font-size:18px; font-weight:500; margin-bottom:20px; color:var(--gold); }
         <div class="stat"><div class="stat-number" id="stat-artists">-</div><div class="stat-label">Artistas</div></div>
         <div class="stat"><div class="stat-number" id="stat-works">-</div><div class="stat-label">Obras</div></div>
         <div class="stat"><div class="stat-number" id="stat-products">-</div><div class="stat-label">Productos</div></div>
+        <div class="stat"><div class="stat-number" id="stat-certs">-</div><div class="stat-label">Certificados</div></div>
         <div class="stat"><div class="stat-number" id="stat-zaps">-</div><div class="stat-label">Zaps</div></div>
+        <div class="stat"><div class="stat-number" id="stat-sats">-</div><div class="stat-label">Sats ⚡</div></div>
       </div>
       <div id="dashboard-recent"></div>
     </div>
@@ -254,7 +256,21 @@ async function loadDashboard() {
   document.getElementById('stat-artists').textContent = artists.length;
   document.getElementById('stat-works').textContent = works.length;
   document.getElementById('stat-products').textContent = products.length;
-  document.getElementById('stat-zaps').textContent = '—';
+  
+  // Certificates count
+  const certs = works.filter(w => w.certificate_hash).length;
+  document.getElementById('stat-certs').textContent = certs;
+  
+  // Zap stats
+  try {
+    const zapRes = await fetch(API + '/log-zap');
+    const zapData = await zapRes.json();
+    document.getElementById('stat-zaps').textContent = zapData.total_zaps || 0;
+    document.getElementById('stat-sats').textContent = (zapData.total_sats || 0).toLocaleString();
+  } catch(e) {
+    document.getElementById('stat-zaps').textContent = '—';
+    document.getElementById('stat-sats').textContent = '—';
+  }
 }
 
 async function loadArtists() {
@@ -297,9 +313,16 @@ async function loadWorks() {
         </div>
         <span class="badge badge-${w.status}">${w.status}</span>
       </div>
+      ${w.certificate_status && w.certificate_status !== 'none' 
+        ? `<div class="meta" style="margin-top:8px;color:var(--green);">📜 ${w.certificate_status === 'certified' ? 'Certificada · Bloque #' + w.certificate_block : w.certificate_status === 'pending' ? 'Pendiente de confirmación en blockchain' : 'Hash: ' + (w.certificate_hash || '').substring(0,16) + '...'} 
+        <a href="${API}/certificate-pdf?work_id=${w.id}" target="_blank" style="margin-left:8px;color:var(--gold);font-size:11px;">📄 Ver certificado</a></div>` 
+        : ''}
       <div class="actions">
         <button class="btn btn-outline" onclick='editWork(${JSON.stringify(w)})'>Editar</button>
         <button class="btn btn-outline" onclick="changeStatus('works','${w.id}','${w.status === 'available' ? 'consult' : 'available'}')">${w.status === 'available' ? 'Poner en Consultar' : 'Poner Disponible'}</button>
+        ${!w.certificate_status || w.certificate_status === 'none' 
+          ? `<button class="btn btn-gold" onclick="certifyWork('${w.id}')">📜 Certificar</button>` 
+          : ''}
         <button class="btn btn-danger" onclick="deleteItem('works','${w.id}','${w.title_es}')">Eliminar</button>
       </div>
     </div>
@@ -446,6 +469,23 @@ async function deleteItem(endpoint, id, name) {
 async function changeStatus(endpoint, id, newStatus) {
   await api('/' + endpoint, 'PUT', { id, status: newStatus });
   loadSection(currentSection);
+}
+
+// Certify work
+async function certifyWork(workId) {
+  if (!confirm('¿Certificar esta obra on-chain? Se calculará el SHA-256 y se enviará a OpenTimestamps.')) return;
+  
+  try {
+    const res = await api('/certify', 'POST', { work_id: workId });
+    if (res.error) {
+      alert('Error: ' + res.error);
+      return;
+    }
+    alert('✅ Hash: ' + res.hash + '\n\nEstado: ' + (res.status === 'pending' ? 'Enviado a OpenTimestamps. Se anclará en un bloque de Bitcoin en las próximas horas.' : 'Hash calculado. Pendiente de envío.'));
+    loadWorks();
+  } catch(e) {
+    alert('Error: ' + e.message);
+  }
 }
 
 // Init — auth check handles loading
