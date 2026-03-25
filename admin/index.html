@@ -298,7 +298,8 @@ async function loadWorks() {
         <span class="badge badge-${w.status}">${w.status}</span>
       </div>
       ${w.certificate_status && w.certificate_status !== 'none' 
-        ? `<div class="meta" style="margin-top:8px;color:var(--green);">📜 ${w.certificate_status === 'certified' ? 'Certificada · Bloque #' + w.certificate_block : w.certificate_status === 'pending' ? 'Pendiente de confirmación en blockchain' : 'Hash: ' + (w.certificate_hash || '').substring(0,16) + '...'}</div>` 
+        ? `<div class="meta" style="margin-top:8px;color:var(--green);">📜 ${w.certificate_status === 'certified' ? 'Certificada · Bloque #' + w.certificate_block : w.certificate_status === 'pending' ? 'Pendiente de confirmación en blockchain' : 'Hash: ' + (w.certificate_hash || '').substring(0,16) + '...'} 
+        <a href="${API}/certificate-pdf?work_id=${w.id}" target="_blank" style="margin-left:8px;color:var(--gold);font-size:11px;">📄 Ver certificado</a></div>` 
         : ''}
       <div class="actions">
         <button class="btn btn-outline" onclick='editWork(${JSON.stringify(w)})'>Editar</button>
