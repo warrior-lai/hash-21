@@ -234,27 +234,110 @@ Frontend detecta receipt → ¡Gracias! ⚡
 
 ### Alineado con [Hackathons La Crypta 2026](https://hackaton.lacrypta.ar/hackathons.html)
 
-| Hackathon | Tema | Feature para Hash21 | Estado |
-|-----------|------|---------------------|--------|
-| **#1 FOUNDATIONS** | Lightning Payments | ⚡ Zaps NIP-57 + LNURL-pay | ✅ Live |
-| **#2 IDENTITY** | Nostr Identity | 👤 Login con Nostr (NIP-07), NIP-05 verificado | 🔜 Pendiente |
-| **#3 ZAPS** | Lightning + Nostr | 💜 Zap receipts en galería, rankings | 🔜 Pendiente |
-| **#4 COMMERCE** | Lightning Stores | 🛒 Checkout completo, stock, envíos | 🔜 Parcial |
-| **#5 MEDIA** | Decentralized Storage | 📸 Upload a Blossom, IPFS para obras | 🔜 Pendiente |
-| **#6 AI AGENTS** | Bots & Automation | 🤖 Bot Telegram para zaps, notificaciones | 🔜 Pendiente |
-| **#7 INFRASTRUCTURE** | Nodes & Routing | 🏗️ BTCPay Server propio, LNbits | 🔜 Pendiente |
-| **#8 INTEGRATION** | Full-Stack | 🌐 App completa multi-artista | 🔜 En desarrollo |
+#### ✅ #1 FOUNDATIONS — Lightning Payments (Marzo 2026)
+**Estado: LIVE**
 
-### Otros features planeados
+Sistema completo de pagos Lightning implementado:
+- ⚡ **Zaps NIP-57** — Propinas con firma Nostr server-side
+- 🌩️ **WebLN (Alby)** — Pago 1-click desde extensión del navegador
+- 💳 **LNURL-pay** — Invoice directo a wallet del artista
+- 🛒 **Shop** — 8 productos con checkout QR y precios en sats
+- 📜 **Certificación On-Chain** — OpenTimestamps anclado en Bitcoin
+- 🔍 **Verificación Pública** — Cualquiera verifica sin confiar en Hash21
 
-| Feature | Prioridad | Estado |
-|---------|-----------|--------|
-| **Autenticidad real** (firma Nostr + identidad verificada + OP_RETURN) | 🔴 Alta | Roadmap |
-| Autogestión artistas (registro, login, perfil) | 🔴 Alta | En desarrollo |
-| Upload imágenes desde admin | 🔴 Alta | Endpoint listo |
-| Dashboard analytics por artista | 🟡 Media | Pendiente |
-| Notificaciones (email/Telegram) | 🟡 Media | Pendiente |
-| PWA (installable) | 🟢 Baja | Pendiente |
+---
+
+#### 🔜 #2 IDENTITY — Nostr Identity (Abril 2026)
+**Estado: Pendiente**
+
+Identidad soberana para artistas:
+- 👤 **Login con Nostr (NIP-07)** — Sin email, sin password, tu clave es tu identidad
+- ✅ **NIP-05 verificado** — `artista@hash21.studio` como verificación
+- 🔐 **Firma de obras** — Cada obra firmada con la clave del artista
+- 🎭 **Perfil descentralizado** — Bio y links desde Nostr, no desde nuestra DB
+
+---
+
+#### 🔜 #3 ZAPS — Lightning + Nostr (Mayo 2026)
+**Estado: Pendiente**
+
+Zaps visibles y sociales:
+- 💜 **Zap receipts en galería** — Ver quién zappeó cada obra
+- 🏆 **Rankings de zaps** — Top obras más zappeadas
+- 📊 **Stats públicos** — Total sats recibidos por artista
+- 🔔 **Notificaciones Nostr** — Artista recibe DM cuando lo zappean
+
+---
+
+#### 🔜 #4 COMMERCE — Lightning Stores (Junio 2026)
+**Estado: Parcial**
+
+E-commerce completo:
+- 🛒 **Checkout mejorado** — Carrito, múltiples items
+- 📦 **Gestión de stock** — Inventario en tiempo real
+- 🚚 **Envíos** — Integración con correo, tracking
+- 🧾 **Órdenes** — Historial, estados, confirmaciones
+- 💱 **Precios dinámicos** — Conversión BTC/USD en tiempo real
+
+---
+
+#### 🔜 #5 MEDIA — Decentralized Storage (Julio 2026)
+**Estado: Pendiente**
+
+Almacenamiento soberano:
+- 📸 **Upload a Blossom** — Imágenes en servidores distribuidos
+- 🌐 **IPFS para obras** — Hash permanente, sin servidor central
+- 🔗 **Links inmutables** — La imagen nunca desaparece
+- 📁 **Backup automático** — Redundancia en múltiples nodos
+
+---
+
+#### 🔜 #6 AI AGENTS — Bots & Automation (Agosto 2026)
+**Estado: Pendiente**
+
+Automatización inteligente:
+- 🤖 **Bot Telegram** — Notificaciones de ventas y zaps
+- 📱 **Bot Discord** — Updates para comunidad del artista
+- 🔔 **Alertas automáticas** — Nuevo zap, nueva venta, nuevo seguidor
+- 📈 **Reportes semanales** — Stats enviados automáticamente
+
+---
+
+#### 🔜 #7 INFRASTRUCTURE — Nodes & Routing (Septiembre 2026)
+**Estado: Pendiente**
+
+Infraestructura propia:
+- 🏗️ **BTCPay Server** — Servidor de pagos propio
+- ⚡ **LNbits** — Wallet y extensiones Lightning
+- 🔌 **Nodo propio** — Sin dependencia de terceros
+- 🛡️ **Self-hosted** — Control total de la infraestructura
+
+---
+
+#### 🔜 #8 INTEGRATION — Full-Stack (Octubre 2026)
+**Estado: En desarrollo**
+
+Plataforma completa multi-artista:
+- 🌐 **Onboarding artistas** — Registro, verificación, perfil
+- 🎨 **Dashboard artista** — Gestión de obras, ventas, stats
+- 👥 **Colaboraciones** — Obras con múltiples artistas
+- 🏛️ **Galerías/Curadores** — Roles adicionales
+- 📱 **App móvil** — PWA instalable
+
+---
+
+### Otros Features Planeados
+
+| Feature | Descripción | Prioridad | Estado |
+|---------|-------------|-----------|--------|
+| **Autenticidad real** | Firma Nostr + identidad verificada + OP_RETURN en Bitcoin | 🔴 Alta | Roadmap |
+| **Autogestión artistas** | Registro público, login, editar perfil y obras | 🔴 Alta | En desarrollo |
+| **Upload imágenes** | Subir imágenes desde admin sin URL externa | 🔴 Alta | Endpoint listo |
+| **Dashboard analytics** | Métricas por artista: views, zaps, ventas | 🟡 Media | Pendiente |
+| **Notificaciones** | Email y/o Telegram para eventos importantes | 🟡 Media | Pendiente |
+| **PWA** | App instalable en móvil desde el navegador | 🟢 Baja | Pendiente |
+| **Dark/Light mode** | Toggle de tema en la UI | 🟢 Baja | Pendiente |
+| **Múltiples idiomas** | Más allá de ES/EN (PT, DE, etc) | 🟢 Baja | Pendiente |
 
 ---
 
