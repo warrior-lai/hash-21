@@ -565,9 +565,10 @@
     if (!newWorks.length) return;
     
     function renderWork(w) {
-      const title = lang === 'en' ? (w.title_en || w.title_es) : w.title_es;
-      const artist = w.artists ? w.artists.name : '';
-      const technique = w.technique || '';
+      function escHtml(s) { return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;') : ''; }
+      const title = escHtml(lang === 'en' ? (w.title_en || w.title_es) : w.title_es);
+      const artist = escHtml(w.artists ? w.artists.name : '');
+      const technique = escHtml(w.technique || '');
       const status = w.status || 'consult';
       const img = w.image_url || '';
       const slug = title.toLowerCase().replace(/ /g, '-');
