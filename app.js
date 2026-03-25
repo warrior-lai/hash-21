@@ -86,18 +86,7 @@ function closeLightbox() {
 }
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
 
-/* 21 LAT carousel (legacy — element may not exist) */
-let pos = 0;
-const carousel = document.getElementById('carousel');
-function moveCarousel(dir) {
-  if (!carousel) return;
-  const item = carousel.querySelector('.carousel-item');
-  if (!item) return;
-  const w = item.offsetWidth + 20;
-  const max = carousel.scrollWidth - carousel.parentElement.offsetWidth;
-  pos = Math.max(0, Math.min(pos + dir * w, max));
-  carousel.style.transform = 'translateX(-' + pos + 'px)';
-}
+/* Collection carousel */
 
 /* Collection carousel — native scroll + drag + arrows */
 const collCarousel = document.getElementById('collCarousel');
