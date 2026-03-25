@@ -437,6 +437,16 @@ async function updateUserStatus(id, status) {
 
 function editUser(u) { openModal('user', u); }
 
+function toggleArtistFields(role) {
+  const el = document.getElementById('artist-fields');
+  if (el) el.style.display = role === 'artist' ? 'block' : 'none';
+}
+
+function toggleNewArtist(artistId) {
+  const el = document.getElementById('new-artist-fields');
+  if (el) el.style.display = artistId ? 'none' : 'block';
+}
+
 // Load Certificates
 async function loadCerts() {
   let works = await api('/works');
@@ -549,17 +559,26 @@ function getFields(type, d) {
     </select></div>`;
 
   if (type === 'user') {
-    const artistOpts = '<option value="">— Sin vincular —</option>' + artistsCache.map(a => `<option value="${a.id}" ${d.artist_id===a.id?'selected':''}>${esc(a.name)}</option>`).join('');
+    const artistOpts = '<option value="">— Crear nuevo artista —</option>' + artistsCache.map(a => `<option value="${a.id}" ${d.artist_id===a.id?'selected':''}>${esc(a.name)}</option>`).join('');
     const isNew = !d.id;
+    const showArtistFields = d.role === 'artist' || isNew;
     return `
     <div class="form-group"><label>Email</label><input name="email" type="email" value="${d.email||''}" ${isNew ? 'required' : 'readonly style="opacity:0.6"'} autocomplete="off"></div>
     <div class="form-group"><label>${isNew ? 'Contraseña' : 'Nueva Contraseña (dejar vacío para no cambiar)'}</label><input name="password" type="password" ${isNew ? 'required minlength="6"' : ''} placeholder="${isNew ? 'Mínimo 6 caracteres' : 'Dejar vacío para mantener actual'}" autocomplete="new-password"></div>
-    <div class="form-group"><label>Rol</label><select name="role">
-      <option value="artist" ${d.role==='artist'?'selected':''}>Artista</option>
+    <div class="form-group"><label>Rol</label><select name="role" onchange="toggleArtistFields(this.value)">
+      <option value="artist" ${d.role==='artist'||isNew?'selected':''}>Artista</option>
       <option value="collaborator" ${d.role==='collaborator'?'selected':''}>Colaborador</option>
       <option value="admin" ${d.role==='admin'?'selected':''}>Admin</option>
     </select></div>
-    <div class="form-group"><label>Vincular a Artista</label><select name="artist_id">${artistOpts}</select></div>
+    <div id="artist-fields" style="display:${showArtistFields?'block':'none'};">
+      <div class="form-group"><label>Vincular a Artista Existente</label><select name="artist_id" onchange="toggleNewArtist(this.value)">${artistOpts}</select></div>
+      <div id="new-artist-fields" style="display:${!d.artist_id?'block':'none'};padding:15px;background:var(--bg3);border-radius:4px;margin-top:10px;">
+        <div style="font-size:11px;color:var(--gold);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">Datos del nuevo artista</div>
+        <div class="form-group"><label>Nombre artístico</label><input name="artist_name" value="${d.artist_name||''}" placeholder="Ej: Abstract Lai"></div>
+        <div class="form-group"><label>Lightning Address</label><input name="artist_ln" value="" placeholder="usuario@walletofsatoshi.com"></div>
+        <div class="form-group"><label>Bio breve</label><textarea name="artist_bio" placeholder="Descripción corta del artista..."></textarea></div>
+      </div>
+    </div>
     <div class="form-group"><label>Estado</label><select name="status">
       <option value="pending" ${d.status==='pending'?'selected':''}>Pendiente</option>
       <option value="active" ${d.status==='active'?'selected':''}>Activo</option>
@@ -588,6 +607,26 @@ async function handleSubmit(e) {
     data.links = { instagram: data.instagram || '', twitter: data.twitter || '' };
     delete data.instagram;
     delete data.twitter;
+  }
+  
+  // Handle user with new artist
+  if (currentModal === 'user' && data.role === 'artist' && !data.artist_id && data.artist_name) {
+    // Create artist first
+    const artistData = {
+      name: data.artist_name,
+      slug: data.artist_name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+      lightning_address: data.artist_ln || '',
+      bio_es: data.artist_bio || '',
+      status: 'active'
+    };
+    const newArtist = await api('/artists', 'POST', artistData);
+    if (newArtist && newArtist.id) {
+      data.artist_id = newArtist.id;
+    }
+    // Clean up artist fields from user data
+    delete data.artist_name;
+    delete data.artist_ln;
+    delete data.artist_bio;
   }
   
   const endpoint = currentModal === 'artist' ? '/artists' : currentModal === 'work' ? '/works' : currentModal === 'user' ? '/users' : '/products';
