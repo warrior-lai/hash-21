@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.3.0-blue" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.4.0-blue" alt="Version">
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
   <img src="https://img.shields.io/badge/Bitcoin-Lightning-orange" alt="Lightning">
   <img src="https://img.shields.io/badge/Nostr-NIP--57-purple" alt="Nostr">
@@ -54,7 +54,9 @@ Sin intermediarios. Sin permisos. Sin censura.
 | 👥 **Hub de Artistas** | Perfiles con bio, links, Lightning Address |
 | 🎨 **Galería Dinámica** | Obras desde Supabase con lightbox |
 | 🔐 **Admin Panel** | CRUD completo + gestión de usuarios + roles |
-| 👤 **Sistema de Usuarios** | Roles (admin/artista), autogestión |
+| 👤 **Sistema de Usuarios** | Roles (admin/artist/designer), registro abierto |
+| 📄 **Certificados PDF** | Diseño premium, QR verificable, listo para enmarcar |
+| ✍️ **Registro de Creadores** | Onboarding simple para artistas y diseñadores |
 | 🌍 **Bilingüe** | Español / English |
 | 📱 **Responsive** | Mobile + desktop |
 
@@ -69,6 +71,7 @@ Sin intermediarios. Sin permisos. Sin censura.
 | **Verificación** | https://hash21.studio/verify |
 | **Tienda** | https://hash21.studio/shop |
 | **Admin** | https://hash21.studio/admin |
+| **Registro** | https://hash21.studio/register |
 
 ### Repositorios
 
