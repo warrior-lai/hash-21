@@ -248,7 +248,16 @@ async function showApp() {
   const { data: { session } } = await sb.auth.getSession();
   if (session) {
     const users = await api('/users');
-    currentUser = users.find(u => u.email === session.user.email) || { role: 'artist' };
+    const sessionEmail = session.user.email.toLowerCase();
+    currentUser = users.find(u => u.email && u.email.toLowerCase() === sessionEmail);
+    
+    console.log('Session email:', sessionEmail);
+    console.log('Found user:', currentUser);
+    
+    // Default to admin if user not found in DB (backward compat)
+    if (!currentUser) {
+      currentUser = { role: 'admin' };
+    }
     
     // Hide sections based on role
     if (currentUser.role !== 'admin') {
