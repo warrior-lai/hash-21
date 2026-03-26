@@ -27,53 +27,35 @@
     }
     .container {
       width: 100%;
-      max-width: 420px;
+      max-width: 380px;
+      animation: fadeIn 0.5s ease;
     }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    
     .logo {
       text-align: center;
       font-size: 28px;
       letter-spacing: 6px;
-      margin-bottom: 40px;
+      margin-bottom: 12px;
     }
     .logo span { color: var(--gold); }
-    
-    /* Steps */
-    .step { display: none; }
-    .step.active { display: block; animation: fadeIn 0.4s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    
-    /* Progress */
-    .progress {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 40px;
+    .tagline {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-dim);
+      letter-spacing: 2px;
+      margin-bottom: 50px;
     }
-    .progress-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--border);
-      transition: all 0.3s;
-    }
-    .progress-dot.active { background: var(--gold); }
-    .progress-dot.done { background: var(--text-dim); }
     
-    /* Form elements */
     h2 {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 400;
       letter-spacing: 2px;
-      margin-bottom: 8px;
-      text-align: center;
-    }
-    .subtitle {
-      font-size: 13px;
-      color: var(--text-dim);
-      text-align: center;
       margin-bottom: 30px;
+      text-align: center;
     }
-    input, textarea {
+    
+    input {
       width: 100%;
       background: transparent;
       border: 1px solid var(--border);
@@ -84,33 +66,12 @@
       margin-bottom: 16px;
       transition: border-color 0.3s;
     }
-    input:focus, textarea:focus {
+    input:focus {
       outline: none;
       border-color: var(--gold);
     }
-    input::placeholder, textarea::placeholder { color: var(--text-dim); }
-    textarea { resize: none; min-height: 100px; }
+    input::placeholder { color: var(--text-dim); }
     
-    /* Type selector */
-    .type-selector {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 30px;
-    }
-    .type-option {
-      flex: 1;
-      padding: 30px 20px;
-      border: 1px solid var(--border);
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .type-option:hover { border-color: var(--text-dim); }
-    .type-option.selected { border-color: var(--gold); background: rgba(201, 162, 39, 0.05); }
-    .type-option .icon { font-size: 32px; margin-bottom: 12px; }
-    .type-option .label { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; }
-    
-    /* Buttons */
     .btn {
       width: 100%;
       background: transparent;
@@ -123,21 +84,11 @@
       padding: 16px;
       cursor: pointer;
       transition: all 0.3s;
+      margin-top: 10px;
     }
     .btn:hover { background: var(--gold); color: var(--bg); }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-secondary {
-      background: transparent;
-      border: none;
-      color: var(--text-dim);
-      font-size: 12px;
-      padding: 12px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    .btn-secondary:hover { color: var(--text); }
     
-    /* Error */
     .error {
       color: #ff6b6b;
       font-size: 12px;
@@ -146,82 +97,31 @@
       display: none;
     }
     
-    /* Success */
-    .success-icon {
-      font-size: 64px;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    
-    /* Link */
-    a { color: var(--gold); text-decoration: none; }
-    a:hover { text-decoration: underline; }
     .login-link {
       text-align: center;
       margin-top: 30px;
       font-size: 13px;
       color: var(--text-dim);
     }
+    a { color: var(--gold); text-decoration: none; }
+    a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="logo">HASH<span>21</span></div>
+    <div class="tagline">GALERÍA DE ARTE BITCOIN</div>
     
-    <div class="progress">
-      <div class="progress-dot active" data-step="1"></div>
-      <div class="progress-dot" data-step="2"></div>
-      <div class="progress-dot" data-step="3"></div>
-      <div class="progress-dot" data-step="4"></div>
-    </div>
+    <h2>Creá tu cuenta</h2>
     
-    <!-- Step 1: Email + Password -->
-    <div class="step active" data-step="1">
-      <h2>Creá tu cuenta</h2>
-      <p class="subtitle">Unite a la galería de arte Bitcoin</p>
-      <div class="error" id="error-1"></div>
+    <div class="error" id="error"></div>
+    <form onsubmit="handleRegister(event)">
       <input type="email" id="email" placeholder="Email" required>
-      <input type="password" id="password" placeholder="Contraseña (mínimo 6 caracteres)" required>
-      <button class="btn" onclick="step1()">Continuar</button>
-      <p class="login-link">¿Ya tenés cuenta? <a href="/admin">Iniciá sesión</a></p>
-    </div>
+      <input type="password" id="password" placeholder="Contraseña" required minlength="6">
+      <button type="submit" class="btn" id="btn">Registrarme</button>
+    </form>
     
-    <!-- Step 2: Type -->
-    <div class="step" data-step="2">
-      <h2>¿Qué creás?</h2>
-      <p class="subtitle">Esto nos ayuda a personalizar tu experiencia</p>
-      <div class="type-selector">
-        <div class="type-option" data-type="artist" onclick="selectType('artist')">
-          <div class="icon">🎨</div>
-          <div class="label">Arte</div>
-        </div>
-        <div class="type-option" data-type="designer" onclick="selectType('designer')">
-          <div class="icon">🛠️</div>
-          <div class="label">Diseño</div>
-        </div>
-      </div>
-      <button class="btn" onclick="step2()" id="btn-step2" disabled>Continuar</button>
-      <button class="btn-secondary" onclick="goBack(1)">← Volver</button>
-    </div>
-    
-    <!-- Step 3: Profile -->
-    <div class="step" data-step="3">
-      <h2>Tu perfil</h2>
-      <p class="subtitle">Contanos sobre vos</p>
-      <input type="text" id="name" placeholder="Nombre artístico">
-      <textarea id="bio" placeholder="Bio breve (opcional)"></textarea>
-      <input type="url" id="portfolio" placeholder="Link a portfolio o redes (opcional)">
-      <button class="btn" onclick="step3()">Continuar</button>
-      <button class="btn-secondary" onclick="goBack(2)">← Volver</button>
-    </div>
-    
-    <!-- Step 4: Success -->
-    <div class="step" data-step="4">
-      <div class="success-icon">✨</div>
-      <h2>¡Bienvenido a Hash21!</h2>
-      <p class="subtitle">Tu perfil está siendo revisado.<br>Te notificaremos cuando esté activo.</p>
-      <button class="btn" onclick="window.location.href='/admin'">Ir al panel</button>
-    </div>
+    <p class="login-link">¿Ya tenés cuenta? <a href="/admin">Iniciá sesión</a></p>
   </div>
 
   <script>
@@ -232,103 +132,48 @@
     const { createClient } = supabase;
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
     
-    let userData = { email: '', type: '', name: '', bio: '', portfolio: '' };
-    let currentStep = 1;
-    
-    function showStep(n) {
-      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-      document.querySelector(`.step[data-step="${n}"]`).classList.add('active');
-      document.querySelectorAll('.progress-dot').forEach(d => {
-        const step = parseInt(d.dataset.step);
-        d.classList.remove('active', 'done');
-        if (step < n) d.classList.add('done');
-        if (step === n) d.classList.add('active');
-      });
-      currentStep = n;
-    }
-    
-    function showError(step, msg) {
-      const err = document.getElementById(`error-${step}`);
-      if (err) {
-        err.textContent = msg;
-        err.style.display = 'block';
-      }
-    }
-    
-    function goBack(step) {
-      showStep(step);
-    }
-    
-    async function step1() {
+    async function handleRegister(e) {
+      e.preventDefault();
+      
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
+      const btn = document.getElementById('btn');
+      const err = document.getElementById('error');
       
-      if (!email || !password) {
-        showError(1, 'Completá todos los campos');
-        return;
-      }
-      if (password.length < 6) {
-        showError(1, 'La contraseña debe tener al menos 6 caracteres');
-        return;
-      }
-      
-      const btn = document.querySelector('.step[data-step="1"] .btn');
+      err.style.display = 'none';
       btn.disabled = true;
       btn.textContent = 'Creando...';
       
+      // Create Supabase auth user
       const { data, error } = await sb.auth.signUp({ email, password });
       
       if (error) {
-        showError(1, error.message);
+        err.textContent = error.message === 'User already registered' 
+          ? 'Este email ya está registrado' 
+          : error.message;
+        err.style.display = 'block';
         btn.disabled = false;
-        btn.textContent = 'Continuar';
+        btn.textContent = 'Registrarme';
         return;
       }
       
-      userData.email = email;
-      showStep(2);
-    }
-    
-    function selectType(type) {
-      document.querySelectorAll('.type-option').forEach(o => o.classList.remove('selected'));
-      document.querySelector(`.type-option[data-type="${type}"]`).classList.add('selected');
-      userData.type = type;
-      document.getElementById('btn-step2').disabled = false;
-    }
-    
-    function step2() {
-      if (!userData.type) return;
-      showStep(3);
-    }
-    
-    async function step3() {
-      userData.name = document.getElementById('name').value.trim();
-      userData.bio = document.getElementById('bio').value.trim();
-      userData.portfolio = document.getElementById('portfolio').value.trim();
-      
-      const btn = document.querySelector('.step[data-step="3"] .btn');
-      btn.disabled = true;
-      btn.textContent = 'Guardando...';
-      
-      // Create user in our DB
+      // Create user in our DB with pending status
       try {
         await fetch(`${API}/users`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            email: userData.email,
-            role: userData.type === 'artist' ? 'artist' : 'designer',
-            status: 'pending',
-            name: userData.name,
-            bio: userData.bio,
-            portfolio: userData.portfolio
+            email: email,
+            role: 'pending',
+            status: 'pending'
           })
         });
       } catch (e) {
         console.error('Error creating user:', e);
       }
       
-      showStep(4);
+      // Redirect to admin (will show onboarding)
+      window.location.href = '/admin';
     }
   </script>
 </body>
