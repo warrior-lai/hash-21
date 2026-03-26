@@ -104,6 +104,11 @@ header ul a:hover { color: var(--text); }
 
 /* LANG SWITCH */
 .lang-switch { display: flex; gap: 4px; align-items: center; }
+.auth-buttons {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
 .btn-signin {
   background: transparent;
   border: 1px solid var(--text-dim);
