@@ -10,16 +10,16 @@ describe('Verify API', () => {
     const res = await fetch(`${API}/verify?hash=${VALID_HASH}`)
     const data = await res.json()
     
-    expect(data.found).toBe(true)
-    expect(data.work).toBeDefined()
-    expect(data.work.certificate_hash).toBe(VALID_HASH)
+    expect(data.verified).toBe(true)
+    expect(data.title).toBeDefined()
+    expect(data.hash).toBe(VALID_HASH)
   })
 
   it('should return not found for invalid hash', async () => {
     const res = await fetch(`${API}/verify?hash=${INVALID_HASH}`)
     const data = await res.json()
     
-    expect(data.found).toBe(false)
+    expect(data.verified).toBe(false)
   })
 
   it('should return error for missing hash', async () => {
