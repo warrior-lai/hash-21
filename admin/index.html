@@ -936,6 +936,8 @@ body {
 
 .toast-success { border-left: 3px solid var(--green); }
 .toast-error { border-left: 3px solid var(--red); }
+.hash-copy { cursor:pointer; padding:4px 8px; border-radius:4px; transition:background 0.2s; }
+.hash-copy:hover { background:var(--bg3); }
 </style>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
@@ -1492,7 +1494,11 @@ async function loadCerts() {
     return `
       <tr>
         <td>${w.title_es}</td>
-        <td style="font-family:monospace;font-size:11px;">${w.certificate_hash?.slice(0,16)}...</td>
+        <td style="font-family:monospace;font-size:11px;">
+          <span class="hash-copy" onclick="copyHash('${w.certificate_hash}')" title="Copiar hash">
+            ${w.certificate_hash?.slice(0,16)}... <i data-lucide="copy" style="width:14px;height:14px;vertical-align:middle;cursor:pointer;"></i>
+          </span>
+        </td>
         <td>${w.certificate_block || '-'}</td>
         <td>${w.certificate_date ? new Date(w.certificate_date).toLocaleDateString() : '-'}</td>
         <td><span class="badge ${statusClass}">${statusText}</span></td>
@@ -1759,6 +1765,13 @@ async function deleteProduct(id) {
   await api('/products', { method: 'DELETE', body: JSON.stringify({ id }) });
   showToast('Producto eliminado');
   loadProducts();
+}
+
+// Copy hash
+function copyHash(hash) {
+  navigator.clipboard.writeText(hash);
+  showToast('Hash copiado');
+  lucide.createIcons();
 }
 
 // Init
