@@ -607,17 +607,15 @@
     
     const newHtml = newWorks.map(renderWork).join('');
     
-    // Append to carousel (before shop CTA card)
+    // Insert at START of carousel and grid (new featured works first)
     const carousel = document.getElementById('collCarousel');
     if (carousel) {
-      const shopCard = carousel.querySelector('[onclick*="shop"]');
-      if (shopCard) shopCard.insertAdjacentHTML('beforebegin', newHtml);
-      else carousel.insertAdjacentHTML('beforeend', newHtml);
+      carousel.insertAdjacentHTML('afterbegin', newHtml);
     }
     
-    // Append to grid
+    // Insert at START of grid
     const grid = document.getElementById('collectionGrid');
-    if (grid) grid.insertAdjacentHTML('beforeend', newHtml);
+    if (grid) grid.insertAdjacentHTML('afterbegin', newHtml);
     
   } catch(e) {
     console.log('Using hardcoded gallery (API unavailable)');
