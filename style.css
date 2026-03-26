@@ -320,7 +320,7 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
 .carousel-item {
   min-width: 280px;
   width: 280px;
-  height: 320px;
+  height: 350px;
   overflow: hidden;
   flex-shrink: 0;
   display: flex;
@@ -330,9 +330,10 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
 }
 .carousel-item img {
   width: 100%;
-  height: 240px;
-  object-fit: cover;
+  height: 260px;
+  object-fit: contain;
   object-position: center;
+  background: #0d0d0d;
   transition: transform 0.8s cubic-bezier(0.4,0,0.2,1), filter 0.5s ease;
 }
 .carousel-item:hover img { transform: scale(1.03); filter: brightness(1.05); }
