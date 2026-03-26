@@ -157,6 +157,9 @@
         body: JSON.stringify({ email, role: 'artist', status: 'pending' })
       });
       
+      // Login with new credentials
+      await sb.auth.signInWithPassword({ email, password });
+      
       window.location.href = '/admin';
     }
   </script>
