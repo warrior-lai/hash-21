@@ -120,6 +120,9 @@
     const { createClient } = supabase;
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
     
+    // Clear any existing session on page load
+    sb.auth.signOut();
+    
     async function handleRegister(e) {
       e.preventDefault();
       
@@ -131,6 +134,9 @@
       err.style.display = 'none';
       btn.disabled = true;
       btn.textContent = 'Creando...';
+      
+      // Make sure we're signed out
+      await sb.auth.signOut();
       
       const { data, error } = await sb.auth.signUp({ email, password });
       
