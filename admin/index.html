@@ -4,299 +4,1233 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hash21 Admin</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root { --bg:#0a0a0a; --bg2:#141414; --bg3:#1e1e1e; --text:#f0f0f0; --dim:#888; --gold:#b08d57; --green:#2dd4a8; --red:#e74c3c; --border:#2a2a2a; }
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); font-size:14px; }
-.app { display:flex; min-height:100vh; }
-.sidebar { width:220px; background:var(--bg2); border-right:1px solid var(--border); padding:20px 0; position:fixed; height:100vh; }
-.sidebar h1 { font-size:16px; padding:0 20px 20px; color:var(--gold); font-weight:600; letter-spacing:1px; }
-.sidebar a { display:block; padding:10px 20px; color:var(--dim); text-decoration:none; font-size:13px; transition:all 0.2s; cursor:pointer; }
-.sidebar a:hover, .sidebar a.active { color:var(--text); background:var(--bg3); border-left:2px solid var(--gold); }
-.main { margin-left:220px; flex:1; padding:30px; }
-h2 { font-size:18px; font-weight:500; margin-bottom:20px; color:var(--gold); }
-.card { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:20px; margin-bottom:15px; }
-.card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
-.card-header h3 { font-size:15px; font-weight:500; }
-.badge { font-size:11px; padding:3px 10px; border-radius:10px; font-weight:500; }
-.badge-active { background:rgba(45,212,168,0.15); color:var(--green); }
-.badge-pending { background:rgba(176,141,87,0.15); color:var(--gold); }
-.badge-consult { background:rgba(176,141,87,0.15); color:var(--gold); }
-.badge-available { background:rgba(45,212,168,0.15); color:var(--green); }
-.badge-hidden { background:rgba(136,136,136,0.15); color:var(--dim); }
-.meta { color:var(--dim); font-size:12px; margin-top:5px; }
-.actions { display:flex; gap:8px; margin-top:12px; }
-.btn { padding:6px 16px; border:none; border-radius:4px; font-family:'Inter',sans-serif; font-size:12px; cursor:pointer; transition:all 0.2s; }
-.btn-gold { background:var(--gold); color:var(--bg); }
-.btn-gold:hover { opacity:0.85; }
-.btn-outline { background:transparent; border:1px solid var(--border); color:var(--dim); }
-.btn-outline:hover { border-color:var(--gold); color:var(--gold); }
-.btn-danger { background:transparent; border:1px solid var(--red); color:var(--red); }
-.btn-danger:hover { background:var(--red); color:white; }
-.btn-add { background:var(--gold); color:var(--bg); padding:8px 20px; font-size:13px; border:none; border-radius:4px; cursor:pointer; font-family:'Inter',sans-serif; }
+:root {
+  --bg: #0a0a0a;
+  --bg2: #111111;
+  --bg3: #1a1a1a;
+  --bg4: #222222;
+  --text: #f5f5f5;
+  --text-mid: #b0b0b0;
+  --dim: #666666;
+  --gold: #c9a227;
+  --gold-light: rgba(201,162,39,0.1);
+  --green: #22c55e;
+  --green-light: rgba(34,197,94,0.1);
+  --red: #ef4444;
+  --red-light: rgba(239,68,68,0.1);
+  --blue: #3b82f6;
+  --blue-light: rgba(59,130,246,0.1);
+  --border: #1f1f1f;
+  --border-hover: #333333;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --shadow: 0 4px 20px rgba(0,0,0,0.3);
+  --transition: all 0.2s ease;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Layout */
+.app { display: flex; min-height: 100vh; }
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+}
+
+.sidebar-header {
+  padding: 24px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-logo {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+.sidebar-logo span { color: var(--gold); }
+
+.sidebar-user {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--gold-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--gold);
+}
+
+.user-info h4 {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.user-info span {
+  font-size: 11px;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 12px 0;
+  overflow-y: auto;
+}
+
+.nav-section {
+  padding: 8px 20px 4px;
+  font-size: 10px;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 8px;
+}
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  color: var(--text-mid);
+  text-decoration: none;
+  font-size: 13px;
+  transition: var(--transition);
+  cursor: pointer;
+  border-left: 3px solid transparent;
+}
+
+.sidebar-nav a:hover {
+  color: var(--text);
+  background: var(--bg3);
+}
+
+.sidebar-nav a.active {
+  color: var(--gold);
+  background: var(--gold-light);
+  border-left-color: var(--gold);
+}
+
+.sidebar-nav a .icon {
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+}
+
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--dim);
+  font-size: 13px;
+  cursor: pointer;
+  transition: var(--transition);
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 8px 0;
+}
+
+.logout-btn:hover { color: var(--red); }
+
+/* Main Content */
+.main {
+  margin-left: 260px;
+  flex: 1;
+  padding: 32px 40px;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.page-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Stats Grid */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.stat {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  transition: var(--transition);
+}
+
+.stat:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+}
+
+.stat-icon {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.stat-number {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Cards */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  transition: var(--transition);
+}
+
+.card:hover {
+  border-color: var(--border-hover);
+}
+
+.card-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.card-img {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius);
+  object-fit: cover;
+  background: var(--bg3);
+}
+
+.card-content { flex: 1; }
+
+.card-title {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-meta {
+  font-size: 12px;
+  color: var(--dim);
+  margin-bottom: 8px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-gold { background: var(--gold-light); color: var(--gold); }
+.badge-green { background: var(--green-light); color: var(--green); }
+.badge-red { background: var(--red-light); color: var(--red); }
+.badge-blue { background: var(--blue-light); color: var(--blue); }
+.badge-dim { background: var(--bg3); color: var(--dim); }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--gold);
+  color: var(--bg);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--bg3);
+  color: var(--text-mid);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.btn-danger {
+  background: transparent;
+  color: var(--red);
+  border: 1px solid var(--red);
+}
+
+.btn-danger:hover {
+  background: var(--red);
+  color: white;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 11px;
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  justify-content: center;
+  border-radius: var(--radius);
+}
+
+/* Tables */
+.table-container {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  padding: 14px 20px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+}
+
+.table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.table tr:last-child td { border-bottom: none; }
+
+.table tr:hover td { background: var(--bg3); }
 
 /* Modal */
-.modal-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); z-index:100; justify-content:center; align-items:center; }
-.modal-overlay.active { display:flex; }
-.modal { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:30px; width:90%; max-width:500px; max-height:90vh; overflow-y:auto; }
-.modal h3 { font-size:16px; margin-bottom:20px; color:var(--gold); }
-.form-group { margin-bottom:15px; }
-.form-group label { display:block; font-size:12px; color:var(--dim); margin-bottom:5px; text-transform:uppercase; letter-spacing:0.5px; }
-.form-group input, .form-group textarea, .form-group select { width:100%; padding:10px; background:var(--bg3); border:1px solid var(--border); color:var(--text); font-family:'Inter',sans-serif; font-size:13px; border-radius:4px; }
-.form-group textarea { height:80px; resize:vertical; }
-.form-group input:focus, .form-group textarea:focus { border-color:var(--gold); outline:none; }
-.form-actions { display:flex; gap:10px; margin-top:20px; }
-.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:15px; margin-bottom:30px; }
-.stat { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:20px; text-align:center; }
-.stat-number { font-size:28px; font-weight:600; color:var(--gold); }
-.stat-label { font-size:11px; color:var(--dim); text-transform:uppercase; letter-spacing:1px; margin-top:5px; }
-.card-img { width:60px; height:60px; border-radius:4px; object-fit:cover; margin-right:12px; }
-.card-row { display:flex; align-items:center; }
-.empty { text-align:center; color:var(--dim); padding:40px; }
-
-/* Login */
-.login-screen { display:flex; justify-content:center; align-items:center; min-height:100vh; background:var(--bg); }
-.login-box { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:40px; width:90%; max-width:360px; text-align:center; }
-.login-box h1 { color:var(--gold); font-size:18px; letter-spacing:2px; margin-bottom:8px; }
-.login-box p { color:var(--dim); font-size:12px; margin-bottom:25px; }
-.login-box input { width:100%; padding:12px; background:var(--bg3); border:1px solid var(--border); color:var(--text); font-family:'Inter',sans-serif; font-size:13px; border-radius:4px; margin-bottom:12px; }
-.login-box input:focus { border-color:var(--gold); outline:none; }
-.login-box button { width:100%; padding:12px; background:var(--gold); color:var(--bg); border:none; font-family:'Inter',sans-serif; font-size:13px; letter-spacing:1px; text-transform:uppercase; cursor:pointer; border-radius:4px; }
-.login-box button:hover { opacity:0.85; }
-.login-error { color:var(--red); font-size:12px; margin-top:10px; display:none; }
-.logout-btn { color:var(--dim); font-size:12px; cursor:pointer; padding:10px 20px; margin-top:auto; display:block; text-decoration:none; border-top:1px solid var(--border); }
-.logout-btn:hover { color:var(--red); }
-
-@media (max-width:768px) {
-  .sidebar { width:100%; height:auto; position:relative; display:flex; flex-wrap:wrap; padding:10px; }
-  .sidebar h1 { width:100%; padding:5px 10px 10px; }
-  .sidebar a { padding:8px 12px; }
-  .main { margin-left:0; padding:15px; }
-  .stats { grid-template-columns:repeat(2,1fr); }
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
+
+.modal-overlay.active { display: flex; }
+
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow: hidden;
+  animation: modalIn 0.2s ease;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--bg3);
+  color: var(--dim);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover { color: var(--text); }
+
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  max-height: calc(90vh - 140px);
+}
+
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Forms */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-mid);
+  margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  border-radius: var(--radius);
+  transition: var(--transition);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: var(--gold);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--gold-light);
+}
+
+.form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--dim);
+}
+
+.form-hint {
+  font-size: 11px;
+  color: var(--dim);
+  margin-top: 6px;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--dim);
+}
+
+.empty-state .icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-mid);
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+/* Login Screen */
+.login-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--bg);
+  padding: 20px;
+}
+
+.login-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-box .logo {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  margin-bottom: 8px;
+}
+
+.login-box .logo span { color: var(--gold); }
+
+.login-box .tagline {
+  font-size: 12px;
+  color: var(--dim);
+  letter-spacing: 2px;
+  margin-bottom: 40px;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  transition: var(--transition);
+}
+
+.login-box input:focus {
+  border-color: var(--gold);
+  outline: none;
+}
+
+.login-box button {
+  width: 100%;
+  padding: 14px;
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.login-box button:hover {
+  filter: brightness(1.1);
+}
+
+.login-error {
+  color: var(--red);
+  font-size: 12px;
+  margin-top: 16px;
+  display: none;
+}
+
+.login-footer {
+  margin-top: 24px;
+  font-size: 13px;
+  color: var(--dim);
+}
+
+.login-footer a {
+  color: var(--gold);
+  text-decoration: none;
+}
+
+.login-footer a:hover { text-decoration: underline; }
+
+/* Loading Screen */
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.loading-content {
+  text-align: center;
+}
+
+.loading-logo {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  margin-bottom: 20px;
+}
+
+.loading-logo span { color: var(--gold); }
+
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--border);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .main { padding: 24px; }
+  .stats { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 12px;
+  }
+  
+  .sidebar-header { width: 100%; padding: 12px; }
+  .sidebar-user { display: none; }
+  .sidebar-nav { display: flex; flex-wrap: wrap; padding: 0; width: 100%; }
+  .nav-section { display: none; }
+  .sidebar-nav a { padding: 10px 14px; border-left: none; border-bottom: 2px solid transparent; }
+  .sidebar-nav a.active { border-left: none; border-bottom-color: var(--gold); }
+  .sidebar-footer { width: 100%; border-top: none; padding: 8px 12px; }
+  
+  .main { margin-left: 0; padding: 16px; }
+  .page-header { flex-direction: column; gap: 16px; align-items: flex-start; }
+  .stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .card-grid { grid-template-columns: 1fr; }
+}
+
+/* Onboarding */
+.onboarding {
+  display: none;
+  min-height: 100vh;
+  background: var(--bg);
+  padding: 40px 20px;
+}
+
+.onboarding.active { display: block; }
+
+.ob-container {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.ob-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.ob-logo {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  margin-bottom: 8px;
+}
+
+.ob-logo span { color: var(--gold); }
+
+.ob-subtitle {
+  font-size: 12px;
+  color: var(--dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.ob-progress {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+.ob-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: var(--transition);
+}
+
+.ob-dot.active { background: var(--gold); transform: scale(1.2); }
+.ob-dot.done { background: var(--dim); }
+
+.ob-step {
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
+
+.ob-step.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ob-title {
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.ob-text {
+  font-size: 14px;
+  color: var(--dim);
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.ob-types {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.ob-type {
+  padding: 32px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.ob-type:hover { border-color: var(--border-hover); }
+
+.ob-type.selected {
+  border-color: var(--gold);
+  background: var(--gold-light);
+}
+
+.ob-type-icon {
+  font-size: 40px;
+  margin-bottom: 16px;
+}
+
+.ob-type-label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.ob-type-desc {
+  font-size: 12px;
+  color: var(--dim);
+}
+
+.ob-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.ob-btn:hover { filter: brightness(1.1); }
+.ob-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.ob-btn-back {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  color: var(--dim);
+  border: none;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+.ob-btn-back:hover { color: var(--text); }
+
+.ob-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  transition: var(--transition);
+}
+
+.ob-input:focus {
+  border-color: var(--gold);
+  outline: none;
+}
+
+.ob-input::placeholder { color: var(--dim); }
+
+.ob-success {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.ob-success-icon {
+  font-size: 72px;
+  margin-bottom: 24px;
+}
+
+.ob-success h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.ob-success p {
+  font-size: 14px;
+  color: var(--dim);
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+/* Toast notifications */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 16px 20px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 13px;
+  box-shadow: var(--shadow);
+  animation: toastIn 0.3s ease;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.toast-success { border-left: 3px solid var(--green); }
+.toast-error { border-left: 3px solid var(--red); }
 </style>
 </head>
 <body>
+
 <!-- Loading Screen -->
-<div id="loading-screen" style="display:flex;justify-content:center;align-items:center;min-height:100vh;background:var(--bg);">
-  <div style="text-align:center;color:var(--text-dim);">
-    <div style="font-size:24px;letter-spacing:4px;margin-bottom:10px;">HASH21</div>
-    <div style="font-size:12px;">Cargando...</div>
+<div class="loading-screen" id="loading-screen">
+  <div class="loading-content">
+    <div class="loading-logo">HASH<span>21</span></div>
+    <div class="loading-spinner"></div>
   </div>
 </div>
 
 <!-- Login Screen -->
 <div class="login-screen" id="login-screen" style="display:none">
   <div class="login-box">
-    <h1>HASH21</h1>
-    <p>Admin Panel</p>
+    <div class="logo">HASH<span>21</span></div>
+    <div class="tagline">ADMIN PANEL</div>
     <form onsubmit="handleLogin(event)">
       <input type="email" id="login-email" placeholder="Email" required>
-      <input type="password" id="login-password" placeholder="Password" required>
+      <input type="password" id="login-password" placeholder="Contraseña" required>
       <button type="submit" id="login-btn">Iniciar sesión</button>
     </form>
     <p class="login-error" id="login-error"></p>
+    <p class="login-footer">¿No tenés cuenta? <a href="/register">Registrate</a></p>
   </div>
 </div>
 
-<!-- Onboarding Wizard (for new users) -->
-<div id="onboarding" style="display:none;min-height:100vh;background:var(--bg);padding:40px 20px;">
-  <div style="max-width:500px;margin:0 auto;">
-    <div style="text-align:center;margin-bottom:50px;">
-      <div style="font-size:28px;letter-spacing:6px;margin-bottom:8px;">HASH<span style="color:var(--gold)">21</span></div>
-      <div style="font-size:12px;color:var(--text-dim);letter-spacing:2px;">BIENVENIDO</div>
+<!-- Onboarding Wizard -->
+<div class="onboarding" id="onboarding">
+  <div class="ob-container">
+    <div class="ob-header">
+      <div class="ob-logo">HASH<span>21</span></div>
+      <div class="ob-subtitle">Bienvenido</div>
     </div>
     
-    <!-- Progress -->
-    <div style="display:flex;justify-content:center;gap:8px;margin-bottom:50px;">
+    <div class="ob-progress">
       <div class="ob-dot active" data-step="1"></div>
       <div class="ob-dot" data-step="2"></div>
       <div class="ob-dot" data-step="3"></div>
     </div>
     
-    <!-- Step 1: Type -->
+    <!-- Step 1 -->
     <div class="ob-step active" data-step="1">
-      <h2 style="font-size:18px;font-weight:400;text-align:center;margin-bottom:10px;">¿Qué creás?</h2>
-      <p style="font-size:13px;color:var(--text-dim);text-align:center;margin-bottom:40px;">Esto nos ayuda a personalizar tu experiencia</p>
-      <div style="display:flex;gap:20px;margin-bottom:40px;">
+      <h2 class="ob-title">¿Qué creás?</h2>
+      <p class="ob-text">Esto nos ayuda a personalizar tu experiencia</p>
+      <div class="ob-types">
         <div class="ob-type" data-type="artist" onclick="obSelectType('artist')">
-          <div style="font-size:40px;margin-bottom:15px;">🎨</div>
-          <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;">Arte</div>
-          <div style="font-size:11px;color:var(--text-dim);margin-top:8px;">Pinturas, esculturas, arte digital</div>
+          <div class="ob-type-icon">🎨</div>
+          <div class="ob-type-label">Arte</div>
+          <div class="ob-type-desc">Pinturas, esculturas, arte digital</div>
         </div>
         <div class="ob-type" data-type="designer" onclick="obSelectType('designer')">
-          <div style="font-size:40px;margin-bottom:15px;">🛠️</div>
-          <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;">Diseño</div>
-          <div style="font-size:11px;color:var(--text-dim);margin-top:8px;">Objetos, joyas, productos</div>
+          <div class="ob-type-icon">🛠️</div>
+          <div class="ob-type-label">Diseño</div>
+          <div class="ob-type-desc">Objetos, joyas, productos</div>
         </div>
       </div>
       <button class="ob-btn" id="ob-btn-1" onclick="obNext(2)" disabled>Continuar</button>
     </div>
     
-    <!-- Step 2: Profile -->
+    <!-- Step 2 -->
     <div class="ob-step" data-step="2">
-      <h2 style="font-size:18px;font-weight:400;text-align:center;margin-bottom:10px;">Tu perfil</h2>
-      <p style="font-size:13px;color:var(--text-dim);text-align:center;margin-bottom:40px;">Contanos un poco sobre vos</p>
-      <input type="text" id="ob-name" placeholder="Nombre artístico" class="ob-input">
-      <textarea id="ob-bio" placeholder="Bio breve (opcional)" class="ob-input" style="min-height:100px;resize:none;"></textarea>
-      <input type="url" id="ob-portfolio" placeholder="Link a portfolio o redes (opcional)" class="ob-input">
+      <h2 class="ob-title">Tu perfil</h2>
+      <p class="ob-text">Contanos un poco sobre vos</p>
+      <input type="text" id="ob-name" class="ob-input" placeholder="Nombre artístico">
+      <textarea id="ob-bio" class="ob-input" style="min-height:100px;resize:none;" placeholder="Bio breve (opcional)"></textarea>
+      <input type="url" id="ob-portfolio" class="ob-input" placeholder="Link a portfolio o redes (opcional)">
       <button class="ob-btn" onclick="obNext(3)">Continuar</button>
-      <button class="ob-btn-secondary" onclick="obBack(1)">← Volver</button>
+      <button class="ob-btn-back" onclick="obBack(1)">← Volver</button>
     </div>
     
-    <!-- Step 3: Done -->
+    <!-- Step 3 -->
     <div class="ob-step" data-step="3">
-      <div style="text-align:center;">
-        <div style="font-size:64px;margin-bottom:30px;">✨</div>
-        <h2 style="font-size:20px;font-weight:400;margin-bottom:15px;">¡Bienvenido a Hash21!</h2>
-        <p style="font-size:14px;color:var(--text-dim);margin-bottom:40px;line-height:1.6;">
-          Tu perfil está siendo revisado.<br>
-          Te notificaremos cuando esté activo y puedas subir tus creaciones.
-        </p>
+      <div class="ob-success">
+        <div class="ob-success-icon">✨</div>
+        <h2>¡Bienvenido a Hash21!</h2>
+        <p>Tu perfil está siendo revisado.<br>Te notificaremos cuando esté activo y puedas subir tus creaciones.</p>
         <button class="ob-btn" onclick="obFinish()">Ir al panel</button>
       </div>
     </div>
   </div>
 </div>
 
-<style>
-.ob-dot { width:10px; height:10px; border-radius:50%; background:var(--border); transition:all 0.3s; }
-.ob-dot.active { background:var(--gold); }
-.ob-dot.done { background:var(--text-dim); }
-.ob-step { display:none; animation:fadeIn 0.4s ease; }
-.ob-step.active { display:block; }
-@keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-.ob-type { flex:1; padding:30px 20px; border:1px solid var(--border); text-align:center; cursor:pointer; transition:all 0.3s; }
-.ob-type:hover { border-color:var(--text-dim); }
-.ob-type.selected { border-color:var(--gold); background:rgba(201,162,39,0.05); }
-.ob-input { width:100%; background:transparent; border:1px solid var(--border); color:var(--text); font-family:inherit; font-size:14px; padding:14px 16px; margin-bottom:16px; }
-.ob-input:focus { outline:none; border-color:var(--gold); }
-.ob-input::placeholder { color:var(--text-dim); }
-.ob-btn { width:100%; background:transparent; border:1px solid var(--gold); color:var(--gold); font-family:inherit; font-size:12px; letter-spacing:3px; text-transform:uppercase; padding:16px; cursor:pointer; transition:all 0.3s; }
-.ob-btn:hover { background:var(--gold); color:var(--bg); }
-.ob-btn:disabled { opacity:0.5; cursor:not-allowed; }
-.ob-btn-secondary { width:100%; background:transparent; border:none; color:var(--text-dim); font-size:12px; padding:12px; cursor:pointer; margin-top:10px; }
-.ob-btn-secondary:hover { color:var(--text); }
-</style>
-
-<!-- App (hidden until logged in) -->
+<!-- Main App -->
 <div class="app" id="admin-app" style="display:none">
-  <nav class="sidebar" style="display:flex;flex-direction:column;">
-    <h1>HASH21 ADMIN</h1>
-    <div id="user-info" style="padding:10px 15px;margin-bottom:10px;font-size:12px;color:var(--gold);border-bottom:1px solid var(--border);"></div>
-    <a class="active" onclick="showSection('dashboard')">📊 Dashboard</a>
-    <a onclick="showSection('artists')">👥 Artistas</a>
-    <a onclick="showSection('works')">🎨 Obras</a>
-    <a onclick="showSection('products')">🛒 Productos</a>
-    <a onclick="showSection('users')">👤 Usuarios</a>
-    <a onclick="showSection('certs')">📜 Certificados</a>
-    <a class="logout-btn" onclick="handleLogout()">🚪 Cerrar sesión</a>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">HASH<span>21</span></div>
+    </div>
+    
+    <div class="sidebar-user" id="sidebar-user">
+      <div class="user-avatar">👤</div>
+      <div class="user-info">
+        <h4 id="user-name">Usuario</h4>
+        <span id="user-role">rol</span>
+      </div>
+    </div>
+    
+    <div class="sidebar-nav">
+      <div class="nav-section">Principal</div>
+      <a class="active" onclick="showSection('dashboard')">
+        <span class="icon">📊</span> Dashboard
+      </a>
+      
+      <div class="nav-section">Contenido</div>
+      <a onclick="showSection('artists')">
+        <span class="icon">👥</span> Artistas
+      </a>
+      <a onclick="showSection('works')">
+        <span class="icon">🎨</span> Obras
+      </a>
+      <a onclick="showSection('products')">
+        <span class="icon">🛒</span> Productos
+      </a>
+      <a onclick="showSection('certs')">
+        <span class="icon">📜</span> Certificados
+      </a>
+      
+      <div class="nav-section">Sistema</div>
+      <a onclick="showSection('users')">
+        <span class="icon">👤</span> Usuarios
+      </a>
+    </div>
+    
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="handleLogout()">
+        🚪 Cerrar sesión
+      </button>
+    </div>
   </nav>
 
   <div class="main">
     <!-- Dashboard -->
     <div id="sec-dashboard">
-      <h2>Dashboard</h2>
+      <div class="page-header">
+        <h2>Dashboard</h2>
+      </div>
       <div class="stats">
-        <div class="stat"><div class="stat-number" id="stat-artists">-</div><div class="stat-label">Artistas</div></div>
-        <div class="stat"><div class="stat-number" id="stat-works">-</div><div class="stat-label">Obras</div></div>
-        <div class="stat"><div class="stat-number" id="stat-products">-</div><div class="stat-label">Productos</div></div>
-        <div class="stat"><div class="stat-number" id="stat-certs">-</div><div class="stat-label">Certificados</div></div>
-        <div class="stat"><div class="stat-number" id="stat-zaps">-</div><div class="stat-label">Zaps</div></div>
-        <div class="stat"><div class="stat-number" id="stat-sats">-</div><div class="stat-label">Sats ⚡</div></div>
+        <div class="stat">
+          <div class="stat-icon">👥</div>
+          <div class="stat-number" id="stat-artists">-</div>
+          <div class="stat-label">Artistas</div>
+        </div>
+        <div class="stat">
+          <div class="stat-icon">🎨</div>
+          <div class="stat-number" id="stat-works">-</div>
+          <div class="stat-label">Obras</div>
+        </div>
+        <div class="stat">
+          <div class="stat-icon">🛒</div>
+          <div class="stat-number" id="stat-products">-</div>
+          <div class="stat-label">Productos</div>
+        </div>
+        <div class="stat">
+          <div class="stat-icon">📜</div>
+          <div class="stat-number" id="stat-certs">-</div>
+          <div class="stat-label">Certificados</div>
+        </div>
+        <div class="stat">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-number" id="stat-zaps">-</div>
+          <div class="stat-label">Zaps</div>
+        </div>
+        <div class="stat">
+          <div class="stat-icon">₿</div>
+          <div class="stat-number" id="stat-sats">-</div>
+          <div class="stat-label">Sats</div>
+        </div>
       </div>
       <div id="dashboard-recent"></div>
     </div>
 
     <!-- Artists -->
     <div id="sec-artists" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <h2 style="margin:0">Artistas</h2>
-        <button class="btn-add" onclick="openModal('artist')">+ Nuevo Artista</button>
+      <div class="page-header">
+        <h2>Artistas</h2>
+        <button class="btn btn-primary" onclick="openModal('artist')">+ Nuevo Artista</button>
       </div>
-      <div id="artists-list"></div>
+      <div class="card-grid" id="artists-grid"></div>
     </div>
 
     <!-- Works -->
     <div id="sec-works" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <h2 style="margin:0">Obras</h2>
-        <button class="btn-add" onclick="openModal('work')">+ Nueva Obra</button>
+      <div class="page-header">
+        <h2>Obras</h2>
+        <button class="btn btn-primary" onclick="openModal('work')">+ Nueva Obra</button>
       </div>
-      <div id="works-list"></div>
+      <div class="card-grid" id="works-grid"></div>
     </div>
 
     <!-- Products -->
     <div id="sec-products" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <h2 style="margin:0">Productos</h2>
-        <button class="btn-add" onclick="openModal('product')">+ Nuevo Producto</button>
+      <div class="page-header">
+        <h2>Productos</h2>
+        <button class="btn btn-primary" onclick="openModal('product')">+ Nuevo Producto</button>
       </div>
-      <div id="products-list"></div>
-    </div>
-
-    <!-- Users -->
-    <div id="sec-users" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <h2 style="margin:0">Usuarios</h2>
-        <button class="btn-add" onclick="openModal('user')">+ Nuevo Usuario</button>
-      </div>
-      <div id="users-list"></div>
+      <div class="card-grid" id="products-grid"></div>
     </div>
 
     <!-- Certificates -->
     <div id="sec-certs" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <h2 style="margin:0">Certificados</h2>
+      <div class="page-header">
+        <h2>Certificados</h2>
       </div>
-      <div id="certs-list"></div>
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Obra</th>
+              <th>Hash</th>
+              <th>Bloque</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="certs-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Users -->
+    <div id="sec-users" style="display:none">
+      <div class="page-header">
+        <h2>Usuarios</h2>
+        <button class="btn btn-primary" onclick="openModal('user')">+ Nuevo Usuario</button>
+      </div>
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Nombre</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- Modal -->
-<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
-  <div class="modal">
-    <h3 id="modal-title">Nuevo</h3>
-    <form id="modal-form" onsubmit="handleSubmit(event)">
-      <div id="modal-fields"></div>
-      <div class="form-actions">
-        <button type="submit" class="btn btn-gold">Guardar</button>
-        <button type="button" class="btn btn-outline" onclick="closeModal()">Cancelar</button>
-      </div>
-    </form>
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3 id="modal-title">Modal</h3>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
   </div>
 </div>
 
 <script>
-const API = 'https://hash21-backend.vercel.app/api';
-
-// XSS sanitization
-function esc(str) { 
-  if (!str) return '';
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
 const SUPABASE_URL = 'https://gxrstqszfzvwvoktsuqg.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4cnN0cXN6Znp2d3Zva3RzdXFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTcyMDEsImV4cCI6MjA4OTc3MzIwMX0.vZv-Z1rRrWErjKnsWGzkrrfTaveZHlccXnw7u4iP_cc';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+const API = 'https://hash21-backend.vercel.app/api';
 
-let currentSection = 'dashboard';
-let currentModal = null;
-let editingId = null;
-let artistsCache = [];
-let currentUser = null; // { id, email, role, artist_id }
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+let currentUser = null;
+let artists = [], works = [], products = [], users = [];
+
+// API helper
+async function api(endpoint, options = {}) {
+  const res = await fetch(`${API}${endpoint}`, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options
+  });
+  return res.json();
+}
+
+// Toast notifications
+function showToast(message, type = 'success') {
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.innerHTML = `${type === 'success' ? '✓' : '✕'} ${message}`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
 
 // Auth
 async function checkAuth() {
   const { data: { session } } = await sb.auth.getSession();
   document.getElementById('loading-screen').style.display = 'none';
+  
   if (session) {
-    showApp();
+    await showApp();
   } else {
     document.getElementById('login-screen').style.display = 'flex';
-    document.getElementById('admin-app').style.display = 'none';
   }
 }
 
@@ -307,7 +1241,7 @@ async function handleLogin(e) {
   const btn = document.getElementById('login-btn');
   const err = document.getElementById('login-error');
   
-  btn.textContent = '...';
+  btn.textContent = 'Ingresando...';
   btn.disabled = true;
   err.style.display = 'none';
   
@@ -321,7 +1255,7 @@ async function handleLogin(e) {
     return;
   }
   
-  showApp();
+  await showApp();
 }
 
 async function handleLogout() {
@@ -333,38 +1267,35 @@ async function handleLogout() {
 async function showApp() {
   document.getElementById('login-screen').style.display = 'none';
   
-  // Get current user role
   const { data: { session } } = await sb.auth.getSession();
   if (session) {
-    const users = await api('/users');
+    users = await api('/users');
     const sessionEmail = session.user.email.toLowerCase();
     currentUser = users.find(u => u.email && u.email.toLowerCase() === sessionEmail);
     
-    console.log('Session email:', sessionEmail);
-    console.log('Found user:', currentUser);
-    
-    // Check if user needs onboarding (pending or no profile)
+    // Check if needs onboarding
     if (!currentUser || currentUser.role === 'pending' || currentUser.status === 'pending') {
       showOnboarding(sessionEmail);
       return;
     }
     
-    // Show user info
-    const userInfo = document.getElementById('user-info');
-    if (userInfo) {
-      const displayName = currentUser.artists?.name || currentUser.name || currentUser.email?.split('@')[0] || 'Usuario';
-      userInfo.innerHTML = `👤 ${displayName}<br><span style="font-size:10px;color:var(--text-dim);">${currentUser.role}</span>`;
-    }
+    // Update sidebar user info
+    const displayName = currentUser.artists?.name || currentUser.name || sessionEmail.split('@')[0];
+    document.getElementById('user-name').textContent = displayName;
+    document.getElementById('user-role').textContent = currentUser.role;
     
     // Hide sections based on role
     if (currentUser.role !== 'admin') {
-      document.querySelector('a[onclick*="users"]').style.display = 'none';
-      document.querySelector('a[onclick*="artists"]').style.display = 'none';
+      document.querySelectorAll('.sidebar-nav a').forEach(a => {
+        if (a.textContent.includes('Usuarios') || a.textContent.includes('Artistas')) {
+          a.style.display = 'none';
+        }
+      });
     }
   }
   
   document.getElementById('admin-app').style.display = 'flex';
-  loadDashboard();
+  await loadDashboard();
 }
 
 // Onboarding
@@ -373,7 +1304,7 @@ let obEmail = '';
 
 function showOnboarding(email) {
   obEmail = email;
-  document.getElementById('onboarding').style.display = 'block';
+  document.getElementById('onboarding').classList.add('active');
   document.getElementById('admin-app').style.display = 'none';
 }
 
@@ -401,12 +1332,9 @@ function obNext(step) {
   });
 }
 
-function obBack(step) {
-  obNext(step);
-}
+function obBack(step) { obNext(step); }
 
 async function obFinish() {
-  // Update user in DB
   try {
     await fetch(`${API}/users`, {
       method: 'POST',
@@ -420,433 +1348,420 @@ async function obFinish() {
         portfolio: obData.portfolio
       })
     });
-  } catch (e) {
-    console.error('Error updating user:', e);
-  }
+  } catch (e) { console.error(e); }
   
-  // Reload to show panel
   window.location.reload();
 }
 
-checkAuth();
-
-// Navigation
-function showSection(name) {
-  document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
-  event.target.classList.add('active');
-  ['dashboard','artists','works','products','users','certs'].forEach(s => {
-    document.getElementById('sec-' + s).style.display = s === name ? 'block' : 'none';
-  });
-  currentSection = name;
-  loadSection(name);
-}
-
-// Load data
-async function loadSection(name) {
-  if (name === 'dashboard') await loadDashboard();
-  if (name === 'artists') await loadArtists();
-  if (name === 'works') await loadWorks();
-  if (name === 'products') await loadProducts();
-  if (name === 'users') await loadUsers();
-  if (name === 'certs') await loadCerts();
-}
-
-async function api(endpoint, method, body) {
-  const opts = { method, headers: { 'Content-Type': 'application/json' } };
-  if (body) opts.body = JSON.stringify(body);
-  const res = await fetch(API + endpoint, opts);
-  return await res.json();
-}
-
+// Dashboard
 async function loadDashboard() {
-  const [artists, works, products] = await Promise.all([
-    api('/artists'), api('/works'), api('/products')
-  ]);
-  artistsCache = artists;
+  artists = await api('/artists');
+  works = await api('/works');
+  products = await api('/products');
+  
   document.getElementById('stat-artists').textContent = artists.length;
   document.getElementById('stat-works').textContent = works.length;
   document.getElementById('stat-products').textContent = products.length;
   
-  // Certificates count
-  const certs = works.filter(w => w.certificate_hash).length;
-  document.getElementById('stat-certs').textContent = certs;
+  const certified = works.filter(w => w.certificate_status === 'certified').length;
+  document.getElementById('stat-certs').textContent = certified;
   
-  // Zap stats
-  try {
-    const zapRes = await fetch(API + '/log-zap');
-    const zapData = await zapRes.json();
-    document.getElementById('stat-zaps').textContent = zapData.total_zaps || 0;
-    document.getElementById('stat-sats').textContent = (zapData.total_sats || 0).toLocaleString();
-  } catch(e) {
-    document.getElementById('stat-zaps').textContent = '—';
-    document.getElementById('stat-sats').textContent = '—';
-  }
+  // Placeholder zap stats
+  document.getElementById('stat-zaps').textContent = '0';
+  document.getElementById('stat-sats').textContent = '0';
 }
 
+// Sections
+function showSection(name) {
+  document.querySelectorAll('.main > div').forEach(d => d.style.display = 'none');
+  document.getElementById(`sec-${name}`).style.display = 'block';
+  
+  document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+  event.target.closest('a').classList.add('active');
+  
+  if (name === 'artists') loadArtists();
+  if (name === 'works') loadWorks();
+  if (name === 'products') loadProducts();
+  if (name === 'certs') loadCerts();
+  if (name === 'users') loadUsers();
+}
+
+// Load sections
 async function loadArtists() {
-  const artists = await api('/artists');
-  artistsCache = artists;
-  if (!artists.length) { document.getElementById('artists-list').innerHTML = '<div class="empty">No hay artistas. Creá el primero.</div>'; return; }
-  document.getElementById('artists-list').innerHTML = artists.map(a => `
+  artists = await api('/artists');
+  const grid = document.getElementById('artists-grid');
+  
+  if (!artists.length) {
+    grid.innerHTML = `<div class="empty-state"><div class="icon">👥</div><h3>Sin artistas</h3><p>Agregá tu primer artista</p></div>`;
+    return;
+  }
+  
+  grid.innerHTML = artists.map(a => `
     <div class="card">
-      <div class="card-header">
-        <div class="card-row">
-          ${a.photo_url ? `<img src="${a.photo_url}" class="card-img">` : ''}
-          <div>
-            <h3>${esc(a.name)}</h3>
-            <div class="meta">${esc(a.lightning_address)} · ${a.slug}</div>
-          </div>
+      <div class="card-row">
+        <img src="${a.avatar_url || '/img/avatar-placeholder.png'}" class="card-img" onerror="this.src='/img/avatar-placeholder.png'">
+        <div class="card-content">
+          <div class="card-title">${a.name}</div>
+          <div class="card-meta">${a.lightning_address || 'Sin Lightning address'}</div>
         </div>
-        <span class="badge badge-${a.status}">${a.status}</span>
       </div>
-      <div class="meta">${esc(a.bio_es)}</div>
-      <div class="actions">
-        <button class="btn btn-outline" onclick='editArtist(${JSON.stringify(a)})'>Editar</button>
-        <button class="btn btn-danger" onclick="deleteItem('artists','${a.id}','${esc(a.name)}')">Eliminar</button>
+      <div class="card-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editArtist('${a.id}')">Editar</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteArtist('${a.id}')">Eliminar</button>
       </div>
     </div>
   `).join('');
 }
 
 async function loadWorks() {
-  let works = await api('/works');
-  // Filter by artist if not admin
-  if (currentUser && currentUser.role !== 'admin' && currentUser.artist_id) {
-    works = works.filter(w => w.artist_id === currentUser.artist_id);
+  works = await api('/works');
+  const grid = document.getElementById('works-grid');
+  
+  if (!works.length) {
+    grid.innerHTML = `<div class="empty-state"><div class="icon">🎨</div><h3>Sin obras</h3><p>Agregá tu primera obra</p></div>`;
+    return;
   }
-  if (!works.length) { document.getElementById('works-list').innerHTML = '<div class="empty">No hay obras. Creá la primera.</div>'; return; }
-  document.getElementById('works-list').innerHTML = works.map(w => `
-    <div class="card">
-      <div class="card-header">
+  
+  grid.innerHTML = works.map(w => {
+    const statusClass = w.certificate_status === 'certified' ? 'badge-green' : w.certificate_status === 'pending' ? 'badge-gold' : 'badge-dim';
+    const statusText = w.certificate_status === 'certified' ? 'Certificada' : w.certificate_status === 'pending' ? 'Pendiente' : 'Sin certificar';
+    
+    return `
+      <div class="card">
         <div class="card-row">
-          ${w.image_url ? `<img src="${w.image_url}" class="card-img">` : ''}
-          <div>
-            <h3>${esc(w.title_es)}</h3>
-            <div class="meta">${esc(w.technique)} ${w.artists ? '· ' + w.artists.name : ''}</div>
+          <img src="${w.image_url || '/img/obra-placeholder.jpg'}" class="card-img" onerror="this.src='/img/obra-placeholder.jpg'">
+          <div class="card-content">
+            <div class="card-title">
+              ${w.title_es}
+              <span class="badge ${statusClass}">${statusText}</span>
+            </div>
+            <div class="card-meta">${w.technique || 'Sin técnica'} · ${w.artists?.name || 'Sin artista'}</div>
           </div>
         </div>
-        <span class="badge badge-${w.status}">${w.status}</span>
+        <div class="card-actions">
+          ${!w.certificate_status || w.certificate_status === 'none' ? `<button class="btn btn-primary btn-sm" onclick="certifyWork('${w.id}')">📜 Certificar</button>` : ''}
+          <button class="btn btn-secondary btn-sm" onclick="editWork('${w.id}')">Editar</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteWork('${w.id}')">Eliminar</button>
+        </div>
       </div>
-      ${w.certificate_status && w.certificate_status !== 'none' 
-        ? `<div class="meta" style="margin-top:8px;color:var(--green);">📜 ${w.certificate_status === 'certified' ? 'Certificada · Bloque #' + w.certificate_block : w.certificate_status === 'pending' ? 'Pendiente de confirmación en blockchain' : 'Hash: ' + (w.certificate_hash || '').substring(0,16) + '...'} 
-        <a href="${API}/certificate-pdf?work_id=${w.id}" target="_blank" style="margin-left:8px;color:var(--gold);font-size:11px;">📄 Ver certificado</a></div>` 
-        : ''}
-      <div class="actions">
-        <button class="btn btn-outline" onclick='editWork(${JSON.stringify(w)})'>Editar</button>
-        <button class="btn btn-outline" onclick="changeStatus('works','${w.id}','${w.status === 'available' ? 'consult' : 'available'}')">${w.status === 'available' ? 'Poner en Consultar' : 'Poner Disponible'}</button>
-        ${!w.certificate_status || w.certificate_status === 'none' 
-          ? `<button class="btn btn-gold" onclick="certifyWork('${w.id}')">📜 Certificar</button>` 
-          : w.certificate_status === 'pending' 
-            ? `<button class="btn btn-outline" onclick="certifyWork('${w.id}', true)">🔄 Re-enviar</button>`
-            : ''}
-        <button class="btn btn-danger" onclick="deleteItem('works','${w.id}','${esc(w.title_es)}')">Eliminar</button>
-      </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 async function loadProducts() {
-  let products = await api('/products');
-  // Filter by artist if not admin (assuming products have artist_id)
-  if (currentUser && currentUser.role !== 'admin' && currentUser.artist_id) {
-    products = products.filter(p => p.artist_id === currentUser.artist_id);
+  products = await api('/products');
+  const grid = document.getElementById('products-grid');
+  
+  if (!products.length) {
+    grid.innerHTML = `<div class="empty-state"><div class="icon">🛒</div><h3>Sin productos</h3><p>Agregá tu primer producto</p></div>`;
+    return;
   }
-  if (!products.length) { document.getElementById('products-list').innerHTML = '<div class="empty">No hay productos. Creá el primero.</div>'; return; }
-  document.getElementById('products-list').innerHTML = products.map(p => `
+  
+  grid.innerHTML = products.map(p => `
     <div class="card">
-      <div class="card-header">
-        <div class="card-row">
-          ${p.image_url ? `<img src="${p.image_url}" class="card-img">` : ''}
-          <div>
-            <h3>${esc(p.name_es)}</h3>
-            <div class="meta">${p.price_sats ? p.price_sats.toLocaleString() + ' sats' : 'Precio a consultar'}</div>
-          </div>
+      <div class="card-row">
+        <img src="${p.image_url || '/img/product-placeholder.jpg'}" class="card-img" onerror="this.src='/img/product-placeholder.jpg'">
+        <div class="card-content">
+          <div class="card-title">${p.name}</div>
+          <div class="card-meta">${p.price_sats?.toLocaleString() || 0} sats</div>
         </div>
-        <span class="badge badge-${p.status}">${p.status}</span>
       </div>
-      <div class="meta">${esc(p.desc_es)}</div>
-      <div class="actions">
-        <button class="btn btn-outline" onclick='editProduct(${JSON.stringify(p)})'>Editar</button>
-        <button class="btn btn-danger" onclick="deleteItem('products','${p.id}','${esc(p.name_es)}')">Eliminar</button>
+      <div class="card-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editProduct('${p.id}')">Editar</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">Eliminar</button>
       </div>
     </div>
   `).join('');
 }
 
-// Load Users
-async function loadUsers() {
-  const users = await api('/users');
-  if (!users || !users.length) { document.getElementById('users-list').innerHTML = '<div class="empty">No hay usuarios registrados.</div>'; return; }
-  document.getElementById('users-list').innerHTML = users.map(u => `
-    <div class="card">
-      <div class="card-header">
-        <div>
-          <h3>${esc(u.email)}</h3>
-          <div class="meta">Rol: ${u.role} ${u.artists ? '· Artista: ' + esc(u.artists.name) : ''}</div>
-        </div>
-        <span class="badge badge-${u.status}">${u.status}</span>
-      </div>
-      <div class="meta">Creado: ${new Date(u.created_at).toLocaleDateString()}</div>
-      <div class="actions">
-        ${u.status === 'pending' ? `<button class="btn btn-gold" onclick="updateUserStatus('${u.id}','active')">✓ Aprobar</button>` : ''}
-        ${u.status === 'active' ? `<button class="btn btn-outline" onclick="updateUserStatus('${u.id}','suspended')">Suspender</button>` : ''}
-        ${u.status === 'suspended' ? `<button class="btn btn-outline" onclick="updateUserStatus('${u.id}','active')">Reactivar</button>` : ''}
-        <button class="btn btn-outline" onclick='editUser(${JSON.stringify(u)})'>Editar</button>
-        <button class="btn btn-danger" onclick="deleteItem('users','${u.id}','${esc(u.email)}')">Eliminar</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-async function updateUserStatus(id, status) {
-  await api('/users', 'PUT', { id, status });
-  loadUsers();
-}
-
-function editUser(u) { openModal('user', u); }
-
-function toggleArtistFields(role) {
-  const el = document.getElementById('artist-fields');
-  if (el) el.style.display = role === 'artist' ? 'block' : 'none';
-}
-
-function toggleNewArtist(artistId) {
-  const el = document.getElementById('new-artist-fields');
-  if (el) el.style.display = artistId ? 'none' : 'block';
-}
-
-// Load Certificates
 async function loadCerts() {
-  let works = await api('/works');
-  // Filter by artist if not admin
-  if (currentUser && currentUser.role !== 'admin' && currentUser.artist_id) {
-    works = works.filter(w => w.artist_id === currentUser.artist_id);
-  }
+  works = await api('/works');
+  const tbody = document.getElementById('certs-tbody');
   const certified = works.filter(w => w.certificate_hash);
-  if (!certified.length) { document.getElementById('certs-list').innerHTML = '<div class="empty">No hay certificados emitidos.</div>'; return; }
-  document.getElementById('certs-list').innerHTML = certified.map(w => `
-    <div class="card" style="border-left:3px solid ${w.certificate_status === 'certified' ? 'var(--green)' : 'var(--gold)'};">
-      <div class="card-header">
-        <div class="card-row">
-          ${w.image_url ? `<img src="${w.image_url}" class="card-img" style="width:80px;height:80px;object-fit:cover;border-radius:4px;">` : ''}
-          <div>
-            <h3 style="display:flex;align-items:center;gap:10px;">
-              ${esc(w.title_es)}
-              ${w.certificate_block ? `<a href="https://mempool.space/block/${w.certificate_block}" target="_blank" style="color:var(--gold);font-size:12px;text-decoration:none;">⛓ #${w.certificate_block}</a>` : ''}
-            </h3>
-            <div class="meta">${w.artists ? esc(w.artists.name) : '—'}</div>
-          </div>
-        </div>
-        <span class="badge badge-${w.certificate_status}" style="font-size:12px;padding:5px 12px;">${w.certificate_status === 'certified' ? '✓ Bloque Confirmado' : '⏳ Pendiente'}</span>
-      </div>
-      <div class="meta" style="margin-top:12px;padding:12px;background:var(--bg3);border-radius:4px;">
-        <strong>Hash:</strong> <code style="font-size:10px;">${w.certificate_hash}</code><br>
-        <strong>Fecha:</strong> ${w.certificate_date ? new Date(w.certificate_date).toLocaleString() : '—'}<br>
-        ${w.certificate_block ? `<strong>Bloque:</strong> #${w.certificate_block}` : ''}
-      </div>
-      <div class="actions">
-        <a href="${API}/certificate-pdf?work_id=${w.id}" target="_blank" class="btn btn-outline">📄 Ver Certificado</a>
-        ${w.certificate_status === 'pending' ? `<button class="btn btn-outline" onclick="certifyWork('${w.id}', true)">🔄 Re-enviar</button>` : ''}
-      </div>
-    </div>
-  `).join('');
+  
+  if (!certified.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No hay certificados aún</td></tr>`;
+    return;
+  }
+  
+  tbody.innerHTML = certified.map(w => {
+    const statusClass = w.certificate_status === 'certified' ? 'badge-green' : 'badge-gold';
+    const statusText = w.certificate_status === 'certified' ? 'Confirmado' : 'Pendiente';
+    
+    return `
+      <tr>
+        <td>${w.title_es}</td>
+        <td style="font-family:monospace;font-size:11px;">${w.certificate_hash?.slice(0,16)}...</td>
+        <td>${w.certificate_block || '-'}</td>
+        <td>${w.certificate_date ? new Date(w.certificate_date).toLocaleDateString() : '-'}</td>
+        <td><span class="badge ${statusClass}">${statusText}</span></td>
+        <td>
+          ${w.certificate_block ? `<a href="https://mempool.space/block/${w.certificate_block}" target="_blank" class="btn btn-secondary btn-sm">Ver en Mempool</a>` : ''}
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+async function loadUsers() {
+  users = await api('/users');
+  const tbody = document.getElementById('users-tbody');
+  
+  tbody.innerHTML = users.map(u => {
+    const roleClass = u.role === 'admin' ? 'badge-gold' : u.role === 'artist' ? 'badge-blue' : 'badge-dim';
+    const statusClass = u.status === 'active' ? 'badge-green' : 'badge-gold';
+    
+    return `
+      <tr>
+        <td>${u.email}</td>
+        <td>${u.name || u.artists?.name || '-'}</td>
+        <td><span class="badge ${roleClass}">${u.role}</span></td>
+        <td><span class="badge ${statusClass}">${u.status || 'pending'}</span></td>
+        <td>
+          <button class="btn btn-secondary btn-sm" onclick="editUser('${u.id}')">Editar</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Eliminar</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// Certify
+async function certifyWork(id) {
+  if (!confirm('¿Certificar esta obra en Bitcoin?')) return;
+  
+  showToast('Enviando a OpenTimestamps...');
+  
+  try {
+    const res = await api('/certify', {
+      method: 'POST',
+      body: JSON.stringify({ work_id: id })
+    });
+    
+    if (res.error) {
+      showToast(res.error, 'error');
+    } else {
+      showToast('Certificación iniciada. Se anclará en 1-12 horas.');
+      loadWorks();
+    }
+  } catch (e) {
+    showToast('Error al certificar', 'error');
+  }
 }
 
 // Modal
-async function openModal(type, data) {
-  currentModal = type;
-  editingId = data ? data.id : null;
-  document.getElementById('modal-title').textContent = (editingId ? 'Editar ' : 'Nuevo ') + 
-    (type === 'artist' ? 'Artista' : type === 'work' ? 'Obra' : type === 'user' ? 'Usuario' : 'Producto');
+function openModal(type, data = null) {
+  const modal = document.getElementById('modal-overlay');
+  const title = document.getElementById('modal-title');
+  const body = document.getElementById('modal-body');
+  const footer = document.getElementById('modal-footer');
   
-  // Ensure artists are loaded for work/user modals
-  if ((type === 'work' || type === 'user') && !artistsCache.length) {
-    artistsCache = await api('/artists') || [];
+  if (type === 'artist') {
+    title.textContent = data ? 'Editar Artista' : 'Nuevo Artista';
+    body.innerHTML = `
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" id="m-name" value="${data?.name || ''}" placeholder="Nombre artístico">
+      </div>
+      <div class="form-group">
+        <label>Lightning Address</label>
+        <input type="text" id="m-ln" value="${data?.lightning_address || ''}" placeholder="nombre@getalby.com">
+      </div>
+      <div class="form-group">
+        <label>Bio</label>
+        <textarea id="m-bio" placeholder="Biografía">${data?.bio || ''}</textarea>
+      </div>
+    `;
+    footer.innerHTML = `
+      <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveArtist('${data?.id || ''}')">Guardar</button>
+    `;
   }
-  
-  const fields = getFields(type, data);
-  document.getElementById('modal-fields').innerHTML = fields;
-  document.getElementById('modal').classList.add('active');
-}
-
-function closeModal() {
-  document.getElementById('modal').classList.remove('active');
-  editingId = null;
-}
-
-function getFields(type, d) {
-  d = d || {};
-  if (type === 'artist') return `
-    <div class="form-group"><label>Nombre</label><input name="name" value="${d.name||''}" required></div>
-    <div class="form-group"><label>Slug (URL)</label><input name="slug" value="${d.slug||''}" required></div>
-    <div class="form-group"><label>Bio (ES)</label><textarea name="bio_es">${d.bio_es||''}</textarea></div>
-    <div class="form-group"><label>Bio (EN)</label><textarea name="bio_en">${d.bio_en||''}</textarea></div>
-    <div class="form-group"><label>Motto</label><input name="motto" value="${d.motto||''}"></div>
-    <div class="form-group"><label>Lightning Address</label><input name="lightning_address" value="${d.lightning_address||''}"></div>
-    <div class="form-group"><label>Instagram</label><input name="instagram" value="${d.links?.instagram||''}"></div>
-    <div class="form-group"><label>Twitter/X</label><input name="twitter" value="${d.links?.twitter||''}"></div>
-    <div class="form-group"><label>Estado</label><select name="status">
-      <option value="active" ${d.status==='active'?'selected':''}>Activo</option>
-      <option value="pending" ${d.status==='pending'?'selected':''}>Pendiente</option>
-      <option value="inactive" ${d.status==='inactive'?'selected':''}>Inactivo</option>
-    </select></div>`;
   
   if (type === 'work') {
-    const artistOpts = artistsCache.map(a => `<option value="${a.id}" ${d.artist_id===a.id?'selected':''}>${esc(a.name)}</option>`).join('');
-    return `
-    <div class="form-group"><label>Artista</label><select name="artist_id" required>${artistOpts}</select></div>
-    <div class="form-group"><label>Título (ES)</label><input name="title_es" value="${d.title_es||''}" required></div>
-    <div class="form-group"><label>Título (EN)</label><input name="title_en" value="${d.title_en||''}"></div>
-    <div class="form-group"><label>Técnica</label><input name="technique" value="${d.technique||''}"></div>
-    <div class="form-group"><label>Dimensiones</label><input name="dimensions" value="${d.dimensions||''}"></div>
-    <div class="form-group"><label>URL Imagen</label><input name="image_url" value="${d.image_url||''}"></div>
-    <div class="form-group"><label>Tipo</label><select name="type">
-      <option value="physical" ${d.type==='physical'?'selected':''}>Física</option>
-      <option value="digital" ${d.type==='digital'?'selected':''}>Digital</option>
-    </select></div>
-    <div class="form-group"><label>Estado</label><select name="status">
-      <option value="available" ${d.status==='available'?'selected':''}>Disponible</option>
-      <option value="consult" ${d.status==='consult'?'selected':''}>Consultar</option>
-      <option value="hidden" ${d.status==='hidden'?'selected':''}>Oculta</option>
-    </select></div>`;
+    title.textContent = data ? 'Editar Obra' : 'Nueva Obra';
+    body.innerHTML = `
+      <div class="form-group">
+        <label>Título (ES)</label>
+        <input type="text" id="m-title-es" value="${data?.title_es || ''}" placeholder="Título en español">
+      </div>
+      <div class="form-group">
+        <label>Título (EN)</label>
+        <input type="text" id="m-title-en" value="${data?.title_en || ''}" placeholder="Title in English">
+      </div>
+      <div class="form-group">
+        <label>Artista</label>
+        <select id="m-artist">
+          <option value="">Seleccionar...</option>
+          ${artists.map(a => `<option value="${a.id}" ${data?.artist_id === a.id ? 'selected' : ''}>${a.name}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Técnica</label>
+        <input type="text" id="m-technique" value="${data?.technique || ''}" placeholder="Óleo, acrílico, mixta...">
+      </div>
+      <div class="form-group">
+        <label>Imagen URL</label>
+        <input type="text" id="m-image" value="${data?.image_url || ''}" placeholder="/img/obra.jpg">
+      </div>
+    `;
+    footer.innerHTML = `
+      <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveWork('${data?.id || ''}')">Guardar</button>
+    `;
   }
   
-  if (type === 'product') return `
-    <div class="form-group"><label>Nombre (ES)</label><input name="name_es" value="${d.name_es||''}" required></div>
-    <div class="form-group"><label>Nombre (EN)</label><input name="name_en" value="${d.name_en||''}"></div>
-    <div class="form-group"><label>Etiqueta (ES)</label><input name="label_es" value="${d.label_es||''}"></div>
-    <div class="form-group"><label>Etiqueta (EN)</label><input name="label_en" value="${d.label_en||''}"></div>
-    <div class="form-group"><label>Descripción (ES)</label><textarea name="desc_es">${d.desc_es||''}</textarea></div>
-    <div class="form-group"><label>Descripción (EN)</label><textarea name="desc_en">${d.desc_en||''}</textarea></div>
-    <div class="form-group"><label>Precio (sats) — dejar vacío para "consultar"</label><input name="price_sats" type="number" value="${d.price_sats||''}"></div>
-    <div class="form-group"><label>URL Imagen</label><input name="image_url" value="${d.image_url||''}"></div>
-    <div class="form-group"><label>Estado</label><select name="status">
-      <option value="available" ${d.status==='available'?'selected':''}>Disponible</option>
-      <option value="consult" ${d.status==='consult'?'selected':''}>Consultar</option>
-      <option value="hidden" ${d.status==='hidden'?'selected':''}>Oculto</option>
-    </select></div>`;
-
   if (type === 'user') {
-    const artistOpts = '<option value="">— Crear nuevo artista —</option>' + artistsCache.map(a => `<option value="${a.id}" ${d.artist_id===a.id?'selected':''}>${esc(a.name)}</option>`).join('');
-    const isNew = !d.id;
-    const showArtistFields = d.role === 'artist' || isNew;
-    return `
-    <div class="form-group"><label>Email</label><input name="email" type="email" value="${d.email||''}" ${isNew ? 'required' : 'readonly style="opacity:0.6"'} autocomplete="off"></div>
-    <div class="form-group"><label>${isNew ? 'Contraseña' : 'Nueva Contraseña (dejar vacío para no cambiar)'}</label><input name="password" type="password" ${isNew ? 'required minlength="6"' : ''} placeholder="${isNew ? 'Mínimo 6 caracteres' : 'Dejar vacío para mantener actual'}" autocomplete="new-password"></div>
-    <div class="form-group"><label>Rol</label><select name="role" onchange="toggleArtistFields(this.value)">
-      <option value="artist" ${d.role==='artist'||isNew?'selected':''}>Artista</option>
-      <option value="collaborator" ${d.role==='collaborator'?'selected':''}>Colaborador</option>
-      <option value="admin" ${d.role==='admin'?'selected':''}>Admin</option>
-    </select></div>
-    <div id="artist-fields" style="display:${showArtistFields?'block':'none'};">
-      <div class="form-group"><label>Vincular a Artista Existente</label><select name="artist_id" onchange="toggleNewArtist(this.value)">${artistOpts}</select></div>
-      <div id="new-artist-fields" style="display:${!d.artist_id?'block':'none'};padding:15px;background:var(--bg3);border-radius:4px;margin-top:10px;">
-        <div style="font-size:11px;color:var(--gold);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">Datos del nuevo artista</div>
-        <div class="form-group"><label>Nombre artístico</label><input name="artist_name" value="${d.artist_name||''}" placeholder="Ej: Abstract Lai"></div>
-        <div class="form-group"><label>Lightning Address</label><input name="artist_ln" value="" placeholder="usuario@walletofsatoshi.com"></div>
-        <div class="form-group"><label>Bio breve</label><textarea name="artist_bio" placeholder="Descripción corta del artista..."></textarea></div>
+    title.textContent = data ? 'Editar Usuario' : 'Nuevo Usuario';
+    body.innerHTML = `
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="m-email" value="${data?.email || ''}" placeholder="email@ejemplo.com" ${data ? 'disabled' : ''}>
       </div>
-    </div>
-    <div class="form-group"><label>Estado</label><select name="status">
-      <option value="pending" ${d.status==='pending'?'selected':''}>Pendiente</option>
-      <option value="active" ${d.status==='active'?'selected':''}>Activo</option>
-      <option value="suspended" ${d.status==='suspended'?'selected':''}>Suspendido</option>
-    </select></div>`;
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" id="m-name" value="${data?.name || ''}" placeholder="Nombre">
+      </div>
+      <div class="form-group">
+        <label>Rol</label>
+        <select id="m-role">
+          <option value="pending" ${data?.role === 'pending' ? 'selected' : ''}>Pending</option>
+          <option value="artist" ${data?.role === 'artist' ? 'selected' : ''}>Artist</option>
+          <option value="designer" ${data?.role === 'designer' ? 'selected' : ''}>Designer</option>
+          <option value="collaborator" ${data?.role === 'collaborator' ? 'selected' : ''}>Collaborator</option>
+          <option value="admin" ${data?.role === 'admin' ? 'selected' : ''}>Admin</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Estado</label>
+        <select id="m-status">
+          <option value="pending" ${data?.status === 'pending' ? 'selected' : ''}>Pending</option>
+          <option value="active" ${data?.status === 'active' ? 'selected' : ''}>Active</option>
+        </select>
+      </div>
+    `;
+    footer.innerHTML = `
+      <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveUser('${data?.id || ''}')">Guardar</button>
+    `;
   }
+  
+  modal.classList.add('active');
 }
 
-// Edit helpers
-function editArtist(a) { openModal('artist', a); }
-function editWork(w) { openModal('work', w); }
-function editProduct(p) { openModal('product', p); }
+function closeModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('modal-overlay').classList.remove('active');
+}
 
-// Submit
-async function handleSubmit(e) {
-  e.preventDefault();
-  const form = new FormData(e.target);
-  const data = Object.fromEntries(form);
+// CRUD operations
+async function saveArtist(id) {
+  const data = {
+    name: document.getElementById('m-name').value,
+    lightning_address: document.getElementById('m-ln').value,
+    bio: document.getElementById('m-bio').value
+  };
   
-  // Clean up
-  if (data.price_sats === '') data.price_sats = null;
-  else if (data.price_sats) data.price_sats = parseInt(data.price_sats);
+  if (id) data.id = id;
   
-  // Handle artist links
-  if (currentModal === 'artist') {
-    data.links = { instagram: data.instagram || '', twitter: data.twitter || '' };
-    delete data.instagram;
-    delete data.twitter;
-  }
-  
-  // Handle user with new artist
-  if (currentModal === 'user' && data.role === 'artist' && !data.artist_id && data.artist_name) {
-    // Create artist first
-    const artistData = {
-      name: data.artist_name,
-      slug: data.artist_name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
-      lightning_address: data.artist_ln || '',
-      bio_es: data.artist_bio || '',
-      status: 'active'
-    };
-    const newArtist = await api('/artists', 'POST', artistData);
-    if (newArtist && newArtist.id) {
-      data.artist_id = newArtist.id;
-    }
-    // Clean up artist fields from user data
-    delete data.artist_name;
-    delete data.artist_ln;
-    delete data.artist_bio;
-  }
-  
-  const endpoint = currentModal === 'artist' ? '/artists' : currentModal === 'work' ? '/works' : currentModal === 'user' ? '/users' : '/products';
-  
-  if (editingId) {
-    data.id = editingId;
-    await api(endpoint, 'PUT', data);
-  } else {
-    await api(endpoint, 'POST', data);
-  }
+  await api('/artists', {
+    method: id ? 'PUT' : 'POST',
+    body: JSON.stringify(data)
+  });
   
   closeModal();
-  loadSection(currentSection);
+  showToast('Artista guardado');
+  loadArtists();
 }
 
-// Delete
-async function deleteItem(endpoint, id, name) {
-  if (!confirm(`¿Eliminar "${name}"?`)) return;
-  await api('/' + endpoint + '?id=' + id, 'DELETE');
-  loadSection(currentSection);
+function editArtist(id) {
+  const artist = artists.find(a => a.id === id);
+  openModal('artist', artist);
 }
 
-// Change status
-async function changeStatus(endpoint, id, newStatus) {
-  await api('/' + endpoint, 'PUT', { id, status: newStatus });
-  loadSection(currentSection);
+async function deleteArtist(id) {
+  if (!confirm('¿Eliminar este artista?')) return;
+  await api('/artists', { method: 'DELETE', body: JSON.stringify({ id }) });
+  showToast('Artista eliminado');
+  loadArtists();
 }
 
-// Certify work
-async function certifyWork(workId, force = false) {
-  const msg = force 
-    ? '¿Re-enviar esta obra a OpenTimestamps?' 
-    : '¿Certificar esta obra on-chain? Se calculará el SHA-256 y se enviará a OpenTimestamps.';
-  if (!confirm(msg)) return;
+async function saveWork(id) {
+  const data = {
+    title_es: document.getElementById('m-title-es').value,
+    title_en: document.getElementById('m-title-en').value,
+    artist_id: document.getElementById('m-artist').value,
+    technique: document.getElementById('m-technique').value,
+    image_url: document.getElementById('m-image').value
+  };
   
-  try {
-    const res = await api('/certify', 'POST', { work_id: workId, force: force });
-    if (res.error) {
-      alert('Error: ' + res.error);
-      return;
-    }
-    const statusMsg = res.status === 'pending' 
-      ? 'Enviado a OpenTimestamps. Se anclará en un bloque de Bitcoin en las próximas horas.' 
-      : 'Hash calculado. Pendiente de envío.';
-    alert('✅ Hash: ' + res.hash + (res.resubmitted ? ' (re-enviado)' : '') + '\n\nEstado: ' + statusMsg);
-    loadWorks();
-  } catch(e) {
-    alert('Error: ' + e.message);
-  }
+  if (id) data.id = id;
+  
+  await api('/works', {
+    method: id ? 'PUT' : 'POST',
+    body: JSON.stringify(data)
+  });
+  
+  closeModal();
+  showToast('Obra guardada');
+  loadWorks();
 }
 
-// Init — auth check handles loading
+function editWork(id) {
+  const work = works.find(w => w.id === id);
+  openModal('work', work);
+}
+
+async function deleteWork(id) {
+  if (!confirm('¿Eliminar esta obra?')) return;
+  await api('/works', { method: 'DELETE', body: JSON.stringify({ id }) });
+  showToast('Obra eliminada');
+  loadWorks();
+}
+
+async function saveUser(id) {
+  const data = {
+    email: document.getElementById('m-email').value,
+    name: document.getElementById('m-name').value,
+    role: document.getElementById('m-role').value,
+    status: document.getElementById('m-status').value
+  };
+  
+  if (id) data.id = id;
+  
+  await api('/users', {
+    method: id ? 'PUT' : 'POST',
+    body: JSON.stringify(data)
+  });
+  
+  closeModal();
+  showToast('Usuario guardado');
+  loadUsers();
+}
+
+function editUser(id) {
+  const user = users.find(u => u.id === id);
+  openModal('user', user);
+}
+
+async function deleteUser(id) {
+  if (!confirm('¿Eliminar este usuario?')) return;
+  await api('/users', { method: 'DELETE', body: JSON.stringify({ id }) });
+  showToast('Usuario eliminado');
+  loadUsers();
+}
+
+// Products (placeholder)
+function editProduct(id) { showToast('Función en desarrollo', 'error'); }
+async function deleteProduct(id) {
+  if (!confirm('¿Eliminar este producto?')) return;
+  await api('/products', { method: 'DELETE', body: JSON.stringify({ id }) });
+  showToast('Producto eliminado');
+  loadProducts();
+}
+
+// Init
+checkAuth();
 </script>
 </body>
 </html>
