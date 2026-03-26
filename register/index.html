@@ -140,6 +140,8 @@
       
       const { data, error } = await sb.auth.signUp({ email, password });
       
+      console.log('SignUp result:', { data, error });
+      
       if (error) {
         err.textContent = error.message === 'User already registered' 
           ? 'Este email ya está registrado' 
@@ -150,15 +152,39 @@
         return;
       }
       
+      // Check if email confirmation is required
+      if (data.user && !data.session) {
+        // Email confirmation required
+        document.querySelector('.box').innerHTML = `
+          <div class="logo">HASH<span>21</span></div>
+          <div style="margin-top:40px;text-align:center;">
+            <div style="font-size:48px;margin-bottom:20px;">✉️</div>
+            <h2 style="font-size:18px;margin-bottom:12px;">Verificá tu email</h2>
+            <p style="color:var(--text-dim);font-size:14px;line-height:1.6;">
+              Te enviamos un link de confirmación a<br>
+              <strong style="color:var(--gold)">${email}</strong>
+            </p>
+            <p style="color:var(--text-dim);font-size:13px;margin-top:24px;">
+              Después de confirmar, <a href="/admin" style="color:var(--gold)">iniciá sesión</a>
+            </p>
+          </div>
+        `;
+        
+        // Create user in DB anyway
+        await fetch(`${API}/users`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, role: 'artist', status: 'pending' })
+        });
+        return;
+      }
+      
       // Create user in DB
       await fetch(`${API}/users`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, role: 'artist', status: 'pending' })
       });
-      
-      // Login with new credentials
-      await sb.auth.signInWithPassword({ email, password });
       
       window.location.href = '/admin';
     }
