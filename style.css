@@ -552,11 +552,19 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
   background: rgba(176,141,87,0.1);
 }
 
-/* COLLECTION GRID (expanded) */
+/* COLLECTION GRID (horizontal scroll) */
 .collection-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
   gap: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 15px;
+}
+.collection-grid .collection-item {
+  flex: 0 0 280px;
+  scroll-snap-align: start;
 }
 .collection-grid.hidden { display: none; }
 
@@ -1147,7 +1155,7 @@ footer {
   .pillar { padding: 40px 30px; }
   
   /* Collection responsive */
-  .collection-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+  .collection-grid .collection-item { flex: 0 0 240px; }
   .collection-item { min-width: auto; }
   .collection-item img { height: 220px; }
   
