@@ -104,37 +104,7 @@ header ul a:hover { color: var(--text); }
 
 /* LANG SWITCH */
 .lang-switch { display: flex; gap: 4px; align-items: center; }
-.auth-buttons {
-  display: flex;
-  gap: 10px;
-  margin-left: 20px;
-  align-items: center;
-}
-.btn-signin,
-.btn-signup {
-  background: transparent;
-  border: none;
-  font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 2px;
-  padding: 0;
-  text-transform: uppercase;
-  transition: color 0.3s;
-  text-decoration: none;
-}
-.btn-signin {
-  color: var(--text-dim);
-}
-.btn-signin:hover {
-  color: var(--text);
-}
-.btn-signup {
-  color: var(--gold);
-}
-.btn-signup:hover {
-  color: #fff;
-}
+
 .lang-btn {
   background: transparent;
   border: 1px solid var(--border);
