@@ -79,8 +79,16 @@ h2 { font-size:18px; font-weight:500; margin-bottom:20px; color:var(--gold); }
 </style>
 </head>
 <body>
+<!-- Loading Screen -->
+<div id="loading-screen" style="display:flex;justify-content:center;align-items:center;min-height:100vh;background:var(--bg);">
+  <div style="text-align:center;color:var(--text-dim);">
+    <div style="font-size:24px;letter-spacing:4px;margin-bottom:10px;">HASH21</div>
+    <div style="font-size:12px;">Cargando...</div>
+  </div>
+</div>
+
 <!-- Login Screen -->
-<div class="login-screen" id="login-screen">
+<div class="login-screen" id="login-screen" style="display:none">
   <div class="login-box">
     <h1>HASH21</h1>
     <p>Admin Panel</p>
@@ -203,6 +211,7 @@ let currentUser = null; // { id, email, role, artist_id }
 // Auth
 async function checkAuth() {
   const { data: { session } } = await sb.auth.getSession();
+  document.getElementById('loading-screen').style.display = 'none';
   if (session) {
     showApp();
   } else {
