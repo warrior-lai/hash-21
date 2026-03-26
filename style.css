@@ -325,11 +325,8 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
 }
 .carousel-item img {
   width: 100%;
-  height: auto;
-  min-height: 300px;
-  max-height: 500px;
-  object-fit: contain;
-  background: #0a0a0a;
+  aspect-ratio: 1;
+  object-fit: cover;
   transition: transform 0.8s cubic-bezier(0.4,0,0.2,1), filter 0.5s ease;
   loading: lazy;
   decoding: async;
@@ -402,11 +399,8 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
 .collection-item .grid-zap:hover { background: var(--gold); color: var(--bg); border-color: var(--gold); }
 .collection-item img {
   width: 100%;
-  height: auto;
-  min-height: 200px;
-  max-height: 400px;
-  object-fit: contain;
-  background: #0a0a0a;
+  aspect-ratio: 1;
+  object-fit: cover;
   display: block;
   transition: transform 0.6s ease;
   loading: lazy;
