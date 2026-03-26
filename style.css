@@ -96,6 +96,7 @@ header ul a:hover { color: var(--text); }
   gap: 30px;
   padding: 40px;
   text-align: center;
+  list-style: none;
 }
 .nav-overlay ul a {
   font-size: 14px;
