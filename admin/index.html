@@ -937,6 +937,7 @@ body {
 .toast-success { border-left: 3px solid var(--green); }
 .toast-error { border-left: 3px solid var(--red); }
 </style>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
 <body>
 
@@ -1062,7 +1063,7 @@ body {
     
     <div class="sidebar-footer">
       <button class="logout-btn" onclick="handleLogout()">
-        Cerrar sesión
+        <i data-lucide="log-out" class="nav-icon"></i> Cerrar sesión
       </button>
     </div>
   </nav>
@@ -1765,3 +1766,11 @@ checkAuth();
 </script>
 </body>
 </html>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+});
+</script>
+<style>
+.nav-icon { width: 18px; height: 18px; stroke-width: 1.5; margin-right: 10px; vertical-align: middle; }
+</style>
