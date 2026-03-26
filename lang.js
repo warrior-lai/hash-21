@@ -69,7 +69,7 @@ const translations = {
     pillar3_title: "21 Millones",
     pillar3_text: "En un mundo de infinita reproducción, lo escaso tiene valor. Cada pieza es única. Finito por diseño — como Bitcoin.",
     pillar4_title: "Legado",
-    pillar4_text: "Crear es dejar rastro. Certificar es asumir responsabilidad por lo creado. Registramos únicamente la huella digital de cada obra, de forma eficiente y respetuosa con la red. Porque la permanencia no necesita ruido. Solo verdad verificable.",
+    pillar4_text: "Crear es dejar rastro. Certificar es asumir responsabilidad por lo creado. Registramos únicamente la huella digital de cada obra y de forma eficiente.",
     artists_label: "Artistas",
     artists_title: "Creadores",
     artists_text: "Hash21 es un refugio para artistas que crean desde la libertad. Creemos que el arte, como Bitcoin, es un acto de soberanía: una decisión consciente de expresar la verdad interior sin pedir permiso, a través del color, la textura, la materia y el tiempo invertido en cada obra. Cada pieza nace del trabajo real y refleja la autenticidad del alma que la crea.\n\nCada creador es guardián de su energía, responsable de su visión y dueño de su proceso. Aquí, el amor por la creación se encuentra con la libertad de existir. Aquí, el valor no se impone: se construye.",
