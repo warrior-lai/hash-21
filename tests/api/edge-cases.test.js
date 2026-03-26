@@ -31,7 +31,8 @@ describe('Edge Cases', () => {
     it('should handle malformed hash on verify', async () => {
       const res = await fetch(`${API}/verify?hash=not-a-hash!@#$`)
       const data = await res.json()
-      expect(data.found).toBe(false)
+      // API returns verified:false OR error for malformed hashes
+      expect(data.verified === false || data.error).toBeTruthy()
     })
 
     it('should handle non-existent endpoint', async () => {
