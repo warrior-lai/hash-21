@@ -33,7 +33,7 @@ const translations = {
     collab_text: "Diseños exclusivos creados para el proyecto 21 LAT. Arte abstracto aplicado a tarjetas contactless — cada diseño es único e irrepetible.",
     collection_label: "Colección",
     collection_title: "Explorar Colección",
-    collection_text: "Cada obra registra un instante de conciencia irrepetible, una prueba de existencia. Así como Bitcoin inscribe valor en el tiempo, estas piezas inscriben intención, energía y significado.\n\nPinturas y objetos de diseño inspirados en la filosofía de Bitcoin, certificados on-chain como acto de soberanía cultural. La certificación garantiza autenticidad, trazabilidad y permanencia inmutable. La obra habita el mundo físico; su verdad queda anclada en la red.",
+    collection_text: "Cada obra registra un instante de conciencia irrepetible, una prueba de existencia. Así como Bitcoin inscribe valor en el tiempo, estas piezas inscriben intención, energía y significado. La obra habita el mundo físico; su verdad queda anclada en la red.",
     coming: "Próximamente",
     coming_objects: "Objetos · Próximamente",
     shop_explore_title: "Objetos de diseño",
