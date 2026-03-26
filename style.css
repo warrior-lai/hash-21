@@ -318,18 +318,22 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
   gap: 20px;
 }
 .carousel-item {
-  min-width: 340px;
-  aspect-ratio: 16/10;
+  min-width: 280px;
+  width: 280px;
+  height: 320px;
   overflow: hidden;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
 }
 .carousel-item img {
   width: 100%;
-  aspect-ratio: 1;
+  height: 240px;
   object-fit: cover;
+  object-position: center;
   transition: transform 0.8s cubic-bezier(0.4,0,0.2,1), filter 0.5s ease;
-  loading: lazy;
-  decoding: async;
 }
 .carousel-item:hover img { transform: scale(1.03); filter: brightness(1.05); }
 .carousel-item { box-shadow: 0 4px 30px rgba(0,0,0,0.04); transition: box-shadow 0.5s; }
