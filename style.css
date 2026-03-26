@@ -406,12 +406,11 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
 .collection-item .grid-zap:hover { background: var(--gold); color: var(--bg); border-color: var(--gold); }
 .collection-item img {
   width: 100%;
-  height: auto;
-  max-height: 320px;
-  object-fit: contain;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+  object-position: top center;
   display: block;
   transition: transform 0.6s ease;
-  background: linear-gradient(to bottom, #0a0a0a, #111);
 }
 .collection-item:hover img { transform: scale(1.02); }
 .collection-item .info {
@@ -1161,10 +1160,10 @@ footer {
   .pillars { grid-template-columns: 1fr; }
   .pillar { padding: 40px 30px; }
   
-  /* Collection responsive */
-  .collection-grid .collection-item { flex: 0 0 240px; }
-  .collection-item { min-width: auto; }
-  .collection-item img { height: 220px; }
+  /* Collection responsive - full width cards */
+  .collection-grid .collection-item { flex: 0 0 85vw; }
+  .collection-item { min-width: 85vw; width: 85vw; }
+  .collection-item img { aspect-ratio: 4/5; height: auto; object-fit: cover; object-position: top center; }
   
   /* Carousel touch-swipeable */
   .carousel-item { min-width: 260px; }
