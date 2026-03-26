@@ -93,6 +93,7 @@ Sin intermediarios. Sin permisos. Sin censura.
 │  ├── index.html    (galería dinámica)                           │
 │  ├── shop/         (tienda Lightning)                           │
 │  ├── admin/        (panel de gestión)                           │
+│  ├── register/     (registro de creadores)                      │
 │  ├── verify/       (verificación pública)                       │
 │  └── blocklab/     (laboratorio)                                │
 └─────────────────────────────────────────────────────────────────┘
