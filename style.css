@@ -406,8 +406,7 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
 .collection-item .grid-zap:hover { background: var(--gold); color: var(--bg); border-color: var(--gold); }
 .collection-item img {
   width: 100%;
-  aspect-ratio: 4/5;
-  object-fit: cover;
+  height: auto;
   display: block;
   transition: transform 0.6s ease;
 }
@@ -1159,10 +1158,10 @@ footer {
   .pillars { grid-template-columns: 1fr; }
   .pillar { padding: 40px 30px; }
   
-  /* Collection responsive - full width cards */
-  .collection-grid .collection-item { flex: 0 0 85vw; }
-  .collection-item { min-width: 85vw; width: 85vw; }
-  .collection-item img { aspect-ratio: 4/5; height: auto; object-fit: cover; }
+  /* Collection responsive - Instagram feed style */
+  .collection-grid .collection-item { flex: 0 0 100%; }
+  .collection-item { min-width: 100%; width: 100%; margin-bottom: 20px; }
+  .collection-item img { width: 100%; height: auto; }
   
   /* Carousel touch-swipeable */
   .carousel-item { min-width: 260px; }
