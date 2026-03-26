@@ -105,17 +105,20 @@ header ul a:hover { color: var(--text); }
 /* LANG SWITCH */
 .lang-switch { display: flex; gap: 4px; align-items: center; }
 .btn-login {
-  background: transparent;
+  background: var(--gold);
   border: 1px solid var(--gold);
-  color: var(--gold);
+  color: var(--bg);
   font-size: 10px;
+  font-weight: 600;
   letter-spacing: 1px;
-  padding: 6px 12px;
+  padding: 6px 14px;
   text-transform: uppercase;
   transition: all 0.3s;
+  border-radius: 2px;
 }
 .btn-login:hover {
-  background: var(--gold);
+  background: #fff;
+  border-color: #fff;
   color: var(--bg);
 }
 .lang-btn {
