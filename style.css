@@ -96,7 +96,11 @@ header ul a:hover { color: var(--text); }
   gap: 30px;
   padding: 40px;
   text-align: center;
-  list-style: none;
+  list-style: none !important;
+  margin: 0;
+}
+.nav-overlay ul li {
+  list-style: none !important;
 }
 .nav-overlay ul a {
   font-size: 14px;
