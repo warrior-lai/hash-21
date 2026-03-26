@@ -708,20 +708,25 @@ body {
     position: relative;
     flex-direction: row;
     flex-wrap: wrap;
-    padding: 12px;
+    padding: 8px;
+    gap: 8px;
   }
   
-  .sidebar-header { width: 100%; padding: 12px; }
+  .sidebar-header { display: none; }
   .sidebar-user { display: none; }
-  .sidebar-nav { display: flex; flex-wrap: wrap; padding: 0; width: 100%; }
+  .sidebar-nav { display: flex; flex-wrap: wrap; padding: 0; width: 100%; gap: 4px; justify-content: center; }
   .nav-section { display: none; }
-  .sidebar-nav a { padding: 10px 14px; border-left: none; border-bottom: 2px solid transparent; }
+  .sidebar-nav a { padding: 8px 12px; border-left: none; border-bottom: 2px solid transparent; font-size: 11px; }
   .sidebar-nav a.active { border-left: none; border-bottom-color: var(--gold); }
-  .sidebar-footer { width: 100%; border-top: none; padding: 8px 12px; }
+  .sidebar-footer { position: absolute; top: 8px; right: 8px; width: auto; border-top: none; padding: 0; }
+  .sidebar-footer a { font-size: 11px; }
   
   .main { margin-left: 0; padding: 16px; }
-  .page-header { flex-direction: column; gap: 16px; align-items: flex-start; }
-  .stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .page-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+  .page-header h1 { font-size: 20px; }
+  .stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .stat-card { padding: 16px; }
+  .stat-card .value { font-size: 28px; }
   .card-grid { grid-template-columns: 1fr; }
 }
 
