@@ -569,13 +569,6 @@
     let works = await res.json();
     if (!works || !works.length) return;
     
-    // Sort: "Digital Renaissance" first, then by date desc
-    works.sort((a, b) => {
-      if (a.title_es && a.title_es.includes('Digital Renaissance')) return -1;
-      if (b.title_es && b.title_es.includes('Digital Renaissance')) return 1;
-      return new Date(b.created_at) - new Date(a.created_at);
-    });
-    
     const lang = currentLang || 'es';
     
     // Get existing image srcs to avoid duplicates (normalize paths)
