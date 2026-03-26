@@ -104,7 +104,7 @@ header ul a:hover { color: var(--text); }
 }
 
 /* LANG SWITCH */
-.lang-switch { display: flex; gap: 4px; align-items: center; }
+.lang-switch { display: flex; gap: 4px; align-items: center; justify-content: center; }
 
 .lang-btn {
   background: transparent;
