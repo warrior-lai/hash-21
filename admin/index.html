@@ -1037,32 +1037,32 @@ body {
     <div class="sidebar-nav">
       <div class="nav-section">Principal</div>
       <a class="active" onclick="showSection('dashboard')">
-        <span class="icon">📊</span> Dashboard
+        Dashboard
       </a>
       
       <div class="nav-section">Contenido</div>
       <a onclick="showSection('artists')">
-        <span class="icon">👥</span> Artistas
+        Artistas
       </a>
       <a onclick="showSection('works')">
-        <span class="icon">🎨</span> Obras
+        Obras
       </a>
       <a onclick="showSection('products')">
-        <span class="icon">🛒</span> Productos
+        Productos
       </a>
       <a onclick="showSection('certs')">
-        <span class="icon">📜</span> Certificados
+        Certificados
       </a>
       
       <div class="nav-section">Sistema</div>
       <a onclick="showSection('users')">
-        <span class="icon">👤</span> Usuarios
+        Usuarios
       </a>
     </div>
     
     <div class="sidebar-footer">
       <button class="logout-btn" onclick="handleLogout()">
-        🚪 Cerrar sesión
+        Cerrar sesión
       </button>
     </div>
   </nav>
@@ -1075,32 +1075,32 @@ body {
       </div>
       <div class="stats">
         <div class="stat">
-          <div class="stat-icon">👥</div>
+          
           <div class="stat-number" id="stat-artists">-</div>
           <div class="stat-label">Artistas</div>
         </div>
         <div class="stat">
-          <div class="stat-icon">🎨</div>
+          
           <div class="stat-number" id="stat-works">-</div>
           <div class="stat-label">Obras</div>
         </div>
         <div class="stat">
-          <div class="stat-icon">🛒</div>
+          
           <div class="stat-number" id="stat-products">-</div>
           <div class="stat-label">Productos</div>
         </div>
         <div class="stat">
-          <div class="stat-icon">📜</div>
+          
           <div class="stat-number" id="stat-certs">-</div>
           <div class="stat-label">Certificados</div>
         </div>
         <div class="stat">
-          <div class="stat-icon">⚡</div>
+          
           <div class="stat-number" id="stat-zaps">-</div>
           <div class="stat-label">Zaps</div>
         </div>
         <div class="stat">
-          <div class="stat-icon">₿</div>
+          
           <div class="stat-number" id="stat-sats">-</div>
           <div class="stat-label">Sats</div>
         </div>
@@ -1392,7 +1392,7 @@ async function loadArtists() {
   const grid = document.getElementById('artists-grid');
   
   if (!artists.length) {
-    grid.innerHTML = `<div class="empty-state"><div class="icon">👥</div><h3>Sin artistas</h3><p>Agregá tu primer artista</p></div>`;
+    grid.innerHTML = `<div class="empty-state"><h3>Sin artistas</h3><p>Agregá tu primer artista</p></div>`;
     return;
   }
   
@@ -1418,7 +1418,7 @@ async function loadWorks() {
   const grid = document.getElementById('works-grid');
   
   if (!works.length) {
-    grid.innerHTML = `<div class="empty-state"><div class="icon">🎨</div><h3>Sin obras</h3><p>Agregá tu primera obra</p></div>`;
+    grid.innerHTML = `<div class="empty-state"><h3>Sin obras</h3><p>Agregá tu primera obra</p></div>`;
     return;
   }
   
@@ -1439,7 +1439,7 @@ async function loadWorks() {
           </div>
         </div>
         <div class="card-actions">
-          ${!w.certificate_status || w.certificate_status === 'none' ? `<button class="btn btn-primary btn-sm" onclick="certifyWork('${w.id}')">📜 Certificar</button>` : ''}
+          ${!w.certificate_status || w.certificate_status === 'none' ? `<button class="btn btn-primary btn-sm" onclick="certifyWork('${w.id}')">Certificar</button>` : ''}
           <button class="btn btn-secondary btn-sm" onclick="editWork('${w.id}')">Editar</button>
           <button class="btn btn-danger btn-sm" onclick="deleteWork('${w.id}')">Eliminar</button>
         </div>
@@ -1453,7 +1453,7 @@ async function loadProducts() {
   const grid = document.getElementById('products-grid');
   
   if (!products.length) {
-    grid.innerHTML = `<div class="empty-state"><div class="icon">🛒</div><h3>Sin productos</h3><p>Agregá tu primer producto</p></div>`;
+    grid.innerHTML = `<div class="empty-state"><h3>Sin productos</h3><p>Agregá tu primer producto</p></div>`;
     return;
   }
   
