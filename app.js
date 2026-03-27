@@ -37,10 +37,16 @@ async function loadWorks() {
       const block = w.certificate_block || null;
       const img = w.image_url || '/img/obra-placeholder.jpg';
       
+      const slug = title.toLowerCase().replace(/ /g, '-');
       const itemHTML = `
         <div class="collection-item" onclick="openLightbox('${img}','${code}','${title}','${technique}','${status}'${block ? `,${block}` : ''})">
           <img src="${img}" alt="${title}" loading="lazy" decoding="async">
-          <div class="info"><h4>${code}</h4><p>${title}</p><span>${technique}</span></div>
+          <div class="info">
+            <h4>${code}</h4>
+            <p>${title}</p>
+            <span>${technique}</span>
+            <button class="grid-zap" onclick="event.stopPropagation(); openZap('${slug}','${title.replace(/'/g, "\\'")}','obra')">⚡ Zap</button>
+          </div>
         </div>
       `;
       
