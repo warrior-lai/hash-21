@@ -732,6 +732,9 @@
 
 <!-- Scroll to top button -->
 <button id="scrollTop" aria-label="Volver arriba">↑</button>
+
+<!-- Toast container -->
+<div id="toast" class="toast"></div>
 <script>
 (function(){
   const btn = document.getElementById('scrollTop');
@@ -742,6 +745,15 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 })();
+
+// Toast notification
+function showToast(msg, type = '') {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = 'toast ' + type;
+  toast.classList.add('visible');
+  setTimeout(() => toast.classList.remove('visible'), 3000);
+}
 </script>
 
 </body>
