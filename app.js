@@ -1,3 +1,68 @@
+// API endpoint
+const API_URL = 'https://hash21-backend.vercel.app/api';
+
+// Load works from Supabase
+async function loadWorks() {
+  try {
+    const res = await fetch(`${API_URL}/works`);
+    const works = await res.json();
+    
+    const carousel = document.getElementById('collCarousel');
+    const grid = document.getElementById('collectionGrid');
+    
+    if (!carousel || !grid) return;
+    
+    // Sort by created_at or display_order if available
+    works.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    
+    // Generate HTML for each work
+    const lang = localStorage.getItem('hash21-lang') || 'es';
+    
+    let carouselHTML = '';
+    let gridHTML = '';
+    
+    works.forEach((w, i) => {
+      const title = lang === 'en' && w.title_en ? w.title_en : w.title_es;
+      const code = w.code || `Block 0 — #${String(i + 1).padStart(3, '0')}`;
+      const technique = w.technique || '';
+      const status = w.status || 'consult';
+      const block = w.certificate_block || null;
+      const img = w.image_url || '/img/obra-placeholder.jpg';
+      
+      const itemHTML = `
+        <div class="collection-item" onclick="openLightbox('${img}','${code}','${title}','${technique}','${status}'${block ? `,${block}` : ''})">
+          <img src="${img}" alt="${title}" loading="lazy" decoding="async">
+          <div class="info"><h4>${code}</h4><p>${title}</p><span>${technique}</span></div>
+        </div>
+      `;
+      
+      carouselHTML += itemHTML;
+      gridHTML += itemHTML;
+    });
+    
+    // Add shop CTA to carousel
+    const shopCTA = `
+      <div class="collection-item" onclick="window.location.href='/shop/'" style="cursor:pointer;">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:420px;padding:40px;text-align:center;">
+          <span style="font-size:32px;margin-bottom:15px;">✦</span>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--text);margin-bottom:10px;" data-i18n="shop_explore_title">${lang === 'en' ? 'Design Objects' : 'Objetos de diseño'}</p>
+          <span style="font-size:12px;color:var(--text-dim);line-height:1.6;max-width:260px;" data-i18n="shop_explore_desc">${lang === 'en' ? 'Explore unique objects by Hash21 artists' : 'Explorá objetos únicos creados por los artistas de Hash21'}</span>
+          <a href="/shop/" style="margin-top:20px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;border:1px solid rgba(176,141,87,0.3);padding:8px 20px;transition:all 0.3s;" data-i18n="shop_explore_cta">${lang === 'en' ? 'View shop →' : 'Ver tienda →'}</a>
+        </div>
+      </div>
+    `;
+    
+    carousel.innerHTML = carouselHTML + shopCTA;
+    grid.innerHTML = gridHTML;
+    
+  } catch (e) {
+    console.error('Error loading works:', e);
+  }
+}
+
+// Load works on page load
+document.addEventListener('DOMContentLoaded', loadWorks);
+
 // Gold dust particles — enhanced
 const c = document.getElementById('dust');
 const ctx = c.getContext('2d');
