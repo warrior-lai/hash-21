@@ -1254,6 +1254,14 @@ function esc(str) {
     ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[c]);
 }
 
+// Slugify for certificate filenames
+function slugify(str) {
+  return String(str).toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 // API helper
 async function api(endpoint, options = {}) {
   const res = await fetch(`${API}${endpoint}`, {
@@ -1552,6 +1560,7 @@ async function loadCerts() {
         <td><span class="badge ${statusClass}">${statusText}</span></td>
         <td>
           ${w.certificate_block ? `<a href="https://mempool.space/block/${w.certificate_block}" target="_blank" class="btn btn-secondary btn-sm">${t('certs.view-mempool')}</a>` : ''}
+          ${w.certificate_status === 'certified' ? `<a href="/certificates/${slugify(w.title_es)}-certificate.pdf" download class="btn btn-primary btn-sm" style="margin-left:4px;">${t('certs.download-pdf')}</a>` : ''}
         </td>
       </tr>
     `;
