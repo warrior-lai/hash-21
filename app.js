@@ -12,13 +12,8 @@ async function loadWorks() {
     
     if (!carousel || !grid) return;
     
-    // Sort: Lai first, then others by date
-    works.sort((a, b) => {
-      const aIsLai = a.artists?.slug === 'lai' ? 0 : 1;
-      const bIsLai = b.artists?.slug === 'lai' ? 0 : 1;
-      if (aIsLai !== bIsLai) return aIsLai - bIsLai;
-      return new Date(a.created_at) - new Date(b.created_at);
-    });
+    // Sort: newest first (most recent created_at at the start)
+    works.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     
     // Generate HTML for each work
     const lang = localStorage.getItem('hash21-lang') || 'es';
