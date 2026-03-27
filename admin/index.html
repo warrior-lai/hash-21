@@ -1112,6 +1112,11 @@ body {
   </nav>
 
   <div class="main">
+    <!-- Mobile lang toggle -->
+    <div class="mobile-lang" id="mobile-lang">
+      <button class="lang-btn" onclick="setLang(currentLang==='es'?'en':'es')">ES</button>
+    </div>
+
     <!-- Dashboard -->
     <div id="sec-dashboard">
       <div class="page-header">
@@ -1843,6 +1848,8 @@ document.addEventListener('DOMContentLoaded', () => {
 .nav-icon { width: 18px; height: 18px; stroke-width: 1.5; margin-right: 10px; vertical-align: middle; }
 .lang-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--text-mid); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-family: inherit; transition: var(--transition); }
 .lang-btn:hover { border-color: var(--gold); color: var(--gold); }
+.mobile-lang { display: none; position: fixed; top: 58px; right: 12px; z-index: 99; }
+@media (max-width: 768px) { .mobile-lang { display: block; } }
 </style>
 </body>
 </html>

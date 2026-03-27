@@ -303,8 +303,7 @@ function applyTranslations() {
 }
 
 function updateLangToggle() {
-  const toggles = document.querySelectorAll('#lang-toggle, #sidebar-lang-toggle');
-  toggles.forEach(toggle => {
+  document.querySelectorAll('.lang-btn, #lang-toggle, #sidebar-lang-toggle').forEach(toggle => {
     if (toggle) toggle.textContent = currentLang.toUpperCase();
   });
 }
