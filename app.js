@@ -31,8 +31,55 @@ function drawDust() {
 }
 drawDust();
 
-function openLightbox(src, code, name, tech, status, block) {
-  document.getElementById('lb-img').src = src;
+// Lightbox Pro — gallery data for navigation
+let lbWorks = [];
+let lbIndex = 0;
+
+function buildLightboxGallery() {
+  lbWorks = [];
+  document.querySelectorAll('.collection-item').forEach(item => {
+    const onclick = item.getAttribute('onclick') || '';
+    const match = onclick.match(/openLightbox\('([^']+)','([^']*)','([^']*)','([^']*)','([^']*)'(?:,(\d+|null))?\)/);
+    if (match) {
+      lbWorks.push({
+        src: match[1],
+        code: match[2],
+        name: match[3],
+        tech: match[4],
+        status: match[5],
+        block: match[6] === 'null' ? null : parseInt(match[6]) || null
+      });
+    }
+  });
+  // Remove duplicates by src
+  const seen = new Set();
+  lbWorks = lbWorks.filter(w => {
+    if (seen.has(w.src)) return false;
+    seen.add(w.src);
+    return true;
+  });
+}
+
+function navigateLightbox(dir) {
+  if (!lbWorks.length) return;
+  lbIndex = (lbIndex + dir + lbWorks.length) % lbWorks.length;
+  const w = lbWorks[lbIndex];
+  showLightboxWork(w);
+}
+
+function showLightboxWork(w) {
+  const img = document.getElementById('lb-img');
+  img.style.opacity = '0';
+  img.style.transform = 'scale(0.95)';
+  setTimeout(() => {
+    img.src = w.src;
+    populateLightbox(w.code, w.name, w.tech, w.status, w.block);
+    img.style.opacity = '1';
+    img.style.transform = 'scale(1)';
+  }, 150);
+}
+
+function populateLightbox(code, name, tech, status, block) {
   document.getElementById('lb-code').textContent = code;
   document.getElementById('lb-name').textContent = name;
   document.getElementById('lb-tech').textContent = tech;
@@ -48,7 +95,7 @@ function openLightbox(src, code, name, tech, status, block) {
     badge.textContent = '';
     badge.className = 'availability-badge';
   }
-  // Populate tags
+  // Tags
   var tagData = {
     'Paspartuz 1': {artist:'Roxy', type_es:'Física', type_en:'Physical', status:'consult'},
     'Paspartuz 2': {artist:'Roxy', type_es:'Física', type_en:'Physical', status:'consult'},
@@ -58,14 +105,8 @@ function openLightbox(src, code, name, tech, status, block) {
     'Horizonte Temporal': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', status:'available'}
   };
   var td = tagData[name] || {artist:'Lai⚡️', type_es:'Física', type_en:'Physical'};
-  var typeName = lang === 'en' ? td.type_en : td.type_es;
-  var statusLabel = '';
-  if (td.status === 'available') statusLabel = lang === 'en' ? 'Available' : 'Disponible';
-  else if (td.status === 'consult') statusLabel = lang === 'en' ? 'Inquire' : 'Consultar';
-  var statusClass = td.status === 'available' ? 'badge-available' : 'badge-consult';
   document.getElementById('lb-tags').innerHTML = '';
-
-  // Wire zap button
+  // Zap button
   var obraMap = {'The Rabbit':'the-rabbit','The Hole':'the-hole','Libertad':'libertad','Horizonte Temporal':'horizonte-temporal','Paspartuz 1':'paspartuz-1','Paspartuz 2':'paspartuz-2'};
   var slug = obraMap[name] || name.toLowerCase().replace(/ /g,'-');
   var zapBtn = document.getElementById('lb-zap-btn');
@@ -77,8 +118,7 @@ function openLightbox(src, code, name, tech, status, block) {
   } else {
     countEl.textContent = '';
   }
-  
-  // Show block number if certified
+  // Block number
   var blockEl = document.getElementById('lb-block');
   if (block && blockEl) {
     blockEl.innerHTML = '<a href="https://mempool.space/block/' + block + '" target="_blank" style="color:var(--gold);text-decoration:none;font-size:13px;letter-spacing:1px;" onclick="event.stopPropagation();">⛓ Bloque #' + block + '</a>';
@@ -86,7 +126,16 @@ function openLightbox(src, code, name, tech, status, block) {
   } else if (blockEl) {
     blockEl.style.display = 'none';
   }
-  
+  // Counter
+  document.getElementById('lb-counter').textContent = (lbIndex + 1) + ' / ' + lbWorks.length;
+}
+
+function openLightbox(src, code, name, tech, status, block) {
+  buildLightboxGallery();
+  lbIndex = lbWorks.findIndex(w => w.src === src);
+  if (lbIndex < 0) lbIndex = 0;
+  document.getElementById('lb-img').src = src;
+  populateLightbox(code, name, tech, status, block);
   document.getElementById('lightbox').classList.add('active');
   document.body.style.overflow = 'hidden';
 }
@@ -94,7 +143,31 @@ function closeLightbox() {
   document.getElementById('lightbox').classList.remove('active');
   document.body.style.overflow = '';
 }
-document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+// Keyboard navigation
+document.addEventListener('keydown', e => { 
+  if(e.key === 'Escape') closeLightbox();
+  if(e.key === 'ArrowLeft') navigateLightbox(-1);
+  if(e.key === 'ArrowRight') navigateLightbox(1);
+});
+// Touch swipe for lightbox
+(function() {
+  const lb = document.getElementById('lightbox');
+  let touchStartX = 0, touchStartY = 0;
+  lb.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  }, {passive: true});
+  lb.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].screenX - touchStartX;
+    const dy = e.changedTouches[0].screenY - touchStartY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+      if (dx > 0) navigateLightbox(-1); // swipe right = prev
+      else navigateLightbox(1); // swipe left = next
+    } else if (dy > 100) {
+      closeLightbox(); // swipe down = close
+    }
+  }, {passive: true});
+})();
 
 /* Collection carousel */
 

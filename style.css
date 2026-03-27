@@ -594,25 +594,70 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
 .toggle-title:hover::after { border-color: var(--gold); }
 .toggle-title.expanded::after { transform: rotate(-135deg); }
 
-/* LIGHTBOX */
+/* LIGHTBOX PRO */
 .lightbox {
-  display: none;
+  display: flex;
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.92);
+  background: rgba(0,0,0,0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   z-index: 1000;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   padding: 40px;
   cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s;
 }
-.lightbox.active { display: flex; }
+.lightbox.active { 
+  opacity: 1;
+  visibility: visible;
+}
 .lightbox img {
   max-width: 90%;
-  max-height: 70vh;
+  max-height: 65vh;
   object-fit: contain;
-  box-shadow: 0 10px 60px rgba(0,0,0,0.5);
+  box-shadow: 0 20px 80px rgba(0,0,0,0.6);
+  border-radius: 4px;
+  transform: scale(0.9) translateY(20px);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+}
+.lightbox.active img {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lightbox-nav:hover { background: var(--gold); border-color: var(--gold); }
+.lightbox-nav.prev { left: 20px; }
+.lightbox-nav.next { right: 20px; }
+.lightbox-counter {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.5);
 }
 .lightbox-info {
   text-align: center;
@@ -1208,6 +1253,11 @@ footer {
   .footer-grid .footer-col:first-child {
     grid-column: 1 / -1;
   }
+  
+  /* Lightbox mobile */
+  .lightbox-nav { display: none; }
+  .lightbox img { max-width: 95%; max-height: 60vh; }
+  .lightbox-info p { font-size: 24px; }
 }
 
 @media (max-width: 390px) {
