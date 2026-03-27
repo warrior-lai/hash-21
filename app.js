@@ -172,21 +172,39 @@ document.addEventListener('keydown', e => {
 // Touch swipe for lightbox
 (function() {
   const lb = document.getElementById('lightbox');
-  let touchStartX = 0, touchStartY = 0;
+  let touchStartX = 0, touchStartY = 0, touchStartTime = 0;
+  
   lb.addEventListener('touchstart', e => {
-    touchStartX = e.changedTouches[0].screenX;
-    touchStartY = e.changedTouches[0].screenY;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    touchStartTime = Date.now();
   }, {passive: true});
+  
+  lb.addEventListener('touchmove', e => {
+    // Prevent scroll while swiping in lightbox
+    if (lb.classList.contains('active')) {
+      e.preventDefault();
+    }
+  }, {passive: false});
+  
   lb.addEventListener('touchend', e => {
-    const dx = e.changedTouches[0].screenX - touchStartX;
-    const dy = e.changedTouches[0].screenY - touchStartY;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    const dt = Date.now() - touchStartTime;
+    
+    // Quick swipe or long swipe
+    const isQuickSwipe = dt < 300 && Math.abs(dx) > 30;
+    const isLongSwipe = Math.abs(dx) > 80;
+    
+    if ((isQuickSwipe || isLongSwipe) && Math.abs(dx) > Math.abs(dy)) {
+      e.preventDefault();
+      e.stopPropagation();
       if (dx > 0) navigateLightbox(-1); // swipe right = prev
       else navigateLightbox(1); // swipe left = next
-    } else if (dy > 100) {
+    } else if (dy > 100 && Math.abs(dy) > Math.abs(dx)) {
       closeLightbox(); // swipe down = close
     }
-  }, {passive: true});
+  }, {passive: false});
 })();
 
 /* Collection carousel */
