@@ -146,8 +146,7 @@ function populateLightbox(code, name, tech, status, block) {
   } else if (blockEl) {
     blockEl.style.display = 'none';
   }
-  // Counter
-  document.getElementById('lb-counter').textContent = (lbIndex + 1) + ' / ' + lbWorks.length;
+
 }
 
 function openLightbox(src, code, name, tech, status, block) {
