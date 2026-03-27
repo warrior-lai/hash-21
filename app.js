@@ -1,27 +1,47 @@
-// Gold dust particles
+// Gold dust particles — enhanced
 const c = document.getElementById('dust');
 const ctx = c.getContext('2d');
 let particles = [];
 function resize() { c.width = window.innerWidth; c.height = window.innerHeight; }
 resize();
 window.addEventListener('resize', resize);
-for (let i = 0; i < 30; i++) {
+// More particles, varied sizes, glow effect
+for (let i = 0; i < 60; i++) {
   particles.push({
     x: Math.random() * window.innerWidth,
     y: Math.random() * window.innerHeight,
-    r: Math.random() * 1.5 + 0.3,
-    dx: (Math.random() - 0.5) * 0.3,
-    dy: -Math.random() * 0.2 - 0.05,
-    o: Math.random() * 0.5 + 0.1
+    r: Math.random() * 2 + 0.5,
+    dx: (Math.random() - 0.5) * 0.4,
+    dy: -Math.random() * 0.3 - 0.05,
+    o: Math.random() * 0.6 + 0.15,
+    pulse: Math.random() * Math.PI * 2, // phase offset
+    pulseSpeed: 0.02 + Math.random() * 0.02
   });
 }
 function drawDust() {
   ctx.clearRect(0, 0, c.width, c.height);
   particles.forEach(p => {
+    // Pulsing opacity
+    p.pulse += p.pulseSpeed;
+    const opacity = p.o * (0.7 + 0.3 * Math.sin(p.pulse));
+    
+    // Glow effect
+    const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3);
+    gradient.addColorStop(0, `rgba(212,175,55,${opacity})`);
+    gradient.addColorStop(0.4, `rgba(176,141,87,${opacity * 0.5})`);
+    gradient.addColorStop(1, `rgba(176,141,87,0)`);
+    
     ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(176,141,87,${p.o})`;
+    ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
+    ctx.fillStyle = gradient;
     ctx.fill();
+    
+    // Core bright particle
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r * 0.6, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,223,128,${opacity})`;
+    ctx.fill();
+    
     p.x += p.dx;
     p.y += p.dy;
     if (p.y < -10) { p.y = c.height + 10; p.x = Math.random() * c.width; }
