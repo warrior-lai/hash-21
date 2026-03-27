@@ -1560,7 +1560,7 @@ async function loadCerts() {
         <td><span class="badge ${statusClass}">${statusText}</span></td>
         <td>
           ${w.certificate_block ? `<a href="https://mempool.space/block/${w.certificate_block}" target="_blank" class="btn btn-secondary btn-sm">${t('certs.view-mempool')}</a>` : ''}
-          ${w.certificate_status === 'certified' ? `<a href="/certificates/${slugify(w.title_es)}-certificate.pdf" download class="btn btn-primary btn-sm" style="margin-left:4px;">${t('certs.download-pdf')}</a>` : ''}
+          ${(w.certificate_status === 'certified') ? `<a href="${w.certificate_pdf_url ? esc(w.certificate_pdf_url) : '/certificates/' + slugify(w.title_es) + '-certificate.pdf'}" download class="btn btn-primary btn-sm" style="margin-left:4px;">${t('certs.download-pdf')}</a>` : ''}
         </td>
       </tr>
     `;
