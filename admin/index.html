@@ -1720,8 +1720,12 @@ function closeModal(e) {
 
 // CRUD operations
 async function saveArtist(id) {
+  const name = document.getElementById('m-name').value;
+  const slug = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  
   const data = {
-    name: document.getElementById('m-name').value,
+    name: name,
+    slug: slug,
     photo_url: document.getElementById('m-photo').value || null,
     lightning_address: document.getElementById('m-ln').value || null,
     bio_es: document.getElementById('m-bio-es').value || null,
