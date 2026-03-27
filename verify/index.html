@@ -278,12 +278,66 @@ footer {
   border-top: 1px solid var(--border);
 }
 
+/* How it works */
+.how-it-works {
+  margin-top: 80px;
+  padding-top: 60px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  max-width: 900px;
+}
+.how-it-works h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 400;
+  margin-bottom: 50px;
+  letter-spacing: 2px;
+}
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+.step {
+  text-align: center;
+  padding: 30px 20px;
+}
+.step-number {
+  width: 50px;
+  height: 50px;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  color: var(--gold);
+  margin: 0 auto 20px;
+}
+.step h3 {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+.step p {
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.7;
+}
+
 @media (max-width: 768px) {
   header { padding: 20px 25px; }
   main { padding: 100px 25px 60px; }
   .verify-title { font-size: 28px; }
   .verify-subtitle { font-size: 13px; }
   footer { padding: 30px 25px; }
+  .steps { grid-template-columns: 1fr; gap: 30px; }
+  .how-it-works { margin-top: 60px; padding-top: 40px; }
+  .how-it-works h2 { font-size: 24px; margin-bottom: 30px; }
 }
 </style>
 </head>
@@ -322,6 +376,28 @@ footer {
   </form>
 
   <div id="result"></div>
+
+  <!-- How it works -->
+  <div class="how-it-works">
+    <h2 data-i18n="verify_how_title">¿Cómo funciona?</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3 data-i18n="verify_step1_title">Hash único</h3>
+        <p data-i18n="verify_step1_desc">Cada obra genera un hash SHA-256 único — su huella digital irrepetible.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3 data-i18n="verify_step2_title">Anclaje en Bitcoin</h3>
+        <p data-i18n="verify_step2_desc">El hash se registra en la blockchain de Bitcoin usando OpenTimestamps.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3 data-i18n="verify_step3_title">Prueba permanente</h3>
+        <p data-i18n="verify_step3_desc">El bloque de Bitcoin certifica que la obra existía en esa fecha. Inmutable para siempre.</p>
+      </div>
+    </div>
+  </div>
 
   <div style="margin-top:50px; text-align:center;">
     <a href="https://t.me/abstract_lai" target="_blank" style="display:inline-block;padding:14px 30px;border:1px solid var(--gold);color:var(--gold);font-size:12px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:all 0.3s;" onmouseover="this.style.background='#b08d57';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#b08d57'" data-i18n="verify_cta_certify">Quiero certificar mi obra →</a>
