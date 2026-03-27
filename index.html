@@ -730,5 +730,19 @@
 })();
 </script>
 
+<!-- Scroll to top button -->
+<button id="scrollTop" aria-label="Volver arriba">↑</button>
+<script>
+(function(){
+  const btn = document.getElementById('scrollTop');
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('visible', window.scrollY > 500);
+  });
+  btn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+
 </body>
 </html>

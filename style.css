@@ -1514,3 +1514,34 @@ footer {
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
+
+/* Scroll to top */
+#scrollTop {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 45px;
+  height: 45px;
+  background: var(--gold);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  z-index: 999;
+  box-shadow: 0 4px 15px rgba(176,141,87,0.3);
+}
+#scrollTop.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+#scrollTop:hover {
+  background: #9a7a4a;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(176,141,87,0.4);
+}

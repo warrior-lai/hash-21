@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — Hash21</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="canonical" href="https://hash21.studio/404">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fafaf8;
+      --text: #1a1a1a;
+      --gold: #b08d57;
+      --text-dim: #999;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      margin-bottom: 60px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .logo span { color: var(--gold); }
+    .code {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 120px;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: 15px;
+    }
+    p {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-bottom: 40px;
+      max-width: 400px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 14px 35px;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      text-decoration: none;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: all 0.3s;
+    }
+    .btn:hover {
+      background: var(--gold);
+      color: #fff;
+    }
+    @media (max-width: 480px) {
+      .code { font-size: 80px; }
+      h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <a href="/" class="logo">HASH<span>21</span></a>
+  <div class="code">404</div>
+  <h1>Bloque no encontrado</h1>
+  <p>La página que buscás no existe en esta cadena. Quizás fue minada en otro lugar.</p>
+  <a href="/" class="btn">Volver al inicio</a>
+</body>
+</html>
