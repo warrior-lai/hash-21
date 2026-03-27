@@ -426,9 +426,10 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
 .collection-item .info p {
   font-family: 'Cormorant Garamond', serif;
   font-size: 24px;
-  color: var(--text);
-  font-weight: 400;
+  color: #ffffff;
+  font-weight: 500;
   margin-bottom: 6px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 .collection-item .info span {
 .availability-badge {
