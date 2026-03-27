@@ -1247,6 +1247,13 @@ const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 let currentUser = null;
 let artists = [], works = [], products = [], users = [];
 
+// XSS protection - escape HTML in user data
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, c => 
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[c]);
+}
+
 // API helper
 async function api(endpoint, options = {}) {
   const res = await fetch(`${API}${endpoint}`, {
@@ -1443,15 +1450,15 @@ async function loadArtists() {
   grid.innerHTML = artists.map(a => `
     <div class="card">
       <div class="card-row">
-        <div class="card-img card-avatar">${a.name?.charAt(0)?.toUpperCase() || '?'}</div>
+        <div class="card-img card-avatar">${esc(a.name)?.charAt(0)?.toUpperCase() || '?'}</div>
         <div class="card-content">
-          <div class="card-title">${a.name}</div>
-          <div class="card-meta">${a.lightning_address || '-'}</div>
+          <div class="card-title">${esc(a.name)}</div>
+          <div class="card-meta">${esc(a.lightning_address) || '-'}</div>
         </div>
       </div>
       <div class="card-actions">
-        <button class="btn btn-secondary btn-sm" onclick="editArtist('${a.id}')">${t('edit')}</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteArtist('${a.id}')">${t('delete')}</button>
+        <button class="btn btn-secondary btn-sm" onclick="editArtist('${esc(a.id)}')">${t('edit')}</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteArtist('${esc(a.id)}')">${t('delete')}</button>
       </div>
     </div>
   `).join('');
@@ -1473,19 +1480,19 @@ async function loadWorks() {
     return `
       <div class="card">
         <div class="card-row">
-          <img src="${w.image_url || '/img/obra-placeholder.jpg'}" class="card-img" onerror="this.src='/img/obra-placeholder.jpg'">
+          <img src="${esc(w.image_url) || '/img/obra-placeholder.jpg'}" class="card-img" onerror="this.src='/img/obra-placeholder.jpg'">
           <div class="card-content">
             <div class="card-title">
-              ${currentLang === 'en' && w.title_en ? w.title_en : w.title_es}
+              ${esc(currentLang === 'en' && w.title_en ? w.title_en : w.title_es)}
               <span class="badge ${statusClass}">${statusText}</span>
             </div>
-            <div class="card-meta">${w.technique || '-'} · ${w.artists?.name || '-'}</div>
+            <div class="card-meta">${esc(w.technique) || '-'} · ${esc(w.artists?.name) || '-'}</div>
           </div>
         </div>
         <div class="card-actions">
-          ${!w.certificate_status || w.certificate_status === 'none' ? `<button class="btn btn-primary btn-sm" onclick="certifyWork('${w.id}')">${t('works.certify')}</button>` : ''}
-          <button class="btn btn-secondary btn-sm" onclick="editWork('${w.id}')">${t('edit')}</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteWork('${w.id}')">${t('delete')}</button>
+          ${!w.certificate_status || w.certificate_status === 'none' ? `<button class="btn btn-primary btn-sm" onclick="certifyWork('${esc(w.id)}')">${t('works.certify')}</button>` : ''}
+          <button class="btn btn-secondary btn-sm" onclick="editWork('${esc(w.id)}')">${t('edit')}</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteWork('${esc(w.id)}')">${t('delete')}</button>
         </div>
       </div>
     `;
@@ -1504,15 +1511,15 @@ async function loadProducts() {
   grid.innerHTML = products.map(p => `
     <div class="card">
       <div class="card-row">
-        <img src="${p.image_url || '/img/product-placeholder.jpg'}" class="card-img" onerror="this.src='/img/product-placeholder.jpg'">
+        <img src="${esc(p.image_url) || '/img/product-placeholder.jpg'}" class="card-img" onerror="this.src='/img/product-placeholder.jpg'">
         <div class="card-content">
-          <div class="card-title">${p.name}</div>
+          <div class="card-title">${esc(p.name)}</div>
           <div class="card-meta">${p.price_sats?.toLocaleString() || 0} sats</div>
         </div>
       </div>
       <div class="card-actions">
-        <button class="btn btn-secondary btn-sm" onclick="editProduct('${p.id}')">${t('edit')}</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">${t('delete')}</button>
+        <button class="btn btn-secondary btn-sm" onclick="editProduct('${esc(p.id)}')">${t('edit')}</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteProduct('${esc(p.id)}')">${t('delete')}</button>
       </div>
     </div>
   `).join('');
@@ -1561,13 +1568,13 @@ async function loadUsers() {
     
     return `
       <tr>
-        <td>${u.email}</td>
-        <td>${u.name || u.artists?.name || '-'}</td>
-        <td><span class="badge ${roleClass}">${u.role}</span></td>
-        <td><span class="badge ${statusClass}">${u.status || 'pending'}</span></td>
+        <td>${esc(u.email)}</td>
+        <td>${esc(u.name || u.artists?.name) || '-'}</td>
+        <td><span class="badge ${roleClass}">${esc(u.role)}</span></td>
+        <td><span class="badge ${statusClass}">${esc(u.status) || 'pending'}</span></td>
         <td>
-          <button class="btn btn-secondary btn-sm" onclick="editUser('${u.id}')">${t('edit')}</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">${t('delete')}</button>
+          <button class="btn btn-secondary btn-sm" onclick="editUser('${esc(u.id)}')">${t('edit')}</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteUser('${esc(u.id)}')">${t('delete')}</button>
         </td>
       </tr>
     `;
