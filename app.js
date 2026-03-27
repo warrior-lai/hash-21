@@ -221,6 +221,16 @@ function populateLightbox(code, name, tech, status, block) {
   } else if (blockEl) {
     blockEl.style.display = 'none';
   }
+  
+  // Certificate download button
+  var certEl = document.getElementById('lb-cert-download');
+  if (block && certEl) {
+    var pdfSlug = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    certEl.innerHTML = '<a href="/certificates/' + pdfSlug + '-certificate.pdf" download style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--gold);color:#000;text-decoration:none;font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:500;" onclick="event.stopPropagation();">📄 ' + (lang === 'es' ? 'Descargar Certificado' : 'Download Certificate') + '</a>';
+    certEl.style.display = 'block';
+  } else if (certEl) {
+    certEl.style.display = 'none';
+  }
 
 }
 
