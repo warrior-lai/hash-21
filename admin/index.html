@@ -974,6 +974,7 @@ body {
 .hash-copy:hover { background:var(--bg3); }
 </style>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="lang.js"></script>
 </head>
 <body>
 
@@ -989,14 +990,17 @@ body {
 <div class="login-screen" id="login-screen" style="display:none">
   <div class="login-box">
     <div class="logo">HASH<span>21</span></div>
-    <div class="tagline">ADMIN PANEL</div>
+    <div class="tagline" data-i18n="admin.panel">ADMIN PANEL</div>
+    <div class="lang-switch" style="margin-bottom:20px;">
+      <button id="lang-toggle" onclick="setLang(currentLang==='es'?'en':'es')" style="background:var(--bg3);border:1px solid var(--border);color:var(--text-mid);padding:6px 12px;border-radius:4px;cursor:pointer;font-size:11px;">ES</button>
+    </div>
     <form onsubmit="handleLogin(event)">
-      <input type="email" id="login-email" placeholder="Email" required>
-      <input type="password" id="login-password" placeholder="Contraseña" required>
-      <button type="submit" id="login-btn">Iniciar sesión</button>
+      <input type="email" id="login-email" data-i18n-placeholder="login.email" placeholder="Email" required>
+      <input type="password" id="login-password" data-i18n-placeholder="login.password" placeholder="Contraseña" required>
+      <button type="submit" id="login-btn" data-i18n="login.submit">Iniciar sesión</button>
     </form>
     <p class="login-error" id="login-error"></p>
-    <p class="login-footer">¿No tenés cuenta? <a href="/register">Registrate</a></p>
+    <p class="login-footer"><span data-i18n="login.no-account">¿No tenés cuenta?</span> <a href="/register" data-i18n="login.register">Registrate</a></p>
   </div>
 </div>
 
@@ -1005,7 +1009,7 @@ body {
   <div class="ob-container">
     <div class="ob-header">
       <div class="ob-logo">HASH<span>21</span></div>
-      <div class="ob-subtitle">Bienvenido</div>
+      <div class="ob-subtitle" data-i18n="ob.welcome">Bienvenido</div>
     </div>
     
     <div class="ob-progress">
@@ -1016,41 +1020,41 @@ body {
     
     <!-- Step 1 -->
     <div class="ob-step active" data-step="1">
-      <h2 class="ob-title">¿Qué creás?</h2>
-      <p class="ob-text">Esto nos ayuda a personalizar tu experiencia</p>
+      <h2 class="ob-title" data-i18n="ob.what-create">¿Qué creás?</h2>
+      <p class="ob-text" data-i18n="ob.help-personalize">Esto nos ayuda a personalizar tu experiencia</p>
       <div class="ob-types">
         <div class="ob-type" data-type="artist" onclick="obSelectType('artist')">
           <div class="ob-type-icon">🎨</div>
-          <div class="ob-type-label">Arte</div>
-          <div class="ob-type-desc">Pinturas, esculturas, arte digital</div>
+          <div class="ob-type-label" data-i18n="ob.art">Arte</div>
+          <div class="ob-type-desc" data-i18n="ob.art-desc">Pinturas, esculturas, arte digital</div>
         </div>
         <div class="ob-type" data-type="designer" onclick="obSelectType('designer')">
           <div class="ob-type-icon">🛠️</div>
-          <div class="ob-type-label">Diseño</div>
-          <div class="ob-type-desc">Objetos, joyas, productos</div>
+          <div class="ob-type-label" data-i18n="ob.design">Diseño</div>
+          <div class="ob-type-desc" data-i18n="ob.design-desc">Objetos, joyas, productos</div>
         </div>
       </div>
-      <button class="ob-btn" id="ob-btn-1" onclick="obNext(2)" disabled>Continuar</button>
+      <button class="ob-btn" id="ob-btn-1" onclick="obNext(2)" disabled data-i18n="ob.continue">Continuar</button>
     </div>
     
     <!-- Step 2 -->
     <div class="ob-step" data-step="2">
-      <h2 class="ob-title">Tu perfil</h2>
-      <p class="ob-text">Contanos un poco sobre vos</p>
-      <input type="text" id="ob-name" class="ob-input" placeholder="Nombre artístico">
-      <textarea id="ob-bio" class="ob-input" style="min-height:100px;resize:none;" placeholder="Bio breve (opcional)"></textarea>
-      <input type="url" id="ob-portfolio" class="ob-input" placeholder="Link a portfolio o redes (opcional)">
-      <button class="ob-btn" onclick="obNext(3)">Continuar</button>
-      <button class="ob-btn-back" onclick="obBack(1)">← Volver</button>
+      <h2 class="ob-title" data-i18n="ob.profile">Tu perfil</h2>
+      <p class="ob-text" data-i18n="ob.profile-desc">Contanos un poco sobre vos</p>
+      <input type="text" id="ob-name" class="ob-input" data-i18n-placeholder="ob.artist-name" placeholder="Nombre artístico">
+      <textarea id="ob-bio" class="ob-input" style="min-height:100px;resize:none;" data-i18n-placeholder="ob.bio" placeholder="Bio breve (opcional)"></textarea>
+      <input type="url" id="ob-portfolio" class="ob-input" data-i18n-placeholder="ob.portfolio" placeholder="Link a portfolio o redes (opcional)">
+      <button class="ob-btn" onclick="obNext(3)" data-i18n="ob.continue">Continuar</button>
+      <button class="ob-btn-back" onclick="obBack(1)" data-i18n="ob.back">← Volver</button>
     </div>
     
     <!-- Step 3 -->
     <div class="ob-step" data-step="3">
       <div class="ob-success">
         <div class="ob-success-icon">✨</div>
-        <h2>¡Bienvenido a Hash21!</h2>
-        <p>Tu perfil está siendo revisado.<br>Te notificaremos cuando esté activo y puedas subir tus creaciones.</p>
-        <button class="ob-btn" onclick="obFinish()">Ir al panel</button>
+        <h2 data-i18n="ob.success-title">¡Bienvenido a Hash21!</h2>
+        <p data-i18n="ob.success-msg">Tu perfil está siendo revisado. Te notificaremos cuando esté activo y puedas subir tus creaciones.</p>
+        <button class="ob-btn" onclick="obFinish()" data-i18n="ob.go-panel">Ir al panel</button>
       </div>
     </div>
   </div>
@@ -1072,34 +1076,37 @@ body {
     </div>
     
     <div class="sidebar-nav">
-      <div class="nav-section">Principal</div>
+      <div class="nav-section" data-i18n="nav.main">Principal</div>
       <a class="active" onclick="showSection('dashboard')">
-        <i data-lucide="layout-dashboard" class="nav-icon"></i> Dashboard
+        <i data-lucide="layout-dashboard" class="nav-icon"></i> <span data-i18n="nav.dashboard">Dashboard</span>
       </a>
       
-      <div class="nav-section">Contenido</div>
+      <div class="nav-section" data-i18n="nav.content">Contenido</div>
       <a onclick="showSection('artists')">
-        <i data-lucide="users" class="nav-icon"></i> Artistas
+        <i data-lucide="users" class="nav-icon"></i> <span data-i18n="nav.artists">Artistas</span>
       </a>
       <a onclick="showSection('works')">
-        <i data-lucide="image" class="nav-icon"></i> Obras
+        <i data-lucide="image" class="nav-icon"></i> <span data-i18n="nav.works">Obras</span>
       </a>
       <a onclick="showSection('products')">
-        <i data-lucide="shopping-bag" class="nav-icon"></i> Productos
+        <i data-lucide="shopping-bag" class="nav-icon"></i> <span data-i18n="nav.products">Productos</span>
       </a>
       <a onclick="showSection('certs')">
-        <i data-lucide="shield-check" class="nav-icon"></i> Certificados
+        <i data-lucide="shield-check" class="nav-icon"></i> <span data-i18n="nav.certs">Certificados</span>
       </a>
       
-      <div class="nav-section">Sistema</div>
+      <div class="nav-section" data-i18n="nav.system">Sistema</div>
       <a onclick="showSection('users')">
-        <i data-lucide="user" class="nav-icon"></i> Usuarios
+        <i data-lucide="user" class="nav-icon"></i> <span data-i18n="nav.users">Usuarios</span>
       </a>
     </div>
     
     <div class="sidebar-footer">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <button id="sidebar-lang-toggle" onclick="setLang(currentLang==='es'?'en':'es')" style="background:var(--bg3);border:1px solid var(--border);color:var(--text-mid);padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px;">ES</button>
+      </div>
       <button class="logout-btn" onclick="handleLogout()">
-        <i data-lucide="log-out" class="nav-icon"></i> Cerrar sesión
+        <i data-lucide="log-out" class="nav-icon"></i> <span data-i18n="nav.logout">Cerrar sesión</span>
       </button>
     </div>
   </nav>
@@ -1108,38 +1115,32 @@ body {
     <!-- Dashboard -->
     <div id="sec-dashboard">
       <div class="page-header">
-        <h2>Dashboard</h2>
+        <h2 data-i18n="nav.dashboard">Dashboard</h2>
       </div>
       <div class="stats">
         <div class="stat">
-          
           <div class="stat-number" id="stat-artists">-</div>
-          <div class="stat-label">Artistas</div>
+          <div class="stat-label" data-i18n="dash.artists">Artistas</div>
         </div>
         <div class="stat">
-          
           <div class="stat-number" id="stat-works">-</div>
-          <div class="stat-label">Obras</div>
+          <div class="stat-label" data-i18n="dash.works">Obras</div>
         </div>
         <div class="stat">
-          
           <div class="stat-number" id="stat-products">-</div>
-          <div class="stat-label">Productos</div>
+          <div class="stat-label" data-i18n="dash.products">Productos</div>
         </div>
         <div class="stat">
-          
           <div class="stat-number" id="stat-certs">-</div>
-          <div class="stat-label">Certificados</div>
+          <div class="stat-label" data-i18n="dash.certs">Certificados</div>
         </div>
         <div class="stat">
-          
           <div class="stat-number" id="stat-zaps">-</div>
-          <div class="stat-label">Zaps</div>
+          <div class="stat-label" data-i18n="dash.zaps">Zaps</div>
         </div>
         <div class="stat">
-          
           <div class="stat-number" id="stat-sats">-</div>
-          <div class="stat-label">Sats</div>
+          <div class="stat-label" data-i18n="dash.sats">Sats</div>
         </div>
       </div>
       <div id="dashboard-recent"></div>
@@ -1148,8 +1149,8 @@ body {
     <!-- Artists -->
     <div id="sec-artists" style="display:none">
       <div class="page-header">
-        <h2>Artistas</h2>
-        <button class="btn btn-primary" onclick="openModal('artist')">+ Nuevo Artista</button>
+        <h2 data-i18n="artists.title">Artistas</h2>
+        <button class="btn btn-primary" onclick="openModal('artist')" data-i18n="artists.new">+ Nuevo Artista</button>
       </div>
       <div class="card-grid" id="artists-grid"></div>
     </div>
@@ -1157,8 +1158,8 @@ body {
     <!-- Works -->
     <div id="sec-works" style="display:none">
       <div class="page-header">
-        <h2>Obras</h2>
-        <button class="btn btn-primary" onclick="openModal('work')">+ Nueva Obra</button>
+        <h2 data-i18n="works.title">Obras</h2>
+        <button class="btn btn-primary" onclick="openModal('work')" data-i18n="works.new">+ Nueva Obra</button>
       </div>
       <div class="card-grid" id="works-grid"></div>
     </div>
@@ -1166,8 +1167,8 @@ body {
     <!-- Products -->
     <div id="sec-products" style="display:none">
       <div class="page-header">
-        <h2>Productos</h2>
-        <button class="btn btn-primary" onclick="openModal('product')">+ Nuevo Producto</button>
+        <h2 data-i18n="products.title">Productos</h2>
+        <button class="btn btn-primary" onclick="openModal('product')" data-i18n="products.new">+ Nuevo Producto</button>
       </div>
       <div class="card-grid" id="products-grid"></div>
     </div>
@@ -1175,18 +1176,18 @@ body {
     <!-- Certificates -->
     <div id="sec-certs" style="display:none">
       <div class="page-header">
-        <h2>Certificados</h2>
+        <h2 data-i18n="certs.title">Certificados</h2>
       </div>
       <div class="table-container">
         <table class="table">
           <thead>
             <tr>
-              <th>Obra</th>
-              <th>Hash</th>
-              <th>Bloque</th>
-              <th>Fecha</th>
-              <th>Estado</th>
-              <th>Acciones</th>
+              <th data-i18n="certs.work">Obra</th>
+              <th data-i18n="certs.hash">Hash</th>
+              <th data-i18n="certs.block">Bloque</th>
+              <th data-i18n="date">Fecha</th>
+              <th data-i18n="status">Estado</th>
+              <th data-i18n="actions">Acciones</th>
             </tr>
           </thead>
           <tbody id="certs-tbody"></tbody>
@@ -1197,18 +1198,18 @@ body {
     <!-- Users -->
     <div id="sec-users" style="display:none">
       <div class="page-header">
-        <h2>Usuarios</h2>
-        <button class="btn btn-primary" onclick="openModal('user')">+ Nuevo Usuario</button>
+        <h2 data-i18n="users.title">Usuarios</h2>
+        <button class="btn btn-primary" onclick="openModal('user')" data-i18n="users.new">+ Nuevo Usuario</button>
       </div>
       <div class="table-container">
         <table class="table">
           <thead>
             <tr>
-              <th>Email</th>
-              <th>Nombre</th>
-              <th>Rol</th>
-              <th>Estado</th>
-              <th>Acciones</th>
+              <th data-i18n="email">Email</th>
+              <th data-i18n="name">Nombre</th>
+              <th data-i18n="role">Rol</th>
+              <th data-i18n="status">Estado</th>
+              <th data-i18n="actions">Acciones</th>
             </tr>
           </thead>
           <tbody id="users-tbody"></tbody>
@@ -1251,9 +1252,10 @@ async function api(endpoint, options = {}) {
 }
 
 // Toast notifications
-function showToast(message, type = 'success') {
+function showToast(messageKey, type = 'success', useKey = true) {
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
+  const message = useKey ? t(messageKey) : messageKey;
   toast.innerHTML = `${type === 'success' ? '✓' : '✕'} ${message}`;
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 3000);
@@ -1429,7 +1431,7 @@ async function loadArtists() {
   const grid = document.getElementById('artists-grid');
   
   if (!artists.length) {
-    grid.innerHTML = `<div class="empty-state"><h3>Sin artistas</h3><p>Agregá tu primer artista</p></div>`;
+    grid.innerHTML = `<div class="empty-state"><h3>${t('artists.empty')}</h3><p>${t('artists.empty-desc')}</p></div>`;
     return;
   }
   
@@ -1439,12 +1441,12 @@ async function loadArtists() {
         <div class="card-img card-avatar">${a.name?.charAt(0)?.toUpperCase() || '?'}</div>
         <div class="card-content">
           <div class="card-title">${a.name}</div>
-          <div class="card-meta">${a.lightning_address || 'Sin Lightning address'}</div>
+          <div class="card-meta">${a.lightning_address || '-'}</div>
         </div>
       </div>
       <div class="card-actions">
-        <button class="btn btn-secondary btn-sm" onclick="editArtist('${a.id}')">Editar</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteArtist('${a.id}')">Eliminar</button>
+        <button class="btn btn-secondary btn-sm" onclick="editArtist('${a.id}')">${t('edit')}</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteArtist('${a.id}')">${t('delete')}</button>
       </div>
     </div>
   `).join('');
@@ -1455,13 +1457,13 @@ async function loadWorks() {
   const grid = document.getElementById('works-grid');
   
   if (!works.length) {
-    grid.innerHTML = `<div class="empty-state"><h3>Sin obras</h3><p>Agregá tu primera obra</p></div>`;
+    grid.innerHTML = `<div class="empty-state"><h3>${t('works.empty')}</h3><p>${t('works.empty-desc')}</p></div>`;
     return;
   }
   
   grid.innerHTML = works.map(w => {
     const statusClass = w.certificate_status === 'certified' ? 'badge-green' : w.certificate_status === 'pending' ? 'badge-gold' : 'badge-dim';
-    const statusText = w.certificate_status === 'certified' ? 'Certificada' : w.certificate_status === 'pending' ? 'Pendiente' : 'Sin certificar';
+    const statusText = w.certificate_status === 'certified' ? t('works.certified') : w.certificate_status === 'pending' ? t('works.pending') : t('works.not-certified');
     
     return `
       <div class="card">
@@ -1469,16 +1471,16 @@ async function loadWorks() {
           <img src="${w.image_url || '/img/obra-placeholder.jpg'}" class="card-img" onerror="this.src='/img/obra-placeholder.jpg'">
           <div class="card-content">
             <div class="card-title">
-              ${w.title_es}
+              ${currentLang === 'en' && w.title_en ? w.title_en : w.title_es}
               <span class="badge ${statusClass}">${statusText}</span>
             </div>
-            <div class="card-meta">${w.technique || 'Sin técnica'} · ${w.artists?.name || 'Sin artista'}</div>
+            <div class="card-meta">${w.technique || '-'} · ${w.artists?.name || '-'}</div>
           </div>
         </div>
         <div class="card-actions">
-          ${!w.certificate_status || w.certificate_status === 'none' ? `<button class="btn btn-primary btn-sm" onclick="certifyWork('${w.id}')">Certificar</button>` : ''}
-          <button class="btn btn-secondary btn-sm" onclick="editWork('${w.id}')">Editar</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteWork('${w.id}')">Eliminar</button>
+          ${!w.certificate_status || w.certificate_status === 'none' ? `<button class="btn btn-primary btn-sm" onclick="certifyWork('${w.id}')">${t('works.certify')}</button>` : ''}
+          <button class="btn btn-secondary btn-sm" onclick="editWork('${w.id}')">${t('edit')}</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteWork('${w.id}')">${t('delete')}</button>
         </div>
       </div>
     `;
@@ -1490,7 +1492,7 @@ async function loadProducts() {
   const grid = document.getElementById('products-grid');
   
   if (!products.length) {
-    grid.innerHTML = `<div class="empty-state"><h3>Sin productos</h3><p>Agregá tu primer producto</p></div>`;
+    grid.innerHTML = `<div class="empty-state"><h3>${t('products.empty')}</h3><p>${t('products.empty-desc')}</p></div>`;
     return;
   }
   
@@ -1504,8 +1506,8 @@ async function loadProducts() {
         </div>
       </div>
       <div class="card-actions">
-        <button class="btn btn-secondary btn-sm" onclick="editProduct('${p.id}')">Editar</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">Eliminar</button>
+        <button class="btn btn-secondary btn-sm" onclick="editProduct('${p.id}')">${t('edit')}</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">${t('delete')}</button>
       </div>
     </div>
   `).join('');
@@ -1517,19 +1519,19 @@ async function loadCerts() {
   const certified = works.filter(w => w.certificate_hash);
   
   if (!certified.length) {
-    tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No hay certificados aún</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="empty-state">${t('certs.empty')}</td></tr>`;
     return;
   }
   
   tbody.innerHTML = certified.map(w => {
     const statusClass = w.certificate_status === 'certified' ? 'badge-green' : 'badge-gold';
-    const statusText = w.certificate_status === 'certified' ? 'Confirmado' : 'Pendiente';
+    const statusText = w.certificate_status === 'certified' ? t('certs.confirmed') : t('works.pending');
     
     return `
       <tr>
-        <td>${w.title_es}</td>
+        <td>${currentLang === 'en' && w.title_en ? w.title_en : w.title_es}</td>
         <td style="font-family:monospace;font-size:11px;">
-          <span class="hash-copy" onclick="copyHash('${w.certificate_hash}')" title="Copiar hash">
+          <span class="hash-copy" onclick="copyHash('${w.certificate_hash}')" title="${t('certs.hash-copied')}">
             ${w.certificate_hash?.slice(0,16)}... <i data-lucide="copy" style="width:14px;height:14px;vertical-align:middle;cursor:pointer;"></i>
           </span>
         </td>
@@ -1537,7 +1539,7 @@ async function loadCerts() {
         <td>${w.certificate_date ? new Date(w.certificate_date).toLocaleDateString() : '-'}</td>
         <td><span class="badge ${statusClass}">${statusText}</span></td>
         <td>
-          ${w.certificate_block ? `<a href="https://mempool.space/block/${w.certificate_block}" target="_blank" class="btn btn-secondary btn-sm">Ver en Mempool</a>` : ''}
+          ${w.certificate_block ? `<a href="https://mempool.space/block/${w.certificate_block}" target="_blank" class="btn btn-secondary btn-sm">${t('certs.view-mempool')}</a>` : ''}
         </td>
       </tr>
     `;
@@ -1559,8 +1561,8 @@ async function loadUsers() {
         <td><span class="badge ${roleClass}">${u.role}</span></td>
         <td><span class="badge ${statusClass}">${u.status || 'pending'}</span></td>
         <td>
-          <button class="btn btn-secondary btn-sm" onclick="editUser('${u.id}')">Editar</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Eliminar</button>
+          <button class="btn btn-secondary btn-sm" onclick="editUser('${u.id}')">${t('edit')}</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">${t('delete')}</button>
         </td>
       </tr>
     `;
@@ -1569,9 +1571,9 @@ async function loadUsers() {
 
 // Certify
 async function certifyWork(id) {
-  if (!confirm('¿Certificar esta obra en Bitcoin?')) return;
+  if (!confirm(t('certs.confirm-certify'))) return;
   
-  showToast('Enviando a OpenTimestamps...');
+  showToast('certs.sending');
   
   try {
     const res = await api('/certify', {
@@ -1580,13 +1582,13 @@ async function certifyWork(id) {
     });
     
     if (res.error) {
-      showToast(res.error, 'error');
+      showToast(res.error, 'error', false);
     } else {
-      showToast('Certificación iniciada. Se anclará en 1-12 horas.');
+      showToast('certs.started');
       loadWorks();
     }
   } catch (e) {
-    showToast('Error al certificar', 'error');
+    showToast('certs.error', 'error');
   }
 }
 
@@ -1598,92 +1600,92 @@ function openModal(type, data = null) {
   const footer = document.getElementById('modal-footer');
   
   if (type === 'artist') {
-    title.textContent = data ? 'Editar Artista' : 'Nuevo Artista';
+    title.textContent = data ? t('artists.edit') : t('artists.new-modal');
     body.innerHTML = `
       <div class="form-group">
-        <label>Nombre</label>
-        <input type="text" id="m-name" value="${data?.name || ''}" placeholder="Nombre artístico">
+        <label>${t('artists.name')}</label>
+        <input type="text" id="m-name" value="${data?.name || ''}" placeholder="${t('ob.artist-name')}">
       </div>
       <div class="form-group">
-        <label>Lightning Address</label>
+        <label>${t('artists.lightning')}</label>
         <input type="text" id="m-ln" value="${data?.lightning_address || ''}" placeholder="nombre@getalby.com">
       </div>
       <div class="form-group">
-        <label>Bio</label>
-        <textarea id="m-bio" placeholder="Biografía">${data?.bio || ''}</textarea>
+        <label>${t('artists.bio')}</label>
+        <textarea id="m-bio" placeholder="${t('ob.bio')}">${data?.bio || ''}</textarea>
       </div>
     `;
     footer.innerHTML = `
-      <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveArtist('${data?.id || ''}')">Guardar</button>
+      <button class="btn btn-secondary" onclick="closeModal()">${t('cancel')}</button>
+      <button class="btn btn-primary" onclick="saveArtist('${data?.id || ''}')">${t('save')}</button>
     `;
   }
   
   if (type === 'work') {
-    title.textContent = data ? 'Editar Obra' : 'Nueva Obra';
+    title.textContent = data ? t('works.edit') : t('works.new-modal');
     body.innerHTML = `
       <div class="form-group">
-        <label>Título (ES)</label>
+        <label>${t('works.title-es')}</label>
         <input type="text" id="m-title-es" value="${data?.title_es || ''}" placeholder="Título en español">
       </div>
       <div class="form-group">
-        <label>Título (EN)</label>
+        <label>${t('works.title-en')}</label>
         <input type="text" id="m-title-en" value="${data?.title_en || ''}" placeholder="Title in English">
       </div>
       <div class="form-group">
-        <label>Artista</label>
+        <label>${t('works.artist')}</label>
         <select id="m-artist">
-          <option value="">Seleccionar...</option>
+          <option value="">${t('works.select-artist')}</option>
           ${artists.map(a => `<option value="${a.id}" ${data?.artist_id === a.id ? 'selected' : ''}>${a.name}</option>`).join('')}
         </select>
       </div>
       <div class="form-group">
-        <label>Técnica</label>
+        <label>${t('works.technique')}</label>
         <input type="text" id="m-technique" value="${data?.technique || ''}" placeholder="Óleo, acrílico, mixta...">
       </div>
       <div class="form-group">
-        <label>Imagen URL</label>
+        <label>${t('works.image')}</label>
         <input type="text" id="m-image" value="${data?.image_url || ''}" placeholder="/img/obra.jpg">
       </div>
     `;
     footer.innerHTML = `
-      <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveWork('${data?.id || ''}')">Guardar</button>
+      <button class="btn btn-secondary" onclick="closeModal()">${t('cancel')}</button>
+      <button class="btn btn-primary" onclick="saveWork('${data?.id || ''}')">${t('save')}</button>
     `;
   }
   
   if (type === 'user') {
-    title.textContent = data ? 'Editar Usuario' : 'Nuevo Usuario';
+    title.textContent = data ? t('users.edit') : t('users.new-modal');
     body.innerHTML = `
       <div class="form-group">
-        <label>Email</label>
+        <label>${t('email')}</label>
         <input type="email" id="m-email" value="${data?.email || ''}" placeholder="email@ejemplo.com" ${data ? 'disabled' : ''}>
       </div>
       <div class="form-group">
-        <label>Nombre</label>
-        <input type="text" id="m-name" value="${data?.name || ''}" placeholder="Nombre">
+        <label>${t('name')}</label>
+        <input type="text" id="m-name" value="${data?.name || ''}" placeholder="${t('name')}">
       </div>
       <div class="form-group">
-        <label>Rol</label>
+        <label>${t('role')}</label>
         <select id="m-role">
-          <option value="pending" ${data?.role === 'pending' ? 'selected' : ''}>Pending</option>
-          <option value="artist" ${data?.role === 'artist' ? 'selected' : ''}>Artist</option>
-          <option value="designer" ${data?.role === 'designer' ? 'selected' : ''}>Designer</option>
-          <option value="collaborator" ${data?.role === 'collaborator' ? 'selected' : ''}>Collaborator</option>
-          <option value="admin" ${data?.role === 'admin' ? 'selected' : ''}>Admin</option>
+          <option value="pending" ${data?.role === 'pending' ? 'selected' : ''}>${t('users.role-pending')}</option>
+          <option value="artist" ${data?.role === 'artist' ? 'selected' : ''}>${t('users.role-artist')}</option>
+          <option value="designer" ${data?.role === 'designer' ? 'selected' : ''}>${t('users.role-designer')}</option>
+          <option value="collaborator" ${data?.role === 'collaborator' ? 'selected' : ''}>${t('users.role-collaborator')}</option>
+          <option value="admin" ${data?.role === 'admin' ? 'selected' : ''}>${t('users.role-admin')}</option>
         </select>
       </div>
       <div class="form-group">
-        <label>Estado</label>
+        <label>${t('status')}</label>
         <select id="m-status">
-          <option value="pending" ${data?.status === 'pending' ? 'selected' : ''}>Pending</option>
-          <option value="active" ${data?.status === 'active' ? 'selected' : ''}>Active</option>
+          <option value="pending" ${data?.status === 'pending' ? 'selected' : ''}>${t('users.status-pending')}</option>
+          <option value="active" ${data?.status === 'active' ? 'selected' : ''}>${t('users.status-active')}</option>
         </select>
       </div>
     `;
     footer.innerHTML = `
-      <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveUser('${data?.id || ''}')">Guardar</button>
+      <button class="btn btn-secondary" onclick="closeModal()">${t('cancel')}</button>
+      <button class="btn btn-primary" onclick="saveUser('${data?.id || ''}')">${t('save')}</button>
     `;
   }
   
@@ -1711,7 +1713,7 @@ async function saveArtist(id) {
   });
   
   closeModal();
-  showToast('Artista guardado');
+  showToast('artists.saved');
   loadArtists();
 }
 
@@ -1721,9 +1723,9 @@ function editArtist(id) {
 }
 
 async function deleteArtist(id) {
-  if (!confirm('¿Eliminar este artista?')) return;
+  if (!confirm(t('artists.delete-confirm'))) return;
   await api('/artists', { method: 'DELETE', body: JSON.stringify({ id }) });
-  showToast('Artista eliminado');
+  showToast('artists.deleted');
   loadArtists();
 }
 
@@ -1744,7 +1746,7 @@ async function saveWork(id) {
   });
   
   closeModal();
-  showToast('Obra guardada');
+  showToast('works.saved');
   loadWorks();
 }
 
@@ -1754,9 +1756,9 @@ function editWork(id) {
 }
 
 async function deleteWork(id) {
-  if (!confirm('¿Eliminar esta obra?')) return;
+  if (!confirm(t('works.delete-confirm'))) return;
   await api('/works', { method: 'DELETE', body: JSON.stringify({ id }) });
-  showToast('Obra eliminada');
+  showToast('works.deleted');
   loadWorks();
 }
 
@@ -1776,7 +1778,7 @@ async function saveUser(id) {
   });
   
   closeModal();
-  showToast('Usuario guardado');
+  showToast('users.saved');
   loadUsers();
 }
 
@@ -1786,25 +1788,25 @@ function editUser(id) {
 }
 
 async function deleteUser(id) {
-  if (!confirm('¿Eliminar este usuario?')) return;
+  if (!confirm(t('users.delete-confirm'))) return;
   await api('/users', { method: 'DELETE', body: JSON.stringify({ id }) });
-  showToast('Usuario eliminado');
+  showToast('users.deleted');
   loadUsers();
 }
 
 // Products (placeholder)
-function editProduct(id) { showToast('Función en desarrollo', 'error'); }
+function editProduct(id) { showToast('products.wip', 'error'); }
 async function deleteProduct(id) {
-  if (!confirm('¿Eliminar este producto?')) return;
+  if (!confirm(t('products.delete-confirm'))) return;
   await api('/products', { method: 'DELETE', body: JSON.stringify({ id }) });
-  showToast('Producto eliminado');
+  showToast('products.deleted');
   loadProducts();
 }
 
 // Copy hash
 function copyHash(hash) {
   navigator.clipboard.writeText(hash);
-  showToast('Hash copiado');
+  showToast('certs.hash-copied');
   lucide.createIcons();
 }
 
