@@ -28,7 +28,10 @@ async function loadWorks() {
     
     works.forEach((w, i) => {
       const title = lang === 'en' && w.title_en ? w.title_en : w.title_es;
-      const code = w.code || `Block 0 — #${String(i + 1).padStart(3, '0')}`;
+      // Show real block if certified, otherwise show series number
+      const code = w.certificate_block 
+        ? `Block ${w.certificate_block.toLocaleString()}`
+        : (w.certificate_status === 'pending' ? '⏳ Pending' : `Series #${String(i + 1).padStart(3, '0')}`);
       const technique = w.technique || '';
       const status = w.status || 'consult';
       const block = w.certificate_block || null;
