@@ -31,6 +31,7 @@ async function loadWorks() {
       const status = w.status || 'consult';
       const block = w.certificate_block || null;
       const img = w.image_url || '/img/obra-placeholder.jpg';
+      const artistName = w.artists?.name || '';
       
       const slug = title.toLowerCase().replace(/ /g, '-');
       const itemHTML = `
@@ -39,7 +40,7 @@ async function loadWorks() {
           <div class="info">
             <h4>${code}</h4>
             <p>${title}</p>
-            <span>${technique}</span>
+            <span>${technique}${artistName ? ` · ${artistName}` : ''}</span>
             <button class="grid-zap" onclick="event.stopPropagation(); openZap('${slug}','${title.replace(/'/g, "\\'")}','obra')">⚡ Zap</button>
           </div>
         </div>
