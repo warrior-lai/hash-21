@@ -1662,7 +1662,11 @@ function openModal(type, data = null) {
       </div>
       <div class="form-group">
         <label>${t('works.image')}</label>
-        <input type="text" id="m-image" value="${data?.image_url || ''}" placeholder="/img/obra.jpg">
+        <div class="upload-field">
+          <input type="file" id="m-image-file" accept="image/*" onchange="handleUpload('m-image-file', 'm-image-preview', 'works')">
+          <input type="hidden" id="m-image" value="${data?.image_url || ''}">
+          <div id="m-image-preview" class="upload-preview">${data?.image_url ? `<img src="${data.image_url}">` : ''}</div>
+        </div>
       </div>
     `;
     footer.innerHTML = `
