@@ -992,7 +992,7 @@ body {
     <div class="logo">HASH<span>21</span></div>
     <div class="tagline" data-i18n="admin.panel">ADMIN PANEL</div>
     <div class="lang-switch" style="margin-bottom:20px;">
-      <button id="lang-toggle" onclick="setLang(currentLang==='es'?'en':'es')" style="background:var(--bg3);border:1px solid var(--border);color:var(--text-mid);padding:6px 12px;border-radius:4px;cursor:pointer;font-size:11px;">ES</button>
+      <button id="lang-toggle" class="lang-btn" onclick="setLang(currentLang==='es'?'en':'es')">ES</button>
     </div>
     <form onsubmit="handleLogin(event)">
       <input type="email" id="login-email" data-i18n-placeholder="login.email" placeholder="Email" required>
@@ -1102,8 +1102,8 @@ body {
     </div>
     
     <div class="sidebar-footer">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <button id="sidebar-lang-toggle" onclick="setLang(currentLang==='es'?'en':'es')" style="background:var(--bg3);border:1px solid var(--border);color:var(--text-mid);padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px;">ES</button>
+      <div style="margin-bottom:12px;">
+        <button id="sidebar-lang-toggle" class="lang-btn" onclick="setLang(currentLang==='es'?'en':'es')">ES</button>
       </div>
       <button class="logout-btn" onclick="handleLogout()">
         <i data-lucide="log-out" class="nav-icon"></i> <span data-i18n="nav.logout">Cerrar sesión</span>
@@ -1812,14 +1812,16 @@ function copyHash(hash) {
 
 // Init
 checkAuth();
-</script>
-</body>
-</html>
-<script>
+
+// Init Lucide icons after DOM ready
 document.addEventListener('DOMContentLoaded', () => {
   if (typeof lucide !== 'undefined') lucide.createIcons();
 });
 </script>
 <style>
 .nav-icon { width: 18px; height: 18px; stroke-width: 1.5; margin-right: 10px; vertical-align: middle; }
+.lang-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--text-mid); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-family: inherit; transition: var(--transition); }
+.lang-btn:hover { border-color: var(--gold); color: var(--gold); }
 </style>
+</body>
+</html>
