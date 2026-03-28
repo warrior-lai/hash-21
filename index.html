@@ -499,7 +499,7 @@
       const role = esc(lang === 'en' ? (a.role_en || a.role_es || 'Artist') : (a.role_es || 'Artista'));
       const motto = esc(a.motto || '');
       const bio = esc(lang === 'en' ? (a.bio_en || a.bio_es || '') : (a.bio_es || ''));
-      const photo = a.photo_url || 'img/avatar-placeholder.jpg';
+      const photo = a.photo_url || 'img/avatar.jpg';
       const slug = (a.slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
       const ln = a.lightning_address || '';
       
