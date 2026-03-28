@@ -41,6 +41,26 @@ Sin intermediarios. Sin permisos. Sin censura.
 
 ---
 
+## 🔭 Visión
+
+Creemos que todo sistema que logra alinear antifragilidad, escalabilidad y beneficio real —mientras ya está siendo adoptado— deja de ser una posibilidad para convertirse en dirección.
+
+Construimos la infraestructura que redefine la relación entre arte, propiedad y tiempo: un sistema donde cada obra física puede existir con una prueba verificable, permanente y soberana. Hash21 se apoya en Bitcoin como base antifrágil y avanza con una dirección clara hacia la independencia total y la máxima robustez técnica, donde la confianza deja de estar en una plataforma y pasa al protocolo.
+
+Está diseñado para escalar en dos dimensiones —tecnológica y cultural— con la ambición de convertirse en un estándar abierto. Cada nueva obra certificada no es un caso aislado, es un bloque más en la construcción de un nuevo sistema de valor. A medida que crece, no se debilita: se fortalece. No depende de tendencias pasajeras ni queda obsoleto frente a la evolución tecnológica; su fundamento es estructural.
+
+Sumamos valor bitcoinizando un nicho específico: concentrando piezas únicas con vocación de trascendencia, donde la escasez, la autoría y la permanencia dejan de ser conceptos difusos para volverse verificables. No buscamos volumen vacío, buscamos densidad de significado. Cada obra que entra eleva el estándar del sistema.
+
+Su diferencial no es solo conceptual, es tangible. Hash21 ya cuenta con early adopters: artistas que no solo validan la propuesta, sino que la utilizan. Esto transforma la visión en evidencia. Hay uso, hay interés y hay una comunidad inicial que no solo adopta, sino que legitima y expande el sistema, incluso antes de su lanzamiento oficial. Cada nuevo participante no es un usuario más, es un nodo que acelera la consolidación del estándar.
+
+Las señales ya están presentes: sin haber sido lanzado, Hash21 recibe visitas y genera interés desde múltiples países —Estados Unidos, Costa Rica, El Salvador, Brasil, China y Argentina— confirmando que la propuesta trasciende lo local y responde a una necesidad global.
+
+No estamos proyectando adopción futura: estamos construyendo sobre validación real en el presente.
+
+Hash21 no es una herramienta. Es un sistema que desde el día 1 está en movimiento. Y todo sistema en movimiento —cuando tiene fundamento— se vuelve inevitable.
+
+---
+
 ## ✅ Features en Producción
 
 | Feature | Descripción |
