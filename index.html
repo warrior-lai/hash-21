@@ -561,18 +561,14 @@
       function escHtml(s) { return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;') : ''; }
       const title = escHtml(lang === 'en' ? (w.title_en || w.title_es) : w.title_es);
       const artist = escHtml(w.artists ? w.artists.name : '');
-      const artistRole = w.artists ? escHtml(lang === 'en' ? (w.artists.role_en || w.artists.role_es || 'Artist') : (w.artists.role_es || 'Artista')) : '';
-      const artistSlug = w.artists ? (w.artists.slug || artist.toLowerCase().replace(/[^a-z0-9]+/g, '-')) : '';
       const technique = escHtml(w.technique || '');
       const status = w.status || 'consult';
       const img = w.image_url || '';
       const slug = title.toLowerCase().replace(/ /g, '-');
       const block = w.certificate_block || '';
-      const portfolioLink = artistSlug ? '<a href="#artists" class="artist-portfolio-link" onclick="event.stopPropagation();">Ver portfolio →</a>' : '';
       return '<div class="collection-item" onclick="openLightbox(\'' + img + '\',\'\',\'' + title.replace(/'/g,"\\'") + '\',\'' + technique.replace(/'/g,"\\'") + '\',\'' + status + '\',' + (block || 'null') + ')">' +
         '<img src="' + img + '" alt="' + title + '" loading="lazy" decoding="async">' +
-        '<div class="info"><h4>' + (artist || '') + '</h4>' + (artistRole ? '<span class="artist-role">' + artistRole + '</span>' : '') + '<p>' + title + '</p><span>' + technique + '</span>' +
-        portfolioLink +
+        '<div class="info"><h4>' + (artist || '') + '</h4><p>' + title + '</p><span>' + technique + '</span>' +
         '<button class="grid-zap" onclick="event.stopPropagation(); openZap(\'' + slug + '\',\'' + title.replace(/'/g,"\\'") + '\',\'obra\')">⚡ Zap</button></div>' +
         '</div>';
     }
