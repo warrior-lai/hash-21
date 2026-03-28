@@ -87,7 +87,7 @@ Hash21 no es una herramienta. Es un sistema que desde el día 1 está en movimie
 | Recurso | URL |
 |---------|-----|
 | **Producción** | https://hash21.studio |
-| **API Backend** | https://hash21-backend.vercel.app |
+| **API Backend** | https://hash21-backend.vercel.app/api |
 | **Verificación** | https://hash21.studio/verify |
 | **Tienda** | https://hash21.studio/shop |
 | **Admin** | https://hash21.studio/admin |
