@@ -1,7 +1,7 @@
 const translations = {
   es: {
     nav_collabs: "Proyectos",
-    nav_collection: "Explorar Colección",
+    nav_collection: "Colección",
     nav_philosophy: "Filosofía",
     nav_artists: "Creadores",
     creators_view_all: "Ver todos →",
@@ -161,7 +161,7 @@ const translations = {
   },
   en: {
     nav_collabs: "Projects",
-    nav_collection: "Explore Collection",
+    nav_collection: "Collection",
     nav_philosophy: "Philosophy",
     nav_artists: "Creators",
     creators_view_all: "View all →",

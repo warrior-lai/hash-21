@@ -537,6 +537,12 @@
 
 <script src="lang.js"></script>
 <script src="app.js"></script>
+<script>
+// Dynamic gallery — load works from API
+(async function loadWorksFromAPI() {
+  try {
+    const res = await fetch('https://hash21-backend.vercel.app/api/works');
+    const works = await res.json();
     if (!works || !works.length) return;
     
     // Sort: "Digital Renaissance" first in gallery, then by date
