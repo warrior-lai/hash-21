@@ -901,7 +901,7 @@
           });
           renderProducts();
         }
-      } catch(e) { console.log('Using hardcoded products (API unavailable)'); }
+      } catch(e) { // fallback to hardcoded
     }
     loadProducts();
 
@@ -1109,7 +1109,7 @@
       const orders = JSON.parse(localStorage.getItem("h21-orders") || "[]");
       orders.push(data);
       localStorage.setItem("h21-orders", JSON.stringify(orders));
-      console.log("📦 Order shipping data:", data);
+      // shipping data logged
       showStep("shipping-done");
     };
 

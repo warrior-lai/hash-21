@@ -588,7 +588,7 @@
     if (grid) grid.insertAdjacentHTML('afterbegin', newHtml);
     
   } catch(e) {
-    console.log('Using hardcoded gallery (API unavailable)');
+    // API unavailable, using hardcoded gallery
   }
 })();
 </script>
@@ -718,7 +718,7 @@ function showToast(msg, type = '') {
       container.insertAdjacentHTML('beforeend', html);
     });
   } catch(e) {
-    console.log('Error loading new artists:', e);
+    // Error loading artists silently
   }
 })();
 </script>

@@ -141,7 +141,7 @@
       
       const { data, error } = await sb.auth.signUp({ email, password });
       
-      console.log('SignUp result:', { data, error });
+      // signup completed
       
       if (error) {
         err.textContent = error.message === 'User already registered' 

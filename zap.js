@@ -198,7 +198,7 @@ async function generateZapInvoice() {
         return;
       } catch(webLnErr) {
         // User rejected or WebLN failed — fall through to QR
-        console.log('WebLN failed, falling back to QR:', webLnErr.message);
+        // WebLN fallback
       }
     }
     
