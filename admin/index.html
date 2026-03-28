@@ -1937,7 +1937,9 @@ async function handleUpload(inputId, previewId, bucket) {
   } catch (e) {
     console.error('Upload error:', e);
     preview.innerHTML = '';
-    showToast('Error al subir imagen', 'error', false);
+    const msg = e.message || e.error || JSON.stringify(e);
+    showToast('Error: ' + msg, 'error', false);
+    alert('Upload error: ' + msg);
   }
 }
 
