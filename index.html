@@ -648,5 +648,44 @@ function showToast(msg, type = '') {
 }
 </script>
 
+<script>
+// Load NEW artists from backend into creators-portraits grid (append only, don't replace hardcoded)
+(async function loadNewArtistsToGrid() {
+  const hardcodedSlugs = ['lai', 'martu', 'roxy', 'guadis'];
+  try {
+    const res = await fetch('https://hash21-backend.vercel.app/api/artists');
+    const artists = await res.json();
+    if (!artists || !artists.length) return;
+    
+    const container = document.querySelector('.creators-portraits');
+    if (!container) return;
+    
+    const newArtists = artists.filter(a => 
+      a.status === 'active' && 
+      !hardcodedSlugs.includes(a.slug)
+    );
+    
+    function esc(s) { return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : ''; }
+    
+    newArtists.forEach(a => {
+      const name = esc(a.name || '');
+      const role = esc(a.role_es || 'Artista');
+      const photo = a.photo_url || 'img/avatar.jpg';
+      const slug = a.slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      
+      const html = `<div class="creator-portrait" data-slug="${slug}">
+        <img src="${photo}" alt="${name}" loading="lazy" decoding="async">
+        <h3>${name}</h3>
+        <div class="role">${role}</div>
+      </div>`;
+      
+      container.insertAdjacentHTML('beforeend', html);
+    });
+  } catch(e) {
+    console.log('Error loading new artists:', e);
+  }
+})();
+</script>
+
 </body>
 </html>
