@@ -1680,6 +1680,13 @@ function openModal(type, data = null) {
           Es fundador/a (aparece primero)
         </label>
       </div>
+      <div class="form-group">
+        <label>${t('status')}</label>
+        <select id="m-artist-status">
+          <option value="pending" ${data?.status === 'pending' || !data?.status ? 'selected' : ''}>Pendiente</option>
+          <option value="active" ${data?.status === 'active' ? 'selected' : ''}>Activo</option>
+        </select>
+      </div>
     `;
     footer.innerHTML = `
       <button class="btn btn-secondary" onclick="closeModal()">${t('cancel')}</button>
@@ -1785,7 +1792,8 @@ async function saveArtist(id) {
     telegram: document.getElementById('m-telegram').value || null,
     instagram: document.getElementById('m-instagram').value || null,
     nostr: document.getElementById('m-nostr').value || null,
-    is_founder: document.getElementById('m-is-founder').checked
+    is_founder: document.getElementById('m-is-founder').checked,
+    status: document.getElementById('m-artist-status').value
   };
   
   if (id) data.id = id;
