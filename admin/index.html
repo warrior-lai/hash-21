@@ -1675,6 +1675,10 @@ function openModal(type, data = null) {
         <input type="text" id="m-nostr" value="${data?.nostr || ''}" placeholder="https://primal.net/p/...">
       </div>
       <div class="form-group">
+        <label>Nacionalidad</label>
+        <input type="text" id="m-nationality" value="${data?.nationality || ''}" placeholder="Argentina, El Salvador, etc.">
+      </div>
+      <div class="form-group">
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
           <input type="checkbox" id="m-is-founder" ${data?.is_founder ? 'checked' : ''} style="width:auto;">
           Es fundador/a (aparece primero)
@@ -1792,6 +1796,7 @@ async function saveArtist(id) {
     telegram: document.getElementById('m-telegram').value || null,
     instagram: document.getElementById('m-instagram').value || null,
     nostr: document.getElementById('m-nostr').value || null,
+    nationality: document.getElementById('m-nationality').value || null,
     is_founder: document.getElementById('m-is-founder').checked,
     status: document.getElementById('m-artist-status').value
   };
