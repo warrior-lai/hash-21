@@ -1880,12 +1880,12 @@ async function handleUpload(inputId, previewId, bucket) {
   
   try {
     const { data, error } = await sb.storage
-      .from('media')
+      .from('Media')
       .upload(path, file, { cacheControl: '3600', upsert: false });
     
     if (error) throw error;
     
-    const { data: urlData } = sb.storage.from('media').getPublicUrl(path);
+    const { data: urlData } = sb.storage.from('Media').getPublicUrl(path);
     const publicUrl = urlData.publicUrl;
     
     // Store URL in hidden input
