@@ -471,17 +471,15 @@
 <script src="lang.js"></script>
 <script src="app.js"></script>
 <script>
-// Dynamic artists — load from Supabase
+// Dynamic artists — load from backend API
 (async function loadArtistsFromDB() {
-  const SUPABASE_URL = 'https://gxrstqszfzvwvoktsuqg.supabase.co';
-  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4cnN0cXN6Znp2d3Zva3RzdXFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTcyMDEsImV4cCI6MjA4OTc3MzIwMX0.vZv-Z1rRrWErjKnsWGzkrrfTaveZHlccXnw7u4iP_cc';
-  
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/artists?select=*`, {
-      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
-    });
+    const res = await fetch('https://hash21-backend.vercel.app/api/artists');
     let artists = await res.json();
     if (!artists || !artists.length) return;
+    
+    // Only show active artists
+    artists = artists.filter(a => a.status === 'active');
     
     // Sort: founders first, then by name
     artists.sort((a, b) => {
