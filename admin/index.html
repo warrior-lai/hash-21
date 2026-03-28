@@ -1636,6 +1636,18 @@ function openModal(type, data = null) {
         </div>
       </div>
       <div class="form-group">
+        <label>Rol (ES)</label>
+        <input type="text" id="m-role-es" value="${data?.role_es || ''}" placeholder="Artista / Fundadora · Artista">
+      </div>
+      <div class="form-group">
+        <label>Rol (EN)</label>
+        <input type="text" id="m-role-en" value="${data?.role_en || ''}" placeholder="Artist / Founder · Artist">
+      </div>
+      <div class="form-group">
+        <label>Motto / Lema</label>
+        <input type="text" id="m-motto" value="${data?.motto || ''}" placeholder="Sovereign Art for Sovereign Minds">
+      </div>
+      <div class="form-group">
         <label>${t('artists.lightning')}</label>
         <input type="text" id="m-ln" value="${data?.lightning_address || ''}" placeholder="nombre@getalby.com">
       </div>
@@ -1646,6 +1658,27 @@ function openModal(type, data = null) {
       <div class="form-group">
         <label>${t('artists.bio')} (EN)</label>
         <textarea id="m-bio-en" placeholder="Short bio (optional)">${data?.bio_en || ''}</textarea>
+      </div>
+      <div style="border-top:1px solid var(--border);margin:16px 0;padding-top:16px;">
+        <label style="font-size:12px;color:var(--dim);margin-bottom:12px;display:block;">REDES SOCIALES (opcional)</label>
+      </div>
+      <div class="form-group">
+        <label>Telegram</label>
+        <input type="text" id="m-telegram" value="${data?.telegram || ''}" placeholder="@username">
+      </div>
+      <div class="form-group">
+        <label>Instagram</label>
+        <input type="text" id="m-instagram" value="${data?.instagram || ''}" placeholder="@username">
+      </div>
+      <div class="form-group">
+        <label>Nostr (npub o nprofile URL)</label>
+        <input type="text" id="m-nostr" value="${data?.nostr || ''}" placeholder="https://primal.net/p/...">
+      </div>
+      <div class="form-group">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="checkbox" id="m-is-founder" ${data?.is_founder ? 'checked' : ''} style="width:auto;">
+          Es fundador/a (aparece primero)
+        </label>
       </div>
     `;
     footer.innerHTML = `
@@ -1743,9 +1776,16 @@ async function saveArtist(id) {
     name: name,
     slug: slug,
     photo_url: document.getElementById('m-photo').value || null,
+    role_es: document.getElementById('m-role-es').value || null,
+    role_en: document.getElementById('m-role-en').value || null,
+    motto: document.getElementById('m-motto').value || null,
     lightning_address: document.getElementById('m-ln').value || null,
     bio_es: document.getElementById('m-bio-es').value || null,
-    bio_en: document.getElementById('m-bio-en').value || null
+    bio_en: document.getElementById('m-bio-en').value || null,
+    telegram: document.getElementById('m-telegram').value || null,
+    instagram: document.getElementById('m-instagram').value || null,
+    nostr: document.getElementById('m-nostr').value || null,
+    is_founder: document.getElementById('m-is-founder').checked
   };
   
   if (id) data.id = id;

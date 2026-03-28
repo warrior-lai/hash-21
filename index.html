@@ -164,93 +164,8 @@
   <a href="javascript:void(0)" onclick="toggleCreatorsPanel()" class="creators-view-all" id="creatorsViewAll" data-i18n="creators_view_all">Ver todos →</a>
   <p class="section-text" data-i18n="artists_text" style="max-width:700px;">Hash21 es un refugio para artistas que crean desde la libertad. Creemos que el arte, como Bitcoin, es un acto de soberanía: una decisión consciente de expresar la verdad interior sin pedir permiso, a través del color, la textura, la materia y el tiempo invertido en cada obra. Cada pieza nace del trabajo real y refleja la autenticidad del alma que la crea.<br><br>Cada creador es guardián de su energía, responsable de su visión y dueño de su proceso. Aquí, el amor por la creación se encuentra con la libertad de existir. Aquí, el valor no se impone: se construye.</p>
 
-  <!-- Original artist cards -->
-  <div class="artist-card">
-    <img src="img/avatar.jpg" alt="Lai⚡️ - Artista Bitcoin" class="artist-img" loading="lazy" decoding="async">
-    <div class="artist-info">
-      <h3>Lai⚡️</h3>
-      <div class="role" data-i18n="artist1_role">Fundadora · Artista</div>
-      <p class="artist-motto" data-i18n="artist1_motto" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--gold);margin-bottom:6px;">Sovereign Art for Sovereign Minds</p>
-      <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--text-dim);margin-bottom:12px;" data-i18n="hero_pow">Proof of Work · Proof of Soul</p>
-      <p data-i18n="artist1_bio">Arte intuitivo que explora emoción y transformación. Acrílicos, texturas y capas que se construyen como las decisiones que nos forman. Buenos Aires, Argentina.</p>
-      <div style="display:flex;gap:18px;align-items:center;margin-top:15px;">
-        <a href="https://t.me/abstract_lai" target="_blank" title="Telegram" style="font-size:22px;text-decoration:none;transition:opacity 0.3s;opacity:0.6;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">✈️</a>
-        <a href="https://primal.net/p/nprofile1qqs20z3erzyvdfazuy226ekupernh86kzu6v0uyce92jktjmhpqdymq3ha49c" target="_blank" title="Nostr" style="font-size:22px;text-decoration:none;transition:opacity 0.3s;opacity:0.6;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">🟣</a>
-        <a href="https://www.instagram.com/abstract.lai" target="_blank" title="Instagram" style="font-size:22px;text-decoration:none;transition:opacity 0.3s;opacity:0.6;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">📸</a>
-        <a href="javascript:void(0)" onclick="toggleLightning()" title="Lightning Address" style="font-size:22px;text-decoration:none;transition:opacity 0.3s;opacity:0.6;cursor:pointer;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">⚡</a>
-      </div>
-      <div id="lightning-address" style="display:none;margin-top:10px;padding:10px 15px;border:1px solid rgba(176,141,87,0.3);font-size:13px;color:var(--gold);letter-spacing:1px;">
-        crustycoil11@walletofsatoshi.com
-      </div>
-      
-      <a href="javascript:void(0)" onclick="toggleProjects()" class="artist-link" id="projects-toggle" style="margin-top:10px;display:inline-block;color:var(--gold);" data-i18n="artist1_projects_label">Proyectos & Experiencia →</a>
-      
-      <div id="artist-projects" style="display:none;margin-top:25px;padding-top:25px;border-top:1px solid var(--border);">
-        <div style="margin-bottom:20px;">
-          <h5 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;margin-bottom:6px;" data-i18n="collab_title">Colaboración con 21 LAT</h5>
-          <p style="color:var(--text-dim);font-size:13px;line-height:1.9;font-weight:300;" data-i18n="collab_text">Diseños exclusivos creados para el proyecto 21 LAT. Arte abstracto aplicado a tarjetas contactless — cada diseño es único e irrepetible.</p>
-        </div>
-        
-        <div>
-          <h5 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;margin-bottom:6px;" data-i18n="event_title_past1">La Bitconf Buenos Aires 2025</h5>
-          <p style="color:var(--text-dim);font-size:13px;line-height:1.9;font-weight:300;" data-i18n="event_desc_past1">Dinámica de arte en vivo en el espacio de 21 LAT. Lai⚡️ creando en tiempo real frente al público bitcoiner.</p>
-          <span style="font-size:11px;color:var(--gold);letter-spacing:1px;">Buenos Aires, Argentina · 2025</span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="artist-card">
-    <img src="img/avatar-martu.jpg" alt="Martu - Artista" class="artist-img" loading="lazy" decoding="async">
-    <div class="artist-info">
-      <h3>Martu</h3>
-      <div class="role">Artista</div>
-      <p class="artist-motto" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--gold);margin-bottom:6px;">Bridge between the presence and the register</p>
-      <p data-i18n="artist_martu_bio">Arte que explora la relación entre presencia y registro, entre aquello que puede tocarse y aquello que solo existe como energía, información o imagen. Cada pieza funciona como un puente: traduce lo intangible en forma visible y, al mismo tiempo, expande lo físico hacia nuevos espacios de circulación y permanencia.</p>
-      <div style="display:flex;gap:18px;align-items:center;margin-top:15px;">
-        <a href="javascript:void(0)" onclick="openZap('martu','Martu','artist')" title="Zap Artist" style="font-size:11px;text-decoration:none;transition:all 0.3s;padding:4px 12px;border:1px solid rgba(176,141,87,0.3);color:var(--gold);letter-spacing:1px;display:inline-flex;align-items:center;gap:4px;" onmouseover="this.style.background='var(--gold)';this.style.color='var(--bg)'" onmouseout="this.style.background='transparent';this.style.color='var(--gold)'">⚡ ZAP</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="artist-card">
-    <img src="img/avatar-roxy.jpg" alt="Roxy - Artista" class="artist-img" loading="lazy" decoding="async">
-    <div class="artist-info">
-      <h3>Roxy</h3>
-      <div class="role">Artista</div>
-      <p class="artist-motto" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--gold);margin-bottom:6px;">Sovereign Art for Sovereign Minds</p>
-      <p data-i18n="artist_roxy_bio">Artista visual que fusiona técnicas clásicas con la estética Bitcoin. Sus obras exploran la intersección entre valor, belleza y descentralización.</p>
-      <div style="display:flex;gap:18px;align-items:center;margin-top:15px;">
-        <a href="javascript:void(0)" onclick="openZap('roxy','Roxy','artist')" title="Zap Artist" style="font-size:11px;text-decoration:none;transition:all 0.3s;padding:4px 12px;border:1px solid rgba(176,141,87,0.3);color:var(--gold);letter-spacing:1px;display:inline-flex;align-items:center;gap:4px;" onmouseover="this.style.background='var(--gold)';this.style.color='var(--bg)'" onmouseout="this.style.background='transparent';this.style.color='var(--gold)'">⚡ ZAP</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="artist-card">
-    <img src="img/avatar-guadis.jpg" alt="Guadis - Diseñadora Bitcoiner" class="artist-img" loading="lazy" decoding="async">
-    <div class="artist-info">
-      <h3>Guadis</h3>
-      <div class="role" data-i18n="artist_guadis_role">Diseñadora · Creativa</div>
-      <p class="artist-motto" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--gold);margin-bottom:6px;">Bitcoin as a way of life</p>
-      <p data-i18n="artist_guadis_bio">Diseñadora bitcoiner y creativa. Bitcoin como filosofía de vida, amante de la naturaleza, creativa de profesión. Diseño con intención, libertad y propósito.</p>
-      <div style="display:flex;gap:18px;align-items:center;margin-top:15px;">
-        <a href="javascript:void(0)" onclick="openZap('guadis','Guadis','artist')" title="Zap Artist" style="font-size:11px;text-decoration:none;transition:all 0.3s;padding:4px 12px;border:1px solid rgba(176,141,87,0.3);color:var(--gold);letter-spacing:1px;display:inline-flex;align-items:center;gap:4px;" onmouseover="this.style.background='var(--gold)';this.style.color='var(--bg)'" onmouseout="this.style.background='transparent';this.style.color='var(--gold)'">⚡ ZAP</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="artist-card">
-    <img src="img/avatar-heiser.jpg" alt="Heiser Vanessa - Pintora" class="artist-img" loading="lazy" decoding="async">
-    <div class="artist-info">
-      <h3>Heiser Vanessa</h3>
-      <div class="role">Pintora</div>
-      <p class="artist-motto" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--gold);margin-bottom:6px;">Hyperrealism Art</p>
-      <p>Pintora en hiperrealismo, dedicada a capturar la esencia vibrante de animales y la profundidad de cada rostro.</p>
-      <div style="display:flex;gap:18px;align-items:center;margin-top:15px;">
-        <a href="https://www.instagram.com/heiservanessa_art" target="_blank" title="Instagram" style="font-size:22px;text-decoration:none;transition:opacity 0.3s;opacity:0.6;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">📸</a>
-        <a href="javascript:void(0)" onclick="openZap('heiser-vanessa','Heiser Vanessa','artist')" title="Zap Artist" style="font-size:11px;text-decoration:none;transition:all 0.3s;padding:4px 12px;border:1px solid rgba(176,141,87,0.3);color:var(--gold);letter-spacing:1px;display:inline-flex;align-items:center;gap:4px;" onmouseover="this.style.background='var(--gold)';this.style.color='var(--bg)'" onmouseout="this.style.background='transparent';this.style.color='var(--gold)'">⚡ ZAP</a>
-      </div>
-    </div>
-  </div>
+  <!-- Dynamic artist cards container -->
+  <div id="artists-container"></div>
 
   <a href="/register" class="section-cta" data-i18n="artists_join_cta">Quiero sumarme como artista →</a>
 
@@ -555,6 +470,67 @@
 
 <script src="lang.js"></script>
 <script src="app.js"></script>
+<script>
+// Dynamic artists — load from Supabase
+(async function loadArtistsFromDB() {
+  const SUPABASE_URL = 'https://gxrstqszfzvwvoktsuqg.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4cnN0cXN6Znp2d3Zva3RzdXFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTcyMDEsImV4cCI6MjA4OTc3MzIwMX0.vZv-Z1rRrWErjKnsWGzkrrfTaveZHlccXnw7u4iP_cc';
+  
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/artists?select=*`, {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
+    });
+    let artists = await res.json();
+    if (!artists || !artists.length) return;
+    
+    // Sort: founders first, then by name
+    artists.sort((a, b) => {
+      if (a.is_founder && !b.is_founder) return -1;
+      if (!a.is_founder && b.is_founder) return 1;
+      return (a.name || '').localeCompare(b.name || '');
+    });
+    
+    const lang = (typeof currentLang !== 'undefined' ? currentLang : 'es');
+    const container = document.getElementById('artists-container');
+    if (!container) return;
+    
+    function esc(s) { return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;') : ''; }
+    
+    function renderArtist(a) {
+      const name = esc(a.name || '');
+      const role = esc(lang === 'en' ? (a.role_en || a.role_es || 'Artist') : (a.role_es || 'Artista'));
+      const motto = esc(a.motto || '');
+      const bio = esc(lang === 'en' ? (a.bio_en || a.bio_es || '') : (a.bio_es || ''));
+      const photo = a.photo_url || 'img/avatar-placeholder.jpg';
+      const slug = (a.slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
+      const ln = a.lightning_address || '';
+      
+      let socials = '<div style="display:flex;gap:18px;align-items:center;margin-top:15px;">';
+      if (a.telegram) socials += `<a href="https://t.me/${a.telegram.replace('@','')}" target="_blank" title="Telegram" style="font-size:22px;text-decoration:none;transition:opacity 0.3s;opacity:0.6;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">✈️</a>`;
+      if (a.nostr) socials += `<a href="${esc(a.nostr)}" target="_blank" title="Nostr" style="font-size:22px;text-decoration:none;transition:opacity 0.3s;opacity:0.6;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">🟣</a>`;
+      if (a.instagram) socials += `<a href="https://www.instagram.com/${a.instagram.replace('@','')}" target="_blank" title="Instagram" style="font-size:22px;text-decoration:none;transition:opacity 0.3s;opacity:0.6;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">📸</a>`;
+      if (ln) socials += `<a href="javascript:void(0)" onclick="openZap('${slug}','${name.replace(/'/g,"\\'")}','artist')" title="Zap Artist" style="font-size:11px;text-decoration:none;transition:all 0.3s;padding:4px 12px;border:1px solid rgba(176,141,87,0.3);color:var(--gold);letter-spacing:1px;display:inline-flex;align-items:center;gap:4px;" onmouseover="this.style.background='var(--gold)';this.style.color='var(--bg)'" onmouseout="this.style.background='transparent';this.style.color='var(--gold)'">⚡ ZAP</a>`;
+      socials += '</div>';
+      
+      return `<div class="artist-card">
+        <img src="${photo}" alt="${name}" class="artist-img" loading="lazy" decoding="async">
+        <div class="artist-info">
+          <h3>${name}</h3>
+          <div class="role">${role}</div>
+          ${motto ? `<p class="artist-motto" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--gold);margin-bottom:6px;">${motto}</p>` : ''}
+          <p>${bio}</p>
+          ${socials}
+        </div>
+      </div>`;
+    }
+    
+    container.innerHTML = artists.map(renderArtist).join('');
+    
+  } catch(e) {
+    console.log('Error loading artists:', e);
+  }
+})();
+</script>
 <script>
 // Dynamic gallery — append NEW works from API (don't touch existing HTML)
 (async function loadNewWorksFromAPI() {
