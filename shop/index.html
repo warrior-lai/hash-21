@@ -901,9 +901,12 @@
           });
           renderProducts();
         }
-      } catch(e) { // fallback to hardcoded
+      } catch(e) {
+        console.warn('API error, using hardcoded products:', e);
+      }
+      // Always render (either API data or hardcoded fallback)
+      renderProducts();
     }
-    loadProducts();
 
     // ── Render ────────────────────────────────
     function formatSats(n) {
@@ -1244,9 +1247,13 @@
     }
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => setLang(currentLang));
+      document.addEventListener('DOMContentLoaded', () => {
+        setLang(currentLang);
+        loadProducts();
+      });
     } else {
       setLang(currentLang);
+      loadProducts();
     }
   </script>
 
