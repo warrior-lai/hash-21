@@ -432,6 +432,31 @@ section { padding: 130px 60px; max-width: 1200px; margin: 0 auto; }
   text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 .collection-item .info span {
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+.collection-item .info .artist-role {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+.collection-item .info .artist-portfolio-link {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--gold);
+  text-decoration: none;
+  margin-top: 8px;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+.collection-item .info .artist-portfolio-link:hover {
+  opacity: 1;
+}
 .availability-badge {
   display: inline-block;
   font-size: 9px;
