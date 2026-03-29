@@ -901,7 +901,10 @@
           });
           renderProducts();
         }
-      } catch(e) { // fallback to hardcoded
+      } catch(e) {
+        // fallback to hardcoded
+        renderProducts();
+      }
     }
     loadProducts();
 
