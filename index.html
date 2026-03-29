@@ -238,7 +238,8 @@
     </div>
   </div>
 
-  <!-- Chule y Heiser se cargan dinámicamente desde la API -->
+  <!-- Artistas dinámicos desde la API -->
+  <div id="dynamic-artist-cards"></div>
 
   <a href="https://t.me/abstract_lai" target="_blank" class="section-cta" data-i18n="artists_join_cta">Quiero sumarme como artista →</a>
 
@@ -658,16 +659,16 @@ function showToast(msg, type = '') {
 </script>
 
 <script>
-// Load NEW artists from backend into creators-portraits grid (append only, don't replace hardcoded)
-(async function loadNewArtistsToGrid() {
+// Load artists from backend into both main cards and creators-portraits grid
+(async function loadArtistsFromAPI() {
   const hardcodedSlugs = ['lai', 'martu', 'roxy', 'guadis'];
   try {
     const res = await fetch('https://hash21-backend.vercel.app/api/artists');
     const artists = await res.json();
     if (!artists || !artists.length) return;
     
-    const container = document.querySelector('.creators-portraits');
-    if (!container) return;
+    const cardsContainer = document.getElementById('dynamic-artist-cards');
+    const portraitsContainer = document.querySelector('.creators-portraits');
     
     const newArtists = artists.filter(a => 
       a.status === 'active' && 
@@ -679,19 +680,50 @@ function showToast(msg, type = '') {
     newArtists.forEach(a => {
       const name = esc(a.name || '');
       const role = esc(a.role_es || 'Artista');
+      const bio = esc(a.bio_es || '');
+      const motto = esc(a.motto || '');
       const photo = a.photo_url || 'img/avatar.jpg';
       const slug = a.slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const instagram = a.instagram || (a.links && a.links.instagram) || '';
+      const telegram = a.telegram || '';
+      const nostr = a.nostr || (a.links && a.links.nostr) || '';
+      const lightning = a.lightning_address || '';
       
-      const html = `<div class="creator-portrait" data-slug="${slug}">
-        <img src="${photo}" alt="${name}" loading="lazy" decoding="async">
-        <h3>${name}</h3>
-        <div class="role">${role}</div>
-      </div>`;
+      // Main artist card
+      if (cardsContainer) {
+        let socialLinks = '';
+        if (telegram) socialLinks += `<a href="https://t.me/${telegram.replace('@','')}" target="_blank" title="Telegram" style="font-size:22px;text-decoration:none;transition:opacity 0.3s;opacity:0.6;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">✈️</a>`;
+        if (nostr) socialLinks += `<a href="${nostr.startsWith('http') ? nostr : 'https://primal.net/p/' + nostr}" target="_blank" title="Nostr" style="font-size:22px;text-decoration:none;transition:opacity 0.3s;opacity:0.6;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">🟣</a>`;
+        if (instagram) socialLinks += `<a href="${instagram.startsWith('http') ? instagram : 'https://instagram.com/' + instagram.replace('@','')}" target="_blank" title="Instagram" style="font-size:22px;text-decoration:none;transition:opacity 0.3s;opacity:0.6;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">📸</a>`;
+        if (lightning) socialLinks += `<a href="javascript:void(0)" onclick="openZap('${slug}','${name}','artist')" title="Zap" style="font-size:11px;text-decoration:none;transition:all 0.3s;padding:4px 12px;border:1px solid rgba(176,141,87,0.3);color:var(--gold);letter-spacing:1px;display:inline-flex;align-items:center;gap:4px;" onmouseover="this.style.background='var(--gold)';this.style.color='var(--bg)'" onmouseout="this.style.background='transparent';this.style.color='var(--gold)'">⚡ ZAP</a>`;
+        
+        const cardHtml = `<div class="artist-card">
+          <img src="${photo}" alt="${name}" class="artist-img" loading="lazy" decoding="async">
+          <div class="artist-info">
+            <h3>${name}</h3>
+            <div class="role">${role}</div>
+            ${motto ? `<p class="artist-motto" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--gold);margin-bottom:6px;">${motto}</p>` : ''}
+            <p>${bio}</p>
+            <div style="display:flex;gap:18px;align-items:center;margin-top:15px;flex-wrap:wrap;">
+              ${socialLinks}
+            </div>
+          </div>
+        </div>`;
+        cardsContainer.insertAdjacentHTML('beforeend', cardHtml);
+      }
       
-      container.insertAdjacentHTML('beforeend', html);
+      // Portrait in "Ver todos" panel
+      if (portraitsContainer) {
+        const portraitHtml = `<div class="creator-portrait" data-slug="${slug}">
+          <img src="${photo}" alt="${name}" loading="lazy" decoding="async">
+          <h3>${name}</h3>
+          <div class="role">${role}</div>
+        </div>`;
+        portraitsContainer.insertAdjacentHTML('beforeend', portraitHtml);
+      }
     });
   } catch(e) {
-    // Error loading artists silently
+    console.error('Error loading artists:', e);
   }
 })();
 </script>
