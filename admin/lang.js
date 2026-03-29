@@ -58,6 +58,7 @@ const T = {
     'artists.delete-confirm': '¿Eliminar este artista?',
     'artists.edit': 'Editar Artista',
     'artists.new-modal': 'Nuevo Artista',
+    'artists.nationality': 'Nacionalidad',
     
     // Works
     'works.title': 'Obras',
@@ -197,6 +198,7 @@ const T = {
     'artists.delete-confirm': 'Delete this artist?',
     'artists.edit': 'Edit Artist',
     'artists.new-modal': 'New Artist',
+    'artists.nationality': 'Nationality',
     
     // Works
     'works.title': 'Artworks',
