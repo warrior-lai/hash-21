@@ -551,16 +551,7 @@ function formatDate(dateStr) {
   }
 }
 
-function getCurrentLang() {
-  return localStorage.getItem('hash21-lang') || 'es';
-}
-
-function setLang(lang) {
-  localStorage.setItem('hash21-lang', lang);
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.textContent.toLowerCase() === lang);
-  });
-}
+// Use setLang from lang.js — it handles translations automatically
 
 // Auto-verify from URL
 window.addEventListener('DOMContentLoaded', () => {
@@ -571,11 +562,9 @@ window.addEventListener('DOMContentLoaded', () => {
     verifyHash(new Event('submit'));
   }
   
-  // Set initial lang
-  const lang = getCurrentLang();
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.textContent.toLowerCase() === lang);
-  });
+  // Apply saved language on load
+  const savedLang = localStorage.getItem('hash21-lang') || 'es';
+  if (typeof setLang === 'function') setLang(savedLang);
 });
 </script>
 
