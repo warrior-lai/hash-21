@@ -53,10 +53,6 @@ Sumamos valor bitcoinizando un nicho específico: concentrando piezas únicas co
 
 Su diferencial no es solo conceptual, es tangible. Hash21 ya cuenta con early adopters: artistas que no solo validan la propuesta, sino que la utilizan. Esto transforma la visión en evidencia. Hay uso, hay interés y hay una comunidad inicial que no solo adopta, sino que legitima y expande el sistema, incluso antes de su lanzamiento oficial. Cada nuevo participante no es un usuario más, es un nodo que acelera la consolidación del estándar.
 
-Las señales ya están presentes: sin haber sido lanzado, Hash21 recibe visitas y genera interés desde múltiples países —Estados Unidos, Costa Rica, El Salvador, Brasil, China y Argentina— confirmando que la propuesta trasciende lo local y responde a una necesidad global.
-
-No estamos proyectando adopción futura: estamos construyendo sobre validación real en el presente.
-
 Hash21 no es una herramienta. Es un sistema que desde el día 1 está en movimiento. Y todo sistema en movimiento —cuando tiene fundamento— se vuelve inevitable.
 
 ---
