@@ -544,8 +544,22 @@
         return;
       }
       
-      if (typeof window.nostr === 'undefined') {
-        alert('Necesitás Alby para firmar la subasta');
+      if (typeof window.nostr === 'undefined' || !window.nostr.getPublicKey) {
+        alert('Necesitás una extensión Nostr (Alby) para firmar la subasta.\n\nInstalá Alby: getalby.com');
+        return;
+      }
+      
+      // Check if extension account matches logged in account
+      try {
+        const extPubkey = await window.nostr.getPublicKey();
+        if (userPubkey && !userPubkey.startsWith('npub') && extPubkey !== userPubkey) {
+          alert('La cuenta de tu extensión Alby es diferente a la que usaste para loguearte.\n\nOpciones:\n1. Cambiá la cuenta en Alby\n2. Desloguete y conectá con la extensión');
+          return;
+        }
+        // Update userPubkey to use extension's key for signing
+        userPubkey = extPubkey;
+      } catch (e) {
+        alert('Error al conectar con Alby: ' + e.message);
         return;
       }
       
@@ -581,7 +595,16 @@
         }
         
         // Sign
-        const signedEvent = await window.nostr.signEvent(event);
+        let signedEvent;
+        try {
+          signedEvent = await window.nostr.signEvent(event);
+        } catch (signError) {
+          throw new Error('No se pudo firmar: ' + signError.message);
+        }
+        
+        if (!signedEvent || !signedEvent.sig) {
+          throw new Error('La firma fue cancelada o falló');
+        }
         
         btn.textContent = 'Publicando...';
         
