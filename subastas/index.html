@@ -847,13 +847,14 @@
   <header class="header">
     <a href="/subastas/" class="logo">HASH<span>21</span></a>
     <div class="header-actions">
+      <button class="btn" id="lang-btn" onclick="toggleLang()" style="padding:6px 12px;font-size:9px;">EN</button>
       <div class="relay-indicator">
         <div class="relay-dot" id="relay-dot"></div>
         <span id="relay-status">Conectando...</span>
       </div>
-      <button class="btn" id="create-btn" onclick="openCreateAuction()" style="display:none;">+ Crear Subasta</button>
+      <button class="btn" id="create-btn" onclick="openCreateAuction()" style="display:none;" data-i18n="create_auction">+ Crear Subasta</button>
       <div id="user-area">
-        <button class="btn primary" onclick="openLogin()">Conectar Nostr</button>
+        <button class="btn primary" onclick="openLogin()" data-i18n="connect_nostr">Conectar Nostr</button>
       </div>
     </div>
   </header>
@@ -863,20 +864,20 @@
     
     <!-- HERO -->
     <section class="hero">
-      <div class="hero-tag">Nostr Native Auctions</div>
-      <h1>Subastas de Arte Descentralizadas</h1>
-      <p>Pujá con Bitcoin Lightning. Firmá con tu clave Nostr. Sin intermediarios, sin custodia, sin confianza requerida.</p>
+      <div class="hero-tag" data-i18n="hero_tag">Nostr Native Auctions</div>
+      <h1 data-i18n="hero_title">Subastas de Arte Descentralizadas</h1>
+      <p data-i18n="hero_desc">Pujá con Bitcoin Lightning. Firmá con tu clave Nostr. Sin intermediarios, sin custodia, sin confianza requerida.</p>
     </section>
 
     <!-- AUCTIONS GRID -->
     <section class="auctions-section">
       <div class="section-header">
-        <div class="section-title">Subastas Activas</div>
+        <div class="section-title" data-i18n="active_auctions">Subastas Activas</div>
         <div class="filters">
-          <button class="filter-btn active" data-filter="all">Todas</button>
-          <button class="filter-btn" data-filter="active">Activas</button>
-          <button class="filter-btn" data-filter="ending">Terminando</button>
-          <button class="filter-btn" data-filter="ended">Finalizadas</button>
+          <button class="filter-btn active" data-filter="all" data-i18n="filter_all">Todas</button>
+          <button class="filter-btn" data-filter="active" data-i18n="filter_active">Activas</button>
+          <button class="filter-btn" data-filter="ending" data-i18n="filter_ending">Terminando</button>
+          <button class="filter-btn" data-filter="ended" data-i18n="filter_ended">Finalizadas</button>
         </div>
       </div>
       <div class="auctions-grid" id="auctions-grid">
@@ -887,54 +888,54 @@
     <!-- HOW IT WORKS -->
     <section class="how-section">
       <div class="how-header">
-        <h2>Cómo Funciona</h2>
-        <p>Protocolo abierto, pagos directos, verificación criptográfica</p>
+        <h2 data-i18n="how_title">Cómo Funciona</h2>
+        <p data-i18n="how_desc">Protocolo abierto, pagos directos, verificación criptográfica</p>
       </div>
       <div class="steps-grid">
         <div class="step">
           <div class="step-num">1</div>
-          <h3>Conectá Nostr</h3>
-          <p>Tu clave pública es tu identidad. Sin emails, sin contraseñas.</p>
+          <h3 data-i18n="step1_title">Conectá Nostr</h3>
+          <p data-i18n="step1_desc">Tu clave pública es tu identidad. Sin emails, sin contraseñas.</p>
         </div>
         <div class="step">
           <div class="step-num">2</div>
-          <h3>Explorá Subastas</h3>
-          <p>Obras de artistas verificados. Cada subasta es un evento Nostr.</p>
+          <h3 data-i18n="step2_title">Explorá Subastas</h3>
+          <p data-i18n="step2_desc">Obras de artistas verificados. Cada subasta es un evento Nostr.</p>
         </div>
         <div class="step">
           <div class="step-num">3</div>
-          <h3>Pujá y Firmá</h3>
-          <p>Tu puja queda registrada en los relays, firmada con tu clave.</p>
+          <h3 data-i18n="step3_title">Pujá y Firmá</h3>
+          <p data-i18n="step3_desc">Tu puja queda registrada en los relays, firmada con tu clave.</p>
         </div>
         <div class="step">
           <div class="step-num">4</div>
-          <h3>Pagá Directo</h3>
-          <p>Lightning invoice directo al artista. Cero intermediarios.</p>
+          <h3 data-i18n="step4_title">Pagá Directo</h3>
+          <p data-i18n="step4_desc">Lightning invoice directo al artista. Cero intermediarios.</p>
         </div>
       </div>
       <div class="tech-info">
         <div class="tech-item">
-          <div class="tech-label">Eventos</div>
+          <div class="tech-label" data-i18n="tech_events">Eventos</div>
           <div class="tech-value">Kind 30020, 1021, 1022</div>
         </div>
         <div class="tech-item">
-          <div class="tech-label">Pagos</div>
+          <div class="tech-label" data-i18n="tech_payments">Pagos</div>
           <div class="tech-value">Lightning (NIP-57)</div>
         </div>
         <div class="tech-item">
-          <div class="tech-label">Custodia</div>
-          <div class="tech-value">Ninguna</div>
+          <div class="tech-label" data-i18n="tech_custody">Custodia</div>
+          <div class="tech-value" data-i18n="tech_custody_val">Ninguna</div>
         </div>
       </div>
     </section>
 
     <!-- READY TO START -->
     <section class="cta-section">
-      <h2>¿Listo para empezar?</h2>
-      <p>Conectá tu identidad Nostr para explorar subastas o crear tu primera publicación</p>
+      <h2 data-i18n="cta_title">¿Listo para empezar?</h2>
+      <p data-i18n="cta_desc">Conectá tu identidad Nostr para explorar subastas o crear tu primera publicación</p>
       <div class="cta-buttons">
-        <button class="cta-btn secondary" onclick="document.querySelector('.auctions-section').scrollIntoView({behavior:'smooth'})">Explorar Subastas</button>
-        <button class="cta-btn primary" onclick="openCreateAuction()">Crear Subasta</button>
+        <button class="cta-btn secondary" onclick="document.querySelector('.auctions-section').scrollIntoView({behavior:'smooth'})" data-i18n="cta_explore">Explorar Subastas</button>
+        <button class="cta-btn primary" onclick="openCreateAuction()" data-i18n="cta_create">Crear Subasta</button>
       </div>
     </section>
 
@@ -956,14 +957,14 @@
   <!-- LOGIN OVERLAY -->
   <div class="login-overlay" id="login-overlay">
     <div class="login-box">
-      <h2>Conectar Nostr</h2>
-      <p>Tu identidad soberana. Sin intermediarios, sin custodias, sin permisos.</p>
-      <button class="login-btn primary" onclick="connectExtension()">Usar Extensión (Alby)</button>
-      <button class="login-btn secondary" onclick="showNpubInput()">Ingresar npub</button>
+      <h2 data-i18n="login_title">Conectar Nostr</h2>
+      <p data-i18n="login_desc">Tu identidad soberana. Sin intermediarios, sin custodias, sin permisos.</p>
+      <button class="login-btn primary" onclick="connectExtension()" data-i18n="login_extension">Usar Extensión (Alby)</button>
+      <button class="login-btn secondary" onclick="showNpubInput()" data-i18n="login_npub">Ingresar npub</button>
       <input type="text" class="login-input" id="npub-input" placeholder="npub1...">
-      <button class="login-btn secondary" id="npub-submit" style="display:none;" onclick="connectNpub()">Conectar</button>
-      <button class="login-btn secondary" onclick="closeLogin()">Cancelar</button>
-      <p class="login-note">¿No tenés Nostr? <a href="https://getalby.com" target="_blank">Alby</a> · <a href="https://primal.net" target="_blank">Primal</a></p>
+      <button class="login-btn secondary" id="npub-submit" style="display:none;" onclick="connectNpub()" data-i18n="connect_nostr">Conectar</button>
+      <button class="login-btn secondary" onclick="closeLogin()" data-i18n="login_cancel">Cancelar</button>
+      <p class="login-note"><span data-i18n="login_note">¿No tenés Nostr?</span> <a href="https://getalby.com" target="_blank">Alby</a> · <a href="https://primal.net" target="_blank">Primal</a></p>
     </div>
   </div>
 
@@ -1025,6 +1026,189 @@
   <div class="nostr-log" id="nostr-log"></div>
 
   <script>
+    // =============================================
+    // I18N - TRANSLATIONS
+    // =============================================
+    const i18n = {
+      es: {
+        connecting: 'Conectando...',
+        relays: 'relays',
+        connect_nostr: 'Conectar Nostr',
+        create_auction: '+ Crear Subasta',
+        hero_tag: 'Nostr Native Auctions',
+        hero_title: 'Subastas de Arte Descentralizadas',
+        hero_desc: 'Pujá con Bitcoin Lightning. Firmá con tu clave Nostr. Sin intermediarios, sin custodia, sin confianza requerida.',
+        active_auctions: 'Subastas Activas',
+        filter_all: 'Todas',
+        filter_active: 'Activas',
+        filter_ending: 'Terminando',
+        filter_ended: 'Finalizadas',
+        current_bid: 'Puja actual',
+        ends: 'Finaliza',
+        status_active: 'Activa',
+        status_ending: 'Terminando',
+        status_ended: 'Finalizada',
+        how_title: 'Cómo Funciona',
+        how_desc: 'Protocolo abierto, pagos directos, verificación criptográfica',
+        step1_title: 'Conectá Nostr',
+        step1_desc: 'Tu clave pública es tu identidad. Sin emails, sin contraseñas.',
+        step2_title: 'Explorá Subastas',
+        step2_desc: 'Obras de artistas verificados. Cada subasta es un evento Nostr.',
+        step3_title: 'Pujá y Firmá',
+        step3_desc: 'Tu puja queda registrada en los relays, firmada con tu clave.',
+        step4_title: 'Pagá Directo',
+        step4_desc: 'Lightning invoice directo al artista. Cero intermediarios.',
+        tech_events: 'Eventos',
+        tech_payments: 'Pagos',
+        tech_custody: 'Custodia',
+        tech_custody_val: 'Ninguna',
+        cta_title: '¿Listo para empezar?',
+        cta_desc: 'Conectá tu identidad Nostr para explorar subastas o crear tu primera publicación',
+        cta_explore: 'Explorar Subastas',
+        cta_create: 'Crear Subasta',
+        login_title: 'Conectar Nostr',
+        login_desc: 'Tu identidad soberana. Sin intermediarios, sin custodias, sin permisos.',
+        login_extension: 'Usar Extensión (Alby)',
+        login_npub: 'Ingresar npub',
+        login_cancel: 'Cancelar',
+        login_note: '¿No tenés Nostr?',
+        create_title: 'Crear Subasta',
+        form_title: 'Título de la obra *',
+        form_desc: 'Descripción *',
+        form_image: 'URL de imagen *',
+        form_image_hint: 'Subí tu imagen a nostr.build o similar',
+        form_price: 'Precio inicial (sats) *',
+        form_duration: 'Duración *',
+        form_reserve: 'Precio de reserva (opcional)',
+        form_reserve_hint: 'Si no se alcanza, la subasta no es válida',
+        form_cancel: 'Cancelar',
+        form_submit: 'Crear y Firmar',
+        form_note: 'La subasta se publicará en los relays Nostr como evento Kind 30020',
+        duration_1h: '1 hora',
+        duration_6h: '6 horas',
+        duration_12h: '12 horas',
+        duration_1d: '1 día',
+        duration_3d: '3 días',
+        duration_7d: '7 días',
+        detail_current: 'Puja Actual',
+        detail_start: 'Inicio',
+        detail_bids: 'pujas',
+        detail_ends: 'Finaliza en',
+        detail_place: 'Realizar Puja',
+        detail_sign: 'Firmar y Enviar Puja',
+        detail_connect: 'Conectá Nostr para pujar',
+        detail_min: 'Mínimo',
+        detail_history: 'Historial',
+        no_auctions: 'No hay subastas',
+        logout: 'Salir',
+        copy: 'copiar',
+        ended: 'FINALIZADA',
+        now: 'ahora',
+        ago: 'hace'
+      },
+      en: {
+        connecting: 'Connecting...',
+        relays: 'relays',
+        connect_nostr: 'Connect Nostr',
+        create_auction: '+ Create Auction',
+        hero_tag: 'Nostr Native Auctions',
+        hero_title: 'Decentralized Art Auctions',
+        hero_desc: 'Bid with Bitcoin Lightning. Sign with your Nostr key. No intermediaries, no custody, no trust required.',
+        active_auctions: 'Active Auctions',
+        filter_all: 'All',
+        filter_active: 'Active',
+        filter_ending: 'Ending',
+        filter_ended: 'Ended',
+        current_bid: 'Current bid',
+        ends: 'Ends',
+        status_active: 'Active',
+        status_ending: 'Ending',
+        status_ended: 'Ended',
+        how_title: 'How It Works',
+        how_desc: 'Open protocol, direct payments, cryptographic verification',
+        step1_title: 'Connect Nostr',
+        step1_desc: 'Your public key is your identity. No emails, no passwords.',
+        step2_title: 'Explore Auctions',
+        step2_desc: 'Works from verified artists. Each auction is a Nostr event.',
+        step3_title: 'Bid & Sign',
+        step3_desc: 'Your bid is recorded on relays, signed with your key.',
+        step4_title: 'Pay Direct',
+        step4_desc: 'Lightning invoice direct to artist. Zero middlemen.',
+        tech_events: 'Events',
+        tech_payments: 'Payments',
+        tech_custody: 'Custody',
+        tech_custody_val: 'None',
+        cta_title: 'Ready to start?',
+        cta_desc: 'Connect your Nostr identity to explore auctions or create your first listing',
+        cta_explore: 'Explore Auctions',
+        cta_create: 'Create Auction',
+        login_title: 'Connect Nostr',
+        login_desc: 'Your sovereign identity. No intermediaries, no custody, no permissions.',
+        login_extension: 'Use Extension (Alby)',
+        login_npub: 'Enter npub',
+        login_cancel: 'Cancel',
+        login_note: "Don't have Nostr?",
+        create_title: 'Create Auction',
+        form_title: 'Artwork title *',
+        form_desc: 'Description *',
+        form_image: 'Image URL *',
+        form_image_hint: 'Upload your image to nostr.build or similar',
+        form_price: 'Starting price (sats) *',
+        form_duration: 'Duration *',
+        form_reserve: 'Reserve price (optional)',
+        form_reserve_hint: 'If not reached, auction is invalid',
+        form_cancel: 'Cancel',
+        form_submit: 'Create & Sign',
+        form_note: 'The auction will be published to Nostr relays as Kind 30020 event',
+        duration_1h: '1 hour',
+        duration_6h: '6 hours',
+        duration_12h: '12 hours',
+        duration_1d: '1 day',
+        duration_3d: '3 days',
+        duration_7d: '7 days',
+        detail_current: 'Current Bid',
+        detail_start: 'Start',
+        detail_bids: 'bids',
+        detail_ends: 'Ends in',
+        detail_place: 'Place Bid',
+        detail_sign: 'Sign & Submit Bid',
+        detail_connect: 'Connect Nostr to bid',
+        detail_min: 'Minimum',
+        detail_history: 'History',
+        no_auctions: 'No auctions',
+        logout: 'Logout',
+        copy: 'copy',
+        ended: 'ENDED',
+        now: 'now',
+        ago: 'ago'
+      }
+    };
+    
+    let currentLang = localStorage.getItem('hash21-lang') || 'es';
+    
+    function t(key) {
+      return i18n[currentLang][key] || i18n['es'][key] || key;
+    }
+    
+    function toggleLang() {
+      currentLang = currentLang === 'es' ? 'en' : 'es';
+      localStorage.setItem('hash21-lang', currentLang);
+      document.getElementById('lang-btn').textContent = currentLang === 'es' ? 'EN' : 'ES';
+      updateAllText();
+      renderAuctions();
+    }
+    
+    function updateAllText() {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+          el.placeholder = t(key);
+        } else {
+          el.textContent = t(key);
+        }
+      });
+    }
+    
     // =============================================
     // CONFIGURATION
     // =============================================
@@ -1152,7 +1336,7 @@
       }
       
       if (filtered.length === 0) {
-        grid.innerHTML = `<p style="color:var(--text-dim);grid-column:1/-1;text-align:center;padding:60px;">No hay subastas ${filter === 'all' ? '' : filter === 'active' ? 'activas' : 'en este estado'}</p>`;
+        grid.innerHTML = `<p style="color:var(--text-dim);grid-column:1/-1;text-align:center;padding:60px;">${t('no_auctions')}</p>`;
         return;
       }
       
@@ -1160,16 +1344,16 @@
         <div class="auction-card" onclick="openAuction('${a.id}')">
           <img src="${a.image}" alt="${a.title}" class="auction-card-img" loading="lazy">
           <div class="auction-card-body">
-            <span class="auction-card-status status-${a.status}">${a.status === 'active' ? 'Activa' : a.status === 'ending' ? 'Terminando' : 'Finalizada'}</span>
+            <span class="auction-card-status status-${a.status}">${t('status_' + a.status)}</span>
             <div class="auction-card-artist">${a.artist}</div>
             <h3 class="auction-card-title">${a.title}</h3>
             <div class="auction-card-meta">
               <div>
-                <div class="meta-label">Puja actual</div>
+                <div class="meta-label">${t('current_bid')}</div>
                 <div class="meta-value gold">⚡ ${a.currentBid.toLocaleString()}</div>
               </div>
               <div style="text-align:right;">
-                <div class="meta-label">Finaliza</div>
+                <div class="meta-label">${t('ends')}</div>
                 <div class="meta-value">${formatTimeLeft(a.endsAt)}</div>
               </div>
             </div>
@@ -1576,12 +1760,16 @@
     // INIT
     // =============================================
     function init() {
+      // Apply saved language
+      document.getElementById('lang-btn').textContent = currentLang === 'es' ? 'EN' : 'ES';
+      updateAllText();
+      
       // Check saved session
       const saved = localStorage.getItem('hash21-auction-pubkey');
       if (saved) {
         userPubkey = saved;
         updateUserUI();
-        log('Sesión restaurada', 'success');
+        log(currentLang === 'es' ? 'Sesión restaurada' : 'Session restored', 'success');
       }
       
       // Connect to relays
