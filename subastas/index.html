@@ -731,6 +731,57 @@
       color: var(--gold);
     }
     
+    /* ========== CTA SECTION ========== */
+    .cta-section {
+      padding: 80px 30px;
+      text-align: center;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+    .cta-section h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: 12px;
+    }
+    .cta-section p {
+      color: var(--text-mid);
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    .cta-btn {
+      padding: 16px 35px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+    }
+    .cta-btn.primary {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--bg);
+    }
+    .cta-btn.primary:hover {
+      background: #c9a67e;
+    }
+    .cta-btn.secondary {
+      background: transparent;
+      color: var(--text-mid);
+    }
+    .cta-btn.secondary:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    
     /* ========== FOOTER ========== */
     .footer {
       padding: 30px;
@@ -874,6 +925,16 @@
           <div class="tech-label">Custodia</div>
           <div class="tech-value">Ninguna</div>
         </div>
+      </div>
+    </section>
+
+    <!-- READY TO START -->
+    <section class="cta-section">
+      <h2>¿Listo para empezar?</h2>
+      <p>Conectá tu identidad Nostr para explorar subastas o crear tu primera publicación</p>
+      <div class="cta-buttons">
+        <button class="cta-btn secondary" onclick="document.querySelector('.auctions-section').scrollIntoView({behavior:'smooth'})">Explorar Subastas</button>
+        <button class="cta-btn primary" onclick="openCreateAuction()">Crear Subasta</button>
       </div>
     </section>
 
