@@ -190,14 +190,14 @@ function populateLightbox(code, name, tech, status, block) {
     badge.textContent = '';
     badge.className = 'availability-badge';
   }
-  // Tags
+  // Tags with npub
   var tagData = {
-    'Paspartuz 1': {artist:'Roxy', type_es:'Física', type_en:'Physical', status:'consult'},
-    'Paspartuz 2': {artist:'Roxy', type_es:'Física', type_en:'Physical', status:'consult'},
-    'The Rabbit': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', status:'consult'},
-    'The Hole': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', status:'available'},
-    'Libertad': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', status:'consult'},
-    'Horizonte Temporal': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', status:'available'}
+    'Paspartuz 1': {artist:'Roxy', type_es:'Física', type_en:'Physical', status:'consult', npub:''},
+    'Paspartuz 2': {artist:'Roxy', type_es:'Física', type_en:'Physical', status:'consult', npub:''},
+    'The Rabbit': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', status:'consult', npub:'npub1579rjxygc6n69cg544ndcrj88w04v9e5clcf3j249vh9hwzq6fkqes5jjs'},
+    'The Hole': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', status:'available', npub:'npub1579rjxygc6n69cg544ndcrj88w04v9e5clcf3j249vh9hwzq6fkqes5jjs'},
+    'Libertad': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', status:'consult', npub:'npub1579rjxygc6n69cg544ndcrj88w04v9e5clcf3j249vh9hwzq6fkqes5jjs'},
+    'Horizonte Temporal': {artist:'Lai⚡️', type_es:'Física', type_en:'Physical', status:'available', npub:'npub1579rjxygc6n69cg544ndcrj88w04v9e5clcf3j249vh9hwzq6fkqes5jjs'}
   };
   var td = tagData[name] || {artist:'Lai⚡️', type_es:'Física', type_en:'Physical'};
   document.getElementById('lb-tags').innerHTML = '';
@@ -230,6 +230,16 @@ function populateLightbox(code, name, tech, status, block) {
     certEl.style.display = 'block';
   } else if (certEl) {
     certEl.style.display = 'none';
+  }
+  
+  // Signed by npub
+  var signedEl = document.getElementById('lb-signed-by');
+  if (signedEl && td.npub) {
+    var shortNpub = td.npub.slice(0,12) + '...' + td.npub.slice(-6);
+    signedEl.innerHTML = '<span style="opacity:0.6;">✍️</span> Signed by <span style="color:var(--gold);cursor:pointer;" onclick="event.stopPropagation();navigator.clipboard.writeText(\'' + td.npub + '\');this.textContent=\'copied!\';setTimeout(()=>this.textContent=\'' + shortNpub + '\',1500)" title="' + td.npub + '">' + shortNpub + '</span>';
+    signedEl.style.display = 'block';
+  } else if (signedEl) {
+    signedEl.style.display = 'none';
   }
 
 }

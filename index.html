@@ -462,6 +462,7 @@
     <a id="lb-badge" class="availability-badge" href="https://t.me/abstract_lai" target="_blank" aria-label="Contactar por Telegram" style="margin-top:15px; text-decoration: none; cursor: pointer; transition: all 0.3s;"></a>
     <div id="lb-block" style="margin-top:10px;display:none;"></div>
     <div id="lb-cert-download" style="margin-top:10px;display:none;"></div>
+    <div id="lb-signed-by" style="margin-top:12px;display:none;font-family:monospace;font-size:11px;color:var(--text-dim);"></div>
     <div class="obra-tags" id="lb-tags"></div>
     <button class="zap-btn" id="lb-zap-btn" onclick="event.stopPropagation();" style="margin-top:15px;font-size:13px;padding:8px 20px;">
       <span class="zap-icon">⚡</span> <span data-i18n="zap_btn">Zap</span> <span class="zap-count" id="lb-zap-count"></span>
@@ -697,6 +698,11 @@ function showToast(msg, type = '') {
         if (instagram) socialLinks += `<a href="${instagram.startsWith('http') ? instagram : 'https://instagram.com/' + instagram.replace('@','')}" target="_blank" title="Instagram" style="font-size:22px;text-decoration:none;transition:opacity 0.3s;opacity:0.6;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">📸</a>`;
         if (lightning) socialLinks += `<a href="javascript:void(0)" onclick="openZap('${slug}','${name}','artist')" title="Zap" style="font-size:11px;text-decoration:none;transition:all 0.3s;padding:4px 12px;border:1px solid rgba(176,141,87,0.3);color:var(--gold);letter-spacing:1px;display:inline-flex;align-items:center;gap:4px;" onmouseover="this.style.background='var(--gold)';this.style.color='var(--bg)'" onmouseout="this.style.background='transparent';this.style.color='var(--gold)'">⚡ ZAP</a>`;
         
+        // npub display
+        const npubShort = nostr && nostr.startsWith('npub') ? nostr.slice(0,12) + '...' + nostr.slice(-6) : '';
+        const npubFull = nostr && nostr.startsWith('npub') ? nostr : '';
+        const npubHtml = npubFull ? `<div style="margin-top:10px;font-family:monospace;font-size:11px;color:var(--text-dim);display:flex;align-items:center;gap:6px;"><span style="opacity:0.7;">🔑</span><span>${npubShort}</span><button onclick="navigator.clipboard.writeText('${npubFull}');this.textContent='✓';setTimeout(()=>this.textContent='copy',1500)" style="background:none;border:1px solid var(--border);color:var(--text-dim);padding:2px 8px;border-radius:4px;font-size:10px;cursor:pointer;font-family:inherit;">copy</button></div>` : '';
+        
         const cardHtml = `<div class="artist-card">
           <img src="${photo}" alt="${name}" class="artist-img" loading="lazy" decoding="async">
           <div class="artist-info">
@@ -704,6 +710,7 @@ function showToast(msg, type = '') {
             <div class="role">${role}</div>
             ${motto ? `<p class="artist-motto" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--gold);margin-bottom:6px;">${motto}</p>` : ''}
             <p>${bio}</p>
+            ${npubHtml}
             <div style="display:flex;gap:18px;align-items:center;margin-top:15px;flex-wrap:wrap;">
               ${socialLinks}
             </div>
