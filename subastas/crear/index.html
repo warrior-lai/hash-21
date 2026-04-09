@@ -565,7 +565,7 @@
       
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
-      btn.textContent = 'Firmando...';
+      btn.textContent = 'FIRMANDO... (aprobá en Alby)';
       
       try {
         const auctionId = title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Date.now();
@@ -594,40 +594,55 @@
           event.tags.push(['reserve_price', reservePrice.toString()]);
         }
         
-        // Sign
+        // Sign with timeout
         let signedEvent;
         try {
-          signedEvent = await window.nostr.signEvent(event);
+          const signPromise = window.nostr.signEvent(event);
+          const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Timeout - aprobá en Alby o recargá la página')), 30000)
+          );
+          signedEvent = await Promise.race([signPromise, timeoutPromise]);
         } catch (signError) {
-          throw new Error('No se pudo firmar: ' + signError.message);
+          throw new Error('Firma cancelada o timeout: ' + signError.message);
         }
         
         if (!signedEvent || !signedEvent.sig) {
-          throw new Error('La firma fue cancelada o falló');
+          throw new Error('La firma fue cancelada');
         }
         
-        btn.textContent = 'Publicando...';
+        btn.textContent = 'PUBLICANDO...';
         
-        // Publish to relays
-        const relays = [
-          'wss://relay.damus.io',
-          'wss://nos.lol',
-          'wss://relay.nostr.band'
-        ];
+        // Publish to relays (fire and forget - fast)
+        const relays = ['wss://relay.damus.io', 'wss://nos.lol', 'wss://relay.nostr.band'];
+        let published = 0;
         
-        for (const url of relays) {
-          try {
-            const ws = new WebSocket(url);
-            ws.onopen = () => {
-              ws.send(JSON.stringify(['EVENT', signedEvent]));
-              setTimeout(() => ws.close(), 2000);
-            };
-          } catch (e) {
-            console.error('Relay error:', url, e);
-          }
-        }
+        const publishPromises = relays.map(url => {
+          return new Promise((resolve) => {
+            try {
+              const ws = new WebSocket(url);
+              const timeout = setTimeout(() => { ws.close(); resolve(false); }, 3000);
+              ws.onopen = () => {
+                ws.send(JSON.stringify(['EVENT', signedEvent]));
+                published++;
+                clearTimeout(timeout);
+                setTimeout(() => { ws.close(); resolve(true); }, 500);
+              };
+              ws.onerror = () => { clearTimeout(timeout); resolve(false); };
+            } catch (e) {
+              resolve(false);
+            }
+          });
+        });
         
-        // Show success
+        // Wait max 4 seconds for relays
+        await Promise.race([
+          Promise.all(publishPromises),
+          new Promise(r => setTimeout(r, 4000))
+        ]);
+        
+        console.log('Published to', published, 'relays');
+        
+        // Show success immediately
         document.getElementById('create-form').style.display = 'none';
         document.getElementById('success-msg').classList.add('visible');
         
