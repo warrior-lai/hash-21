@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subastas | Hash21 Studio</title>
+  <meta name="description" content="Subastas de arte Bitcoin-native. Pujá con Lightning, verificá con Nostr.">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/nostr-tools@1.17.0/lib/nostr.bundle.js"></script>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #111;
+      --bg3: #1a1a1a;
+      --gold: #b08d57;
+      --gold-dim: rgba(176,141,87,0.3);
+      --text: #e8e4dc;
+      --text-mid: #a09a90;
+      --text-dim: #666;
+      --border: #222;
+      --radius: 4px;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    
+    /* Header */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(10,10,10,0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      font-weight: 400;
+      letter-spacing: 4px;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .logo span { color: var(--gold); }
+    nav a {
+      color: var(--text-mid);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-left: 30px;
+      transition: color 0.3s;
+    }
+    nav a:hover { color: var(--gold); }
+    nav a.active { color: var(--gold); }
+    
+    /* Main */
+    main {
+      padding: 120px 40px 60px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    /* Page Header */
+    .page-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .page-header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 48px;
+      font-weight: 400;
+      margin-bottom: 15px;
+      letter-spacing: 2px;
+    }
+    .page-header p {
+      color: var(--text-dim);
+      font-size: 14px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    /* Stats Bar */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      margin-bottom: 50px;
+      padding: 20px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--gold);
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 5px;
+    }
+    
+    /* Filters */
+    .filters {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-mid);
+      padding: 10px 20px;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    
+    /* Auctions Grid */
+    .auctions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 30px;
+    }
+    
+    /* Auction Card */
+    .auction-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .auction-card:hover {
+      border-color: var(--gold-dim);
+      transform: translateY(-5px);
+    }
+    .auction-img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      background: var(--bg3);
+    }
+    .auction-info {
+      padding: 20px;
+    }
+    .auction-artist {
+      font-size: 11px;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .auction-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 400;
+      margin-bottom: 15px;
+    }
+    .auction-meta {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 15px;
+      border-top: 1px solid var(--border);
+    }
+    .auction-meta-item {
+      text-align: center;
+    }
+    .meta-label {
+      font-size: 10px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .meta-value {
+      font-size: 16px;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+    .meta-value.gold { color: var(--gold); }
+    
+    /* Status Badge */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-radius: 2px;
+      margin-bottom: 10px;
+    }
+    .status-active {
+      background: rgba(76, 175, 80, 0.2);
+      color: #4CAF50;
+    }
+    .status-ending {
+      background: rgba(255, 152, 0, 0.2);
+      color: #FF9800;
+    }
+    .status-ended {
+      background: rgba(158, 158, 158, 0.2);
+      color: #9E9E9E;
+    }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-dim);
+    }
+    .empty-state h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: 15px;
+      color: var(--text-mid);
+    }
+    .empty-icon {
+      font-size: 60px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+    
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: var(--text-dim);
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 2px solid var(--border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* CTA */
+    .cta-section {
+      text-align: center;
+      margin-top: 60px;
+      padding: 40px;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+    }
+    .cta-section h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      margin-bottom: 15px;
+    }
+    .cta-section p {
+      color: var(--text-dim);
+      margin-bottom: 25px;
+    }
+    .cta-btn {
+      display: inline-block;
+      padding: 15px 40px;
+      background: var(--gold);
+      color: var(--bg);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    .cta-btn:hover {
+      background: #c9a66b;
+    }
+    
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px;
+      border-top: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 12px;
+    }
+    footer a { color: var(--gold); text-decoration: none; }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      header { padding: 15px 20px; }
+      nav a { margin-left: 15px; font-size: 11px; }
+      main { padding: 100px 20px 40px; }
+      .page-header h1 { font-size: 32px; }
+      .stats-bar { gap: 30px; flex-wrap: wrap; }
+      .auctions-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      nav { display: none; }
+      .logo { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="logo">HASH<span>21</span></a>
+    <nav>
+      <a href="/#collection">Colección</a>
+      <a href="/#artists">Creadores</a>
+      <a href="/verify/">Verificar</a>
+      <a href="/subastas/" class="active">Subastas</a>
+      <a href="/admin" style="color:var(--gold)">Inicio</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <h1>Subastas</h1>
+      <p>Arte Bitcoin-native. Pujá con Lightning, verificá con Nostr. Sin intermediarios, sin custodia.</p>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="stat-value" id="stat-active">-</div>
+        <div class="stat-label">Activas</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="stat-total-sats">-</div>
+        <div class="stat-label">Sats en pujas</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="stat-artists">-</div>
+        <div class="stat-label">Artistas</div>
+      </div>
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">Todas</button>
+      <button class="filter-btn" data-filter="active">Activas</button>
+      <button class="filter-btn" data-filter="ending">Terminando</button>
+      <button class="filter-btn" data-filter="ended">Finalizadas</button>
+    </div>
+
+    <div id="auctions-container">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Conectando a relays Nostr...</p>
+      </div>
+    </div>
+
+    <div class="cta-section">
+      <h3>¿Querés subastar tu arte?</h3>
+      <p>Hash21 permite a artistas crear subastas verificadas con su identidad Nostr.</p>
+      <a href="/register" class="cta-btn">Registrate como artista</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>Hash21 Studio © 2026 — <a href="/">Volver al inicio</a></p>
+  </footer>
+
+  <script>
+    // Nostr relays
+    const RELAYS = [
+      'wss://relay.damus.io',
+      'wss://nos.lol',
+      'wss://relay.nostr.band',
+      'wss://relay.primal.net'
+    ];
+    
+    // Auction event kinds (NIP-15)
+    const KIND_AUCTION = 30020;
+    const KIND_BID = 1021;
+    
+    // State
+    let auctions = [];
+    let bids = {};
+    let pool = null;
+    
+    // Demo auctions (while we connect to real relays)
+    const DEMO_AUCTIONS = [
+      {
+        id: 'demo1',
+        title: 'The Rabbit',
+        artist: 'Lai⚡️',
+        artistNpub: 'npub1579rjxygc6n69cg544ndcrj88w04v9e5clcf3j249vh9hwzq6fkqes5jjs',
+        image: '/img/obra4.jpg',
+        startPrice: 100000,
+        currentBid: 250000,
+        bidCount: 5,
+        endsAt: Date.now() + 86400000 * 2, // 2 days
+        status: 'active'
+      },
+      {
+        id: 'demo2',
+        title: 'Libertad',
+        artist: 'Lai⚡️',
+        artistNpub: 'npub1579rjxygc6n69cg544ndcrj88w04v9e5clcf3j249vh9hwzq6fkqes5jjs',
+        image: '/img/obra1.jpg',
+        startPrice: 150000,
+        currentBid: 320000,
+        bidCount: 8,
+        endsAt: Date.now() + 3600000 * 5, // 5 hours
+        status: 'ending'
+      },
+      {
+        id: 'demo3',
+        title: 'The Hole',
+        artist: 'Lai⚡️',
+        artistNpub: 'npub1579rjxygc6n69cg544ndcrj88w04v9e5clcf3j249vh9hwzq6fkqes5jjs',
+        image: '/img/obra3.jpg',
+        startPrice: 80000,
+        currentBid: 180000,
+        bidCount: 4,
+        endsAt: Date.now() - 86400000, // ended
+        status: 'ended'
+      }
+    ];
+    
+    // Format sats
+    function formatSats(sats) {
+      if (sats >= 1000000) return (sats / 1000000).toFixed(2) + 'M';
+      if (sats >= 1000) return (sats / 1000).toFixed(0) + 'k';
+      return sats.toLocaleString();
+    }
+    
+    // Format time remaining
+    function formatTimeRemaining(endsAt) {
+      const now = Date.now();
+      const diff = endsAt - now;
+      
+      if (diff <= 0) return 'Finalizada';
+      
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const mins = Math.floor((diff % 3600000) / 60000);
+      
+      if (days > 0) return `${days}d ${hours}h`;
+      if (hours > 0) return `${hours}h ${mins}m`;
+      return `${mins}m`;
+    }
+    
+    // Render auction card
+    function renderAuctionCard(auction) {
+      const statusClass = auction.status === 'active' ? 'status-active' : 
+                          auction.status === 'ending' ? 'status-ending' : 'status-ended';
+      const statusText = auction.status === 'active' ? 'Activa' :
+                         auction.status === 'ending' ? 'Terminando' : 'Finalizada';
+      
+      return `
+        <div class="auction-card" data-id="${auction.id}" data-status="${auction.status}">
+          <img src="${auction.image}" alt="${auction.title}" class="auction-img" loading="lazy">
+          <div class="auction-info">
+            <span class="status-badge ${statusClass}">${statusText}</span>
+            <div class="auction-artist">${auction.artist}</div>
+            <h3 class="auction-title">${auction.title}</h3>
+            <div class="auction-meta">
+              <div class="auction-meta-item">
+                <div class="meta-label">Puja actual</div>
+                <div class="meta-value gold">⚡ ${formatSats(auction.currentBid)}</div>
+              </div>
+              <div class="auction-meta-item">
+                <div class="meta-label">Tiempo</div>
+                <div class="meta-value">${formatTimeRemaining(auction.endsAt)}</div>
+              </div>
+              <div class="auction-meta-item">
+                <div class="meta-label">Pujas</div>
+                <div class="meta-value">${auction.bidCount}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    
+    // Render all auctions
+    function renderAuctions(filter = 'all') {
+      const container = document.getElementById('auctions-container');
+      let filtered = auctions;
+      
+      if (filter !== 'all') {
+        filtered = auctions.filter(a => a.status === filter);
+      }
+      
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🎨</div>
+            <h3>No hay subastas ${filter === 'all' ? '' : filter === 'active' ? 'activas' : filter === 'ending' ? 'terminando' : 'finalizadas'}</h3>
+            <p>Las subastas aparecerán aquí cuando los artistas las creen.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = `<div class="auctions-grid">${filtered.map(renderAuctionCard).join('')}</div>`;
+      
+      // Update stats
+      const active = auctions.filter(a => a.status !== 'ended').length;
+      const totalSats = auctions.reduce((sum, a) => sum + a.currentBid, 0);
+      const artists = [...new Set(auctions.map(a => a.artistNpub))].length;
+      
+      document.getElementById('stat-active').textContent = active;
+      document.getElementById('stat-total-sats').textContent = formatSats(totalSats);
+      document.getElementById('stat-artists').textContent = artists;
+    }
+    
+    // Filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderAuctions(btn.dataset.filter);
+      });
+    });
+    
+    // Initialize
+    async function init() {
+      // For now, use demo data
+      // TODO: Connect to Nostr relays and fetch real auctions
+      auctions = DEMO_AUCTIONS;
+      
+      // Simulate loading
+      setTimeout(() => {
+        renderAuctions();
+      }, 1500);
+      
+      // Update countdowns every minute
+      setInterval(() => {
+        renderAuctions(document.querySelector('.filter-btn.active').dataset.filter);
+      }, 60000);
+    }
+    
+    init();
+  </script>
+</body>
+</html>
