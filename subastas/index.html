@@ -483,6 +483,98 @@
     }
     .login-note a { color: var(--gold); text-decoration: none; }
     
+    /* How it Works */
+    .how-section {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 80px 40px;
+    }
+    .how-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .how-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 300;
+      text-align: center;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+    .how-subtitle {
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 13px;
+      margin-bottom: 50px;
+    }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      margin-bottom: 50px;
+    }
+    .step {
+      text-align: center;
+      padding: 30px 20px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+    }
+    .step-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px;
+      color: var(--gold);
+      margin-bottom: 15px;
+      font-weight: 300;
+    }
+    .step h3 {
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      font-weight: 400;
+    }
+    .step p {
+      font-size: 13px;
+      color: var(--text-mid);
+      line-height: 1.7;
+    }
+    .tech-stack {
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+      padding-top: 30px;
+      border-top: 1px solid var(--border);
+    }
+    .tech-item {
+      text-align: center;
+    }
+    .tech-label {
+      display: block;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 5px;
+    }
+    .tech-value {
+      font-size: 12px;
+      color: var(--gold);
+    }
+    
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 30px;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+    footer a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+    
     /* Responsive */
     @media (max-width: 900px) {
       main {
@@ -494,6 +586,9 @@
       }
       .artwork-panel { padding: 20px; }
       header { padding: 0 20px; }
+      .steps { grid-template-columns: 1fr; }
+      .tech-stack { flex-direction: column; gap: 20px; }
+      .how-section { padding: 50px 20px; }
     }
   </style>
 </head>
@@ -593,6 +688,51 @@
       </div>
     </div>
   </main>
+
+  <!-- How it Works -->
+  <section class="how-section">
+    <div class="how-container">
+      <h2 class="how-title">Cómo Funciona</h2>
+      <p class="how-subtitle">Subastas 100% on-chain sobre el protocolo Nostr</p>
+      
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Conectá tu Nostr</h3>
+          <p>Usá tu extensión (Alby, nos2x) para autenticarte. Tu clave pública es tu identidad — sin emails, sin passwords.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Pujá con firma</h3>
+          <p>Cada puja es un evento Nostr firmado criptográficamente. Queda registrado en los relays de forma inmutable.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Pagá directo</h3>
+          <p>Si ganás, el pago va directo al artista vía Lightning. Sin intermediarios, sin comisiones, sin custodia.</p>
+        </div>
+      </div>
+      
+      <div class="tech-stack">
+        <div class="tech-item">
+          <span class="tech-label">Protocolo</span>
+          <span class="tech-value">Nostr (NIP-15, NIP-57)</span>
+        </div>
+        <div class="tech-item">
+          <span class="tech-label">Pagos</span>
+          <span class="tech-value">Bitcoin Lightning</span>
+        </div>
+        <div class="tech-item">
+          <span class="tech-label">Custodia</span>
+          <span class="tech-value">Ninguna (P2P)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Hash21 Subastas — <a href="/">hash21.studio</a> — Construido sobre <a href="https://nostr.com" target="_blank">Nostr</a></p>
+  </footer>
 
   <script>
     // ============================================
