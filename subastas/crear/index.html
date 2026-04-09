@@ -8,15 +8,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Cormorant+Garamond:wght@300;400&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #060606;
-      --surface: #0c0c0c;
-      --surface2: #121212;
-      --gold: #b8956e;
-      --text: #e8e4dc;
-      --text-mid: #8a857c;
-      --text-dim: #4a4640;
-      --border: #1c1a18;
-      --success: #5a8a5a;
+      --bg: #faf9f7;
+      --surface: #ffffff;
+      --surface2: #f5f4f2;
+      --gold: #9a7b4f;
+      --text: #1a1a1a;
+      --text-mid: #5a5550;
+      --text-dim: #8a8580;
+      --border: #e5e2de;
+      --success: #4a8a4a;
     }
     
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -36,7 +36,7 @@
       left: 0;
       right: 0;
       height: 56px;
-      background: rgba(6,6,6,0.95);
+      background: rgba(255,255,255,0.95);
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
       display: flex;
@@ -101,6 +101,7 @@
       background: var(--surface);
       border: 1px solid var(--border);
       padding: 35px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
     }
     
     .form-group {
@@ -147,9 +148,10 @@
     select.form-input {
       cursor: pointer;
       appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238a857c' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%235a5550' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 14px center;
+      background-color: var(--surface);
     }
     
     .form-row {
@@ -229,7 +231,7 @@
     .form-submit {
       width: 100%;
       background: var(--gold);
-      color: var(--bg);
+      color: #fff;
       border: none;
       padding: 18px;
       font-size: 12px;
@@ -242,7 +244,7 @@
       transition: background 0.2s;
     }
     .form-submit:hover {
-      background: #c9a67e;
+      background: #8a6b3f;
     }
     .form-submit:disabled {
       background: var(--text-dim);
@@ -274,7 +276,7 @@
     }
     .login-btn {
       background: var(--gold);
-      color: var(--bg);
+      color: #fff;
       border: none;
       padding: 16px 40px;
       font-size: 11px;
@@ -285,7 +287,7 @@
       font-weight: 500;
     }
     .login-btn:hover {
-      background: #c9a67e;
+      background: #8a6b3f;
     }
     
     /* Success message */
