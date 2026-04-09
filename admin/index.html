@@ -994,6 +994,11 @@ body {
     <div class="lang-switch" style="margin-bottom:20px;">
       <button id="lang-toggle" class="lang-btn" onclick="setLang(currentLang==='es'?'en':'es')">ES</button>
     </div>
+    
+    <button type="button" style="width:100%;padding:16px;background:var(--gold);color:var(--bg);border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:16px;text-transform:uppercase;letter-spacing:1px;" onclick="window.nostr ? window.nostr.getPublicKey().then(k=>{localStorage.setItem('nostr-pubkey',k);alert('Conectado: '+k.slice(0,8)+'...');location.reload()}).catch(e=>alert(e)) : alert('Instalá Alby: getalby.com')">Iniciar con Nostr</button>
+    
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;"><div style="flex:1;height:1px;background:var(--border);"></div><span style="color:#666;font-size:12px;">o</span><div style="flex:1;height:1px;background:var(--border);"></div></div>
+    
     <form onsubmit="handleLogin(event)">
       <input type="email" id="login-email" data-i18n-placeholder="login.email" placeholder="Email" required>
       <input type="password" id="login-password" data-i18n-placeholder="login.password" placeholder="Contraseña" required>
