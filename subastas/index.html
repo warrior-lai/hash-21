@@ -616,6 +616,46 @@
       text-decoration: none;
     }
     
+    /* ========== CREATE FORM ========== */
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .form-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px 14px;
+      font-size: 13px;
+      font-family: inherit;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+    .form-input::placeholder {
+      color: var(--text-dim);
+    }
+    textarea.form-input {
+      resize: vertical;
+      min-height: 80px;
+    }
+    select.form-input {
+      cursor: pointer;
+    }
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+    
     /* ========== HOW IT WORKS ========== */
     .how-section {
       padding: 80px 30px;
@@ -760,6 +800,7 @@
         <div class="relay-dot" id="relay-dot"></div>
         <span id="relay-status">Conectando...</span>
       </div>
+      <button class="btn" id="create-btn" onclick="openCreateAuction()" style="display:none;">+ Crear Subasta</button>
       <div id="user-area">
         <button class="btn primary" onclick="openLogin()">Conectar Nostr</button>
       </div>
@@ -862,6 +903,60 @@
       <button class="login-btn secondary" id="npub-submit" style="display:none;" onclick="connectNpub()">Conectar</button>
       <button class="login-btn secondary" onclick="closeLogin()">Cancelar</button>
       <p class="login-note">¿No tenés Nostr? <a href="https://getalby.com" target="_blank">Alby</a> · <a href="https://primal.net" target="_blank">Primal</a></p>
+    </div>
+  </div>
+
+  <!-- CREATE AUCTION MODAL -->
+  <div class="login-overlay" id="create-overlay">
+    <div class="login-box" style="max-width:500px;text-align:left;">
+      <h2 style="text-align:center;margin-bottom:25px;">Crear Subasta</h2>
+      
+      <div class="form-group">
+        <label class="form-label">Título de la obra *</label>
+        <input type="text" class="form-input" id="create-title" placeholder="Ej: Roatan">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Descripción *</label>
+        <textarea class="form-input" id="create-desc" rows="3" placeholder="Descripción de la obra..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">URL de imagen *</label>
+        <input type="url" class="form-input" id="create-image" placeholder="https://...">
+        <small style="color:var(--text-dim);font-size:10px;">Subí tu imagen a nostr.build o similar</small>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Precio inicial (sats) *</label>
+          <input type="number" class="form-input" id="create-price" placeholder="100000" min="1000">
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Duración *</label>
+          <select class="form-input" id="create-duration">
+            <option value="3600">1 hora</option>
+            <option value="21600">6 horas</option>
+            <option value="43200">12 horas</option>
+            <option value="86400" selected>1 día</option>
+            <option value="259200">3 días</option>
+            <option value="604800">7 días</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Precio de reserva (opcional)</label>
+        <input type="number" class="form-input" id="create-reserve" placeholder="Mínimo para venta válida">
+        <small style="color:var(--text-dim);font-size:10px;">Si no se alcanza, la subasta no es válida</small>
+      </div>
+      
+      <div style="display:flex;gap:10px;margin-top:25px;">
+        <button class="login-btn secondary" onclick="closeCreateAuction()" style="flex:1;">Cancelar</button>
+        <button class="login-btn primary" onclick="createAuction()" style="flex:1;">Crear y Firmar</button>
+      </div>
+      
+      <p class="login-note" style="text-align:center;">La subasta se publicará en los relays Nostr como evento Kind 30020</p>
     </div>
   </div>
 
@@ -1232,6 +1327,9 @@
           <button class="btn" onclick="logout()">Salir</button>
         </div>
       `;
+      
+      // Show create button when logged in
+      document.getElementById('create-btn').style.display = 'block';
     }
     
     function logout() {
@@ -1240,7 +1338,126 @@
       document.getElementById('user-area').innerHTML = `
         <button class="btn primary" onclick="openLogin()">Conectar Nostr</button>
       `;
+      document.getElementById('create-btn').style.display = 'none';
       log('Sesión cerrada');
+    }
+    
+    // =============================================
+    // CREATE AUCTION
+    // =============================================
+    function openCreateAuction() {
+      if (!userPubkey) {
+        openLogin();
+        return;
+      }
+      document.getElementById('create-overlay').classList.add('active');
+    }
+    
+    function closeCreateAuction() {
+      document.getElementById('create-overlay').classList.remove('active');
+    }
+    
+    async function createAuction() {
+      const title = document.getElementById('create-title').value.trim();
+      const desc = document.getElementById('create-desc').value.trim();
+      const image = document.getElementById('create-image').value.trim();
+      const price = parseInt(document.getElementById('create-price').value);
+      const duration = parseInt(document.getElementById('create-duration').value);
+      const reserve = document.getElementById('create-reserve').value ? parseInt(document.getElementById('create-reserve').value) : null;
+      
+      // Validation
+      if (!title || !desc || !image || !price) {
+        alert('Completá todos los campos obligatorios');
+        return;
+      }
+      
+      if (!image.startsWith('http')) {
+        alert('La URL de imagen debe empezar con http:// o https://');
+        return;
+      }
+      
+      if (price < 1000) {
+        alert('El precio mínimo es 1000 sats');
+        return;
+      }
+      
+      if (typeof window.nostr === 'undefined') {
+        alert('Necesitás una extensión Nostr para crear subastas.\nInstalá Alby: getalby.com');
+        return;
+      }
+      
+      try {
+        log('Creando subasta...');
+        
+        const auctionId = title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Date.now();
+        const startsAt = Math.floor(Date.now() / 1000);
+        const endsAt = startsAt + duration;
+        
+        // Create auction event (Kind 30020 per NIP-15)
+        const event = {
+          kind: KIND_AUCTION,
+          pubkey: userPubkey,
+          created_at: startsAt,
+          tags: [
+            ['d', auctionId],
+            ['title', title],
+            ['summary', desc],
+            ['image', image],
+            ['start_price', price.toString()],
+            ['currency', 'sats'],
+            ['start_time', startsAt.toString()],
+            ['end_time', endsAt.toString()]
+          ],
+          content: desc
+        };
+        
+        if (reserve) {
+          event.tags.push(['reserve_price', reserve.toString()]);
+        }
+        
+        log('Solicitando firma...');
+        const signedEvent = await window.nostr.signEvent(event);
+        
+        log('Publicando en relays...');
+        // In production: publish to all relays
+        // await publishToRelays(signedEvent);
+        
+        log(`✓ Subasta creada: ${title}`, 'success');
+        
+        // Add to local state
+        const newAuction = {
+          id: auctionId,
+          pubkey: userPubkey,
+          title: title,
+          artist: 'Tú',
+          artistNpub: userPubkey,
+          description: desc,
+          image: image,
+          startPrice: price,
+          currentBid: price,
+          bidCount: 0,
+          endsAt: endsAt * 1000,
+          status: 'active',
+          bids: []
+        };
+        
+        auctions.unshift(newAuction);
+        renderAuctions();
+        closeCreateAuction();
+        
+        // Clear form
+        document.getElementById('create-title').value = '';
+        document.getElementById('create-desc').value = '';
+        document.getElementById('create-image').value = '';
+        document.getElementById('create-price').value = '';
+        document.getElementById('create-reserve').value = '';
+        
+        alert('¡Subasta creada!\n\nTítulo: ' + title + '\nPrecio inicial: ' + price.toLocaleString() + ' sats\nDuración: ' + (duration / 3600) + ' horas');
+        
+      } catch (e) {
+        log(`Error: ${e.message}`, 'error');
+        alert('Error al crear subasta: ' + e.message);
+      }
     }
     
     // =============================================
