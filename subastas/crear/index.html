@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear Subasta | Hash21</title>
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Cormorant+Garamond:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #060606;
+      --surface: #0c0c0c;
+      --surface2: #121212;
+      --gold: #b8956e;
+      --text: #e8e4dc;
+      --text-mid: #8a857c;
+      --text-dim: #4a4640;
+      --border: #1c1a18;
+      --success: #5a8a5a;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-weight: 300;
+      font-size: 14px;
+    }
+    
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: rgba(6,6,6,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      z-index: 100;
+    }
+    
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 3px;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .logo span { color: var(--gold); }
+    
+    .header-nav {
+      display: flex;
+      gap: 25px;
+      align-items: center;
+    }
+    .header-nav a {
+      color: var(--text-mid);
+      text-decoration: none;
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .header-nav a:hover { color: var(--gold); }
+    .header-nav a.active { color: var(--gold); }
+    
+    .user-status {
+      font-family: monospace;
+      font-size: 11px;
+      color: var(--gold);
+    }
+    
+    .container {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 100px 20px 60px;
+    }
+    
+    .page-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 300;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .page-subtitle {
+      color: var(--text-dim);
+      font-size: 13px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .form-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 35px;
+    }
+    
+    .form-group {
+      margin-bottom: 25px;
+    }
+    
+    .form-label {
+      display: block;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      color: var(--text);
+      margin-bottom: 10px;
+      font-weight: 400;
+    }
+    .form-label small {
+      color: var(--text-dim);
+      font-weight: 300;
+    }
+    
+    .form-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 14px 16px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+    .form-input::placeholder {
+      color: var(--text-dim);
+    }
+    
+    textarea.form-input {
+      resize: vertical;
+      min-height: 100px;
+      line-height: 1.6;
+    }
+    
+    select.form-input {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238a857c' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    
+    /* Image Upload */
+    .upload-area {
+      border: 2px dashed var(--border);
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--bg);
+    }
+    .upload-area:hover {
+      border-color: var(--gold);
+    }
+    .upload-area.has-image {
+      padding: 0;
+      border-style: solid;
+    }
+    .upload-icon {
+      font-size: 36px;
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+    .upload-text {
+      color: var(--text-mid);
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+    .upload-hint {
+      color: var(--text-dim);
+      font-size: 11px;
+    }
+    .upload-preview {
+      width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+      display: none;
+    }
+    .upload-preview.visible {
+      display: block;
+    }
+    .upload-input {
+      display: none;
+    }
+    
+    /* Or URL input */
+    .url-toggle {
+      text-align: center;
+      margin-top: 12px;
+    }
+    .url-toggle button {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 11px;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    .url-toggle button:hover {
+      color: var(--gold);
+    }
+    .url-input-wrap {
+      display: none;
+      margin-top: 12px;
+    }
+    .url-input-wrap.visible {
+      display: block;
+    }
+    
+    /* Submit */
+    .form-submit {
+      width: 100%;
+      background: var(--gold);
+      color: var(--bg);
+      border: none;
+      padding: 18px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
+    .form-submit:hover {
+      background: #c9a67e;
+    }
+    .form-submit:disabled {
+      background: var(--text-dim);
+      cursor: not-allowed;
+    }
+    
+    .form-note {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 20px;
+    }
+    
+    /* Login Required */
+    .login-required {
+      text-align: center;
+      padding: 60px 30px;
+    }
+    .login-required h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      font-weight: 300;
+      margin-bottom: 15px;
+    }
+    .login-required p {
+      color: var(--text-mid);
+      margin-bottom: 25px;
+      font-size: 13px;
+    }
+    .login-btn {
+      background: var(--gold);
+      color: var(--bg);
+      border: none;
+      padding: 16px 40px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+    }
+    .login-btn:hover {
+      background: #c9a67e;
+    }
+    
+    /* Success message */
+    .success-msg {
+      display: none;
+      text-align: center;
+      padding: 50px 30px;
+    }
+    .success-msg.visible {
+      display: block;
+    }
+    .success-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    .success-msg h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 300;
+      margin-bottom: 15px;
+    }
+    .success-msg p {
+      color: var(--text-mid);
+      margin-bottom: 25px;
+    }
+    .success-link {
+      color: var(--gold);
+      text-decoration: none;
+    }
+    
+    @media (max-width: 600px) {
+      .header { padding: 0 15px; }
+      .header-nav a:not(.active) { display: none; }
+      .form-row { grid-template-columns: 1fr; }
+      .container { padding: 80px 15px 40px; }
+      .form-card { padding: 25px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <a href="/subastas/" class="logo">HASH<span>21</span></a>
+    <nav class="header-nav">
+      <a href="/subastas/">Subastas</a>
+      <a href="/subastas/crear/" class="active">Crear</a>
+      <span class="user-status" id="user-status"></span>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h1 class="page-title">Crear Subasta</h1>
+    <p class="page-subtitle">Publicá tu obra en 1 minuto. Todo queda en Nostr.</p>
+
+    <div class="form-card">
+      
+      <!-- Login Required State -->
+      <div class="login-required" id="login-required">
+        <h3>Conectá tu Nostr</h3>
+        <p>Necesitás tu identidad Nostr para crear subastas</p>
+        <button class="login-btn" onclick="connectNostr()">Conectar</button>
+      </div>
+
+      <!-- Create Form -->
+      <form id="create-form" style="display:none;" onsubmit="return false;">
+        
+        <!-- Image Upload -->
+        <div class="form-group">
+          <label class="form-label">Imagen de la obra</label>
+          <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()">
+            <img class="upload-preview" id="preview-img">
+            <div id="upload-placeholder">
+              <div class="upload-icon">↑</div>
+              <div class="upload-text">Click o arrastrá una imagen</div>
+              <div class="upload-hint">PNG, JPG hasta 10MB</div>
+            </div>
+          </div>
+          <input type="file" class="upload-input" id="file-input" accept="image/*" onchange="handleFileSelect(event)">
+          <div class="url-toggle">
+            <button type="button" onclick="toggleUrlInput()">o pegá una URL</button>
+          </div>
+          <div class="url-input-wrap" id="url-input-wrap">
+            <input type="url" class="form-input" id="image-url" placeholder="https://nostr.build/...">
+          </div>
+        </div>
+
+        <!-- Title -->
+        <div class="form-group">
+          <label class="form-label">Título</label>
+          <input type="text" class="form-input" id="title" placeholder="Nombre de la obra" required>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label class="form-label">Descripción <small>(opcional)</small></label>
+          <textarea class="form-input" id="description" placeholder="Técnica, medidas, historia..."></textarea>
+        </div>
+
+        <!-- Price Row -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Precio inicial (sats)</label>
+            <input type="number" class="form-input" id="start-price" placeholder="10000" min="1000" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Reserva <small>(opcional)</small></label>
+            <input type="number" class="form-input" id="reserve-price" placeholder="Mínimo para venta">
+          </div>
+        </div>
+
+        <!-- Duration -->
+        <div class="form-group">
+          <label class="form-label">Duración</label>
+          <select class="form-input" id="duration">
+            <option value="3600">1 hora</option>
+            <option value="21600">6 horas</option>
+            <option value="43200">12 horas</option>
+            <option value="86400" selected>1 día</option>
+            <option value="259200">3 días</option>
+            <option value="604800">7 días</option>
+          </select>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="form-submit" id="submit-btn" onclick="createAuction()">
+          Crear Subasta
+        </button>
+        
+        <p class="form-note">Se firmará con tu clave Nostr y publicará en los relays</p>
+      </form>
+
+      <!-- Success State -->
+      <div class="success-msg" id="success-msg">
+        <div class="success-icon">✓</div>
+        <h3>¡Subasta creada!</h3>
+        <p>Tu obra ya está publicada en la red Nostr</p>
+        <a href="/subastas/" class="success-link">← Volver a subastas</a>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // State
+    let userPubkey = null;
+    let imageUrl = null;
+    
+    // Check if logged in
+    function checkAuth() {
+      const saved = localStorage.getItem('hash21-auction-pubkey');
+      if (saved) {
+        userPubkey = saved;
+        showForm();
+      }
+    }
+    
+    function showForm() {
+      document.getElementById('login-required').style.display = 'none';
+      document.getElementById('create-form').style.display = 'block';
+      const short = userPubkey.startsWith('npub') 
+        ? userPubkey.slice(0, 12) + '...'
+        : userPubkey.slice(0, 8) + '...';
+      document.getElementById('user-status').textContent = '🟣 ' + short;
+    }
+    
+    async function connectNostr() {
+      if (typeof window.nostr === 'undefined') {
+        alert('Instalá Alby para conectar: getalby.com');
+        return;
+      }
+      
+      try {
+        const pubkey = await window.nostr.getPublicKey();
+        userPubkey = pubkey;
+        localStorage.setItem('hash21-auction-pubkey', pubkey);
+        showForm();
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    }
+    
+    // Image handling
+    function handleFileSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      if (file.size > 10 * 1024 * 1024) {
+        alert('La imagen debe ser menor a 10MB');
+        return;
+      }
+      
+      // Show preview
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById('preview-img');
+        preview.src = e.target.result;
+        preview.classList.add('visible');
+        document.getElementById('upload-placeholder').style.display = 'none';
+        document.getElementById('upload-area').classList.add('has-image');
+        
+        // For demo, use data URL (in production, upload to nostr.build)
+        imageUrl = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+    
+    // Drag & drop
+    const uploadArea = document.getElementById('upload-area');
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.style.borderColor = 'var(--gold)';
+    });
+    uploadArea.addEventListener('dragleave', () => {
+      uploadArea.style.borderColor = '';
+    });
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.style.borderColor = '';
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        document.getElementById('file-input').files = e.dataTransfer.files;
+        handleFileSelect({ target: { files: [file] } });
+      }
+    });
+    
+    function toggleUrlInput() {
+      const wrap = document.getElementById('url-input-wrap');
+      wrap.classList.toggle('visible');
+    }
+    
+    // Create auction
+    async function createAuction() {
+      const title = document.getElementById('title').value.trim();
+      const desc = document.getElementById('description').value.trim();
+      const urlInput = document.getElementById('image-url').value.trim();
+      const startPrice = parseInt(document.getElementById('start-price').value);
+      const reservePrice = document.getElementById('reserve-price').value ? parseInt(document.getElementById('reserve-price').value) : null;
+      const duration = parseInt(document.getElementById('duration').value);
+      
+      // Use URL input if provided, otherwise use uploaded image
+      const finalImage = urlInput || imageUrl;
+      
+      // Validate
+      if (!title) {
+        alert('Ingresá un título');
+        return;
+      }
+      if (!startPrice || startPrice < 1000) {
+        alert('El precio mínimo es 1000 sats');
+        return;
+      }
+      if (!finalImage) {
+        alert('Agregá una imagen');
+        return;
+      }
+      
+      if (typeof window.nostr === 'undefined') {
+        alert('Necesitás Alby para firmar la subasta');
+        return;
+      }
+      
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.textContent = 'Firmando...';
+      
+      try {
+        const auctionId = title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Date.now();
+        const startsAt = Math.floor(Date.now() / 1000);
+        const endsAt = startsAt + duration;
+        
+        // Create Kind 30020 event
+        const event = {
+          kind: 30020,
+          pubkey: userPubkey,
+          created_at: startsAt,
+          tags: [
+            ['d', auctionId],
+            ['title', title],
+            ['summary', desc || ''],
+            ['image', finalImage],
+            ['start_price', startPrice.toString()],
+            ['currency', 'sats'],
+            ['start_time', startsAt.toString()],
+            ['end_time', endsAt.toString()]
+          ],
+          content: desc || title
+        };
+        
+        if (reservePrice) {
+          event.tags.push(['reserve_price', reservePrice.toString()]);
+        }
+        
+        // Sign
+        const signedEvent = await window.nostr.signEvent(event);
+        
+        btn.textContent = 'Publicando...';
+        
+        // Publish to relays
+        const relays = [
+          'wss://relay.damus.io',
+          'wss://nos.lol',
+          'wss://relay.nostr.band'
+        ];
+        
+        for (const url of relays) {
+          try {
+            const ws = new WebSocket(url);
+            ws.onopen = () => {
+              ws.send(JSON.stringify(['EVENT', signedEvent]));
+              setTimeout(() => ws.close(), 2000);
+            };
+          } catch (e) {
+            console.error('Relay error:', url, e);
+          }
+        }
+        
+        // Show success
+        document.getElementById('create-form').style.display = 'none';
+        document.getElementById('success-msg').classList.add('visible');
+        
+      } catch (e) {
+        alert('Error: ' + e.message);
+        btn.disabled = false;
+        btn.textContent = 'Crear Subasta';
+      }
+    }
+    
+    // Init
+    checkAuth();
+  </script>
+</body>
+</html>
