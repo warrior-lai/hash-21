@@ -3,33 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Subastas | Hash21 Studio</title>
-  <meta name="description" content="Subastas de arte Bitcoin-native. Pujá con Lightning, verificá con Nostr.">
+  <title>Subastas | Hash21</title>
+  <meta name="description" content="Subastas de arte 100% Nostr-native. Sin intermediarios.">
   <link rel="icon" type="image/png" href="/img/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/nostr-tools@1.17.0/lib/nostr.bundle.js"></script>
   <style>
     :root {
-      --bg: #080808;
-      --bg2: #0d0d0d;
-      --bg3: #141414;
+      --bg: #050505;
+      --bg2: #0a0a0a;
+      --bg3: #111;
       --gold: #c4a262;
-      --gold-dim: rgba(196,162,98,0.15);
-      --text: #f5f2ed;
-      --text-mid: #9a958c;
-      --text-dim: #5a5650;
-      --border: #1a1918;
-      --radius: 2px;
+      --gold-dim: rgba(196,162,98,0.1);
+      --text: #f0ede6;
+      --text-mid: #8a857c;
+      --text-dim: #4a4740;
+      --border: #1a1915;
+      --green: #4a9;
+      --red: #a54;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family: 'Inter', -apple-system, sans-serif;
+      font-family: 'Inter', sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      line-height: 1.7;
+      line-height: 1.6;
       font-weight: 300;
-      letter-spacing: 0.01em;
     }
     
     /* Header */
@@ -38,295 +39,289 @@
       top: 0;
       left: 0;
       right: 0;
-      z-index: 1000;
-      background: rgba(8,8,8,0.9);
+      z-index: 100;
+      background: rgba(5,5,5,0.95);
       backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
-      padding: 20px 50px;
+      padding: 0 40px;
+      height: 60px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
     .logo {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 300;
-      letter-spacing: 6px;
+      letter-spacing: 4px;
       color: var(--text);
       text-decoration: none;
     }
     .logo span { color: var(--gold); }
-    
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 40px;
-    }
-    nav a {
-      color: var(--text-mid);
-      text-decoration: none;
-      font-size: 11px;
+    .logo small {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
       letter-spacing: 2px;
+      color: var(--text-dim);
+      margin-left: 15px;
       text-transform: uppercase;
-      font-weight: 400;
-      transition: color 0.3s;
     }
-    nav a:hover, nav a.active { color: var(--gold); }
     
-    .nostr-status {
+    /* Nostr Connection */
+    .nostr-connect {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-size: 11px;
+      gap: 15px;
+    }
+    .relay-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      color: var(--text-dim);
       letter-spacing: 1px;
     }
-    .nostr-btn {
-      background: transparent;
-      border: 1px solid var(--gold);
-      color: var(--gold);
-      padding: 8px 20px;
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-family: inherit;
+    .relay-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text-dim);
     }
-    .nostr-btn:hover {
-      background: var(--gold);
-      color: var(--bg);
-    }
-    .nostr-connected {
-      color: var(--gold);
-      font-family: monospace;
-      font-size: 11px;
-    }
-    
-    /* Main */
-    main {
-      padding: 140px 50px 80px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    /* Hero */
-    .hero {
-      text-align: center;
-      margin-bottom: 100px;
-      padding: 60px 0;
-    }
-    .hero-label {
-      font-size: 10px;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 30px;
-    }
-    .hero h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 56px;
-      font-weight: 300;
-      letter-spacing: 2px;
-      margin-bottom: 25px;
-      line-height: 1.2;
-    }
-    .hero p {
-      color: var(--text-mid);
-      font-size: 15px;
-      max-width: 500px;
-      margin: 0 auto;
-      font-weight: 300;
-    }
-    
-    /* Nostr Required Notice */
-    .nostr-notice {
-      background: var(--gold-dim);
-      border: 1px solid rgba(196,162,98,0.3);
-      padding: 25px 35px;
-      margin-bottom: 80px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 30px;
-    }
-    .nostr-notice-text {
-      font-size: 13px;
-      color: var(--text-mid);
-    }
-    .nostr-notice-text strong {
-      color: var(--gold);
-      font-weight: 500;
-    }
-    .nostr-notice-btn {
+    .relay-dot.connected { background: var(--green); }
+    .connect-btn {
       background: var(--gold);
       color: var(--bg);
       border: none;
-      padding: 12px 30px;
+      padding: 10px 24px;
       font-size: 10px;
       letter-spacing: 2px;
       text-transform: uppercase;
       cursor: pointer;
       font-family: inherit;
       font-weight: 500;
-      white-space: nowrap;
-      transition: all 0.3s;
     }
-    .nostr-notice-btn:hover {
-      background: #d4b272;
+    .connect-btn:hover { background: #d4b272; }
+    .connect-btn.connected {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-mid);
+    }
+    .npub-display {
+      font-family: monospace;
+      font-size: 11px;
+      color: var(--gold);
     }
     
-    /* Featured Auction */
-    .featured {
+    /* Main Layout */
+    main {
+      padding-top: 60px;
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      margin-bottom: 100px;
-      align-items: start;
+      grid-template-columns: 1fr 420px;
+      min-height: 100vh;
     }
-    .featured-image {
-      position: relative;
+    
+    /* Artwork Panel */
+    .artwork-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      background: var(--bg);
     }
-    .featured-image img {
+    .artwork-container {
+      max-width: 600px;
+      width: 100%;
+    }
+    .artwork-img {
       width: 100%;
       aspect-ratio: 1;
       object-fit: cover;
       background: var(--bg2);
     }
-    .featured-badge {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      background: var(--gold);
-      color: var(--bg);
-      padding: 6px 14px;
-      font-size: 9px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      font-weight: 500;
+    .artwork-meta {
+      padding: 25px 0;
     }
-    
-    .featured-info {
-      padding: 20px 0;
-    }
-    .featured-artist {
-      font-size: 11px;
+    .artwork-artist {
+      font-size: 10px;
       letter-spacing: 3px;
       text-transform: uppercase;
       color: var(--gold);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .verified-badge {
+      background: var(--gold-dim);
+      padding: 2px 8px;
+      font-size: 9px;
+      color: var(--gold);
+    }
+    .artwork-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      font-weight: 300;
       margin-bottom: 15px;
     }
-    .featured-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 42px;
-      font-weight: 300;
-      margin-bottom: 20px;
-      letter-spacing: 1px;
-    }
-    .featured-desc {
+    .artwork-desc {
       color: var(--text-mid);
       font-size: 14px;
-      margin-bottom: 40px;
-      line-height: 1.9;
+      line-height: 1.8;
+    }
+    .artwork-npub {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-family: monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .artwork-npub span { color: var(--text-mid); }
+    .copy-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      padding: 3px 10px;
+      font-size: 9px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .copy-btn:hover { border-color: var(--gold); color: var(--gold); }
+    
+    /* Auction Panel */
+    .auction-panel {
+      background: var(--bg2);
+      border-left: 1px solid var(--border);
+      padding: 40px 30px;
+      display: flex;
+      flex-direction: column;
     }
     
-    .auction-details {
-      border-top: 1px solid var(--border);
-      padding-top: 30px;
-      margin-bottom: 40px;
-    }
-    .detail-row {
+    .auction-status {
       display: flex;
-      justify-content: space-between;
-      padding: 15px 0;
-      border-bottom: 1px solid var(--border);
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 30px;
     }
-    .detail-label {
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .status-text {
       font-size: 11px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: var(--text-dim);
-    }
-    .detail-value {
-      font-size: 15px;
-      font-weight: 400;
-    }
-    .detail-value.gold {
-      color: var(--gold);
-      font-size: 18px;
-    }
-    .detail-value.mono {
-      font-family: monospace;
-      font-size: 12px;
-      color: var(--text-mid);
+      color: var(--green);
     }
     
-    /* Countdown */
-    .countdown {
-      background: var(--bg2);
+    /* Current Bid */
+    .current-bid {
+      background: var(--bg);
       border: 1px solid var(--border);
-      padding: 25px;
-      margin-bottom: 30px;
-      text-align: center;
+      padding: 30px;
+      margin-bottom: 25px;
     }
-    .countdown-label {
+    .bid-label {
       font-size: 10px;
       letter-spacing: 2px;
       text-transform: uppercase;
       color: var(--text-dim);
       margin-bottom: 10px;
     }
-    .countdown-time {
+    .bid-amount {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 32px;
+      font-size: 42px;
       font-weight: 300;
-      letter-spacing: 4px;
+      color: var(--gold);
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .bid-amount small {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--text-mid);
+      letter-spacing: 1px;
+    }
+    .bid-info {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+    
+    /* Countdown */
+    .countdown {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 20px 30px;
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .countdown-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .countdown-time {
+      font-family: monospace;
+      font-size: 18px;
+      letter-spacing: 2px;
     }
     
     /* Bid Form */
-    .bid-section {
-      background: var(--bg2);
+    .bid-form {
+      background: var(--bg);
       border: 1px solid var(--border);
-      padding: 30px;
+      padding: 25px;
+      margin-bottom: 25px;
     }
-    .bid-section h4 {
-      font-size: 11px;
+    .bid-form-title {
+      font-size: 10px;
       letter-spacing: 2px;
       text-transform: uppercase;
       color: var(--text-dim);
       margin-bottom: 20px;
-      font-weight: 400;
     }
-    .bid-input-group {
+    .bid-input-row {
       display: flex;
-      gap: 15px;
+      gap: 10px;
       margin-bottom: 15px;
     }
     .bid-input {
       flex: 1;
-      background: var(--bg);
+      background: var(--bg2);
       border: 1px solid var(--border);
       color: var(--text);
-      padding: 15px 20px;
-      font-size: 16px;
-      font-family: inherit;
+      padding: 15px;
+      font-size: 18px;
+      font-family: monospace;
     }
-    .bid-input:focus {
-      outline: none;
-      border-color: var(--gold);
-    }
-    .bid-input::placeholder {
-      color: var(--text-dim);
-    }
+    .bid-input:focus { outline: none; border-color: var(--gold); }
+    .bid-input::placeholder { color: var(--text-dim); }
     .bid-currency {
       background: var(--bg3);
       border: 1px solid var(--border);
       color: var(--gold);
       padding: 15px 20px;
-      font-size: 12px;
+      font-size: 11px;
       letter-spacing: 1px;
-      display: flex;
-      align-items: center;
     }
     .bid-submit {
       width: 100%;
@@ -340,160 +335,132 @@
       cursor: pointer;
       font-family: inherit;
       font-weight: 500;
-      transition: all 0.3s;
     }
-    .bid-submit:hover {
-      background: #d4b272;
-    }
+    .bid-submit:hover { background: #d4b272; }
     .bid-submit:disabled {
-      background: var(--text-dim);
+      background: var(--bg3);
+      color: var(--text-dim);
       cursor: not-allowed;
     }
-    .bid-note {
+    .bid-min {
       font-size: 11px;
       color: var(--text-dim);
-      margin-top: 15px;
+      margin-top: 12px;
       text-align: center;
     }
     
     /* Bid History */
     .bid-history {
-      margin-top: 50px;
+      flex: 1;
+      overflow-y: auto;
     }
-    .bid-history h4 {
-      font-size: 11px;
+    .history-title {
+      font-size: 10px;
       letter-spacing: 2px;
       text-transform: uppercase;
       color: var(--text-dim);
-      margin-bottom: 20px;
-      font-weight: 400;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .history-count {
+      background: var(--bg3);
+      padding: 3px 10px;
+      font-size: 10px;
     }
     .bid-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 15px 0;
+      padding: 12px 0;
       border-bottom: 1px solid var(--border);
     }
-    .bid-item:last-child {
-      border-bottom: none;
+    .bidder-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
     }
-    .bidder {
+    .bidder-npub {
       font-family: monospace;
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-mid);
-    }
-    .bid-amount {
-      color: var(--gold);
-      font-size: 14px;
     }
     .bid-time {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-dim);
     }
+    .bid-value {
+      text-align: right;
+    }
+    .bid-sats {
+      font-size: 14px;
+      color: var(--gold);
+    }
     
-    /* How it Works */
-    .how-it-works {
-      margin-top: 120px;
-      padding-top: 80px;
+    /* Log Panel */
+    .log-panel {
+      margin-top: auto;
+      padding-top: 20px;
       border-top: 1px solid var(--border);
     }
-    .how-it-works h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 32px;
-      font-weight: 300;
-      text-align: center;
-      margin-bottom: 60px;
-      letter-spacing: 2px;
-    }
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 50px;
-    }
-    .step {
-      text-align: center;
-    }
-    .step-number {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 48px;
-      color: var(--gold);
-      margin-bottom: 20px;
-      font-weight: 300;
-    }
-    .step h3 {
-      font-size: 13px;
+    .log-title {
+      font-size: 9px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      margin-bottom: 15px;
-      font-weight: 400;
-    }
-    .step p {
-      font-size: 13px;
-      color: var(--text-mid);
-      line-height: 1.8;
-    }
-    
-    /* Footer */
-    footer {
-      text-align: center;
-      padding: 60px 50px;
-      border-top: 1px solid var(--border);
-      margin-top: 100px;
-    }
-    footer p {
       color: var(--text-dim);
-      font-size: 11px;
-      letter-spacing: 1px;
+      margin-bottom: 10px;
     }
-    footer a {
-      color: var(--gold);
-      text-decoration: none;
+    .log-messages {
+      font-family: monospace;
+      font-size: 10px;
+      color: var(--text-dim);
+      max-height: 100px;
+      overflow-y: auto;
     }
+    .log-msg {
+      padding: 3px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .log-msg.success { color: var(--green); }
+    .log-msg.error { color: var(--red); }
     
-    /* Login Modal */
-    .modal-overlay {
-      display: none;
-      position: fixed;
+    /* Login Required Overlay */
+    .login-overlay {
+      position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0,0,0,0.9);
-      z-index: 2000;
+      background: rgba(5,5,5,0.95);
+      display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      z-index: 10;
     }
-    .modal-overlay.active {
-      display: flex;
-    }
-    .modal {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      padding: 50px;
-      max-width: 420px;
-      width: 90%;
+    .login-overlay.hidden { display: none; }
+    .login-box {
       text-align: center;
+      max-width: 320px;
     }
-    .modal h3 {
+    .login-box h3 {
       font-family: 'Cormorant Garamond', serif;
       font-size: 28px;
       font-weight: 300;
       margin-bottom: 15px;
-      letter-spacing: 1px;
     }
-    .modal p {
+    .login-box p {
       color: var(--text-mid);
       font-size: 13px;
-      margin-bottom: 35px;
+      margin-bottom: 30px;
       line-height: 1.7;
     }
-    .modal-btn {
-      width: 100%;
+    .login-btn {
       background: var(--gold);
       color: var(--bg);
       border: none;
-      padding: 18px;
+      padding: 16px 40px;
       font-size: 11px;
       letter-spacing: 2px;
       text-transform: uppercase;
@@ -501,303 +468,499 @@
       font-family: inherit;
       font-weight: 500;
       margin-bottom: 15px;
-      transition: all 0.3s;
+      width: 100%;
     }
-    .modal-btn:hover {
-      background: #d4b272;
-    }
-    .modal-btn.secondary {
+    .login-btn:hover { background: #d4b272; }
+    .login-btn.secondary {
       background: transparent;
       border: 1px solid var(--border);
       color: var(--text-mid);
     }
-    .modal-btn.secondary:hover {
-      border-color: var(--gold);
-      color: var(--gold);
-    }
-    .modal-close {
-      position: absolute;
-      top: 20px;
-      right: 25px;
-      background: none;
-      border: none;
-      color: var(--text-dim);
-      font-size: 24px;
-      cursor: pointer;
-    }
-    .modal-note {
+    .login-note {
       font-size: 11px;
       color: var(--text-dim);
-      margin-top: 25px;
+      margin-top: 20px;
     }
-    .modal-note a {
-      color: var(--gold);
-      text-decoration: none;
-    }
+    .login-note a { color: var(--gold); text-decoration: none; }
     
     /* Responsive */
     @media (max-width: 900px) {
-      header { padding: 15px 25px; }
-      main { padding: 120px 25px 60px; }
-      .featured { grid-template-columns: 1fr; gap: 40px; }
-      .hero h1 { font-size: 38px; }
-      .steps { grid-template-columns: 1fr; gap: 40px; }
-      .nostr-notice { flex-direction: column; text-align: center; }
-    }
-    @media (max-width: 600px) {
-      .header-right nav { display: none; }
-      .bid-input-group { flex-direction: column; }
+      main {
+        grid-template-columns: 1fr;
+      }
+      .auction-panel {
+        border-left: none;
+        border-top: 1px solid var(--border);
+      }
+      .artwork-panel { padding: 20px; }
+      header { padding: 0 20px; }
     }
   </style>
 </head>
 <body>
   <header>
-    <a href="/" class="logo">HASH<span>21</span></a>
-    <div class="header-right">
-      <nav>
-        <a href="/">Inicio</a>
-        <a href="/#collection">Colección</a>
-        <a href="/subastas/" class="active">Subastas</a>
-      </nav>
-      <div class="nostr-status" id="nostr-status">
-        <button class="nostr-btn" onclick="openNostrLogin()">Conectar Nostr</button>
+    <a href="/subastas/" class="logo">HASH<span>21</span> <small>Subastas Nostr</small></a>
+    <div class="nostr-connect">
+      <div class="relay-status">
+        <div class="relay-dot" id="relay-dot"></div>
+        <span id="relay-text">Conectando...</span>
       </div>
+      <button class="connect-btn" id="connect-btn" onclick="connectNostr()">Conectar</button>
     </div>
   </header>
 
   <main>
-    <div class="hero">
-      <div class="hero-label">Subastas Nostr-Native</div>
-      <h1>Arte Soberano,<br>Subastas Soberanas</h1>
-      <p>Sin intermediarios. Sin custodia. Pujas verificadas criptográficamente en la red Nostr.</p>
-    </div>
-
-    <div class="nostr-notice" id="nostr-notice">
-      <div class="nostr-notice-text">
-        <strong>Conectá tu identidad Nostr</strong> para participar en subastas. Todo el sistema corre sobre el protocolo Nostr — sin cuentas, sin emails, solo tu clave.
-      </div>
-      <button class="nostr-notice-btn" onclick="openNostrLogin()">Conectar</button>
-    </div>
-
-    <div class="featured">
-      <div class="featured-image">
-        <span class="featured-badge">Subasta Activa</span>
-        <img src="https://gxrstqszfzvwvoktsuqg.supabase.co/storage/v1/object/public/Media/works/1774811556694-dvpyr7xcye8.jpeg" alt="Roatan">
-      </div>
-      <div class="featured-info">
-        <div class="featured-artist">Lai⚡️</div>
-        <h2 class="featured-title">Roatan</h2>
-        <p class="featured-desc">Obra digital inspirada en los paisajes caribeños de Roatán. Colores vibrantes que capturan la esencia del mar y la libertad. Una pieza única que conecta el arte con la filosofía Bitcoin.</p>
-        
-        <div class="auction-details">
-          <div class="detail-row">
-            <span class="detail-label">Puja Actual</span>
-            <span class="detail-value gold">⚡ 250,000 sats</span>
+    <div class="artwork-panel">
+      <div class="artwork-container">
+        <img src="https://gxrstqszfzvwvoktsuqg.supabase.co/storage/v1/object/public/Media/works/1774811556694-dvpyr7xcye8.jpeg" alt="Roatan" class="artwork-img">
+        <div class="artwork-meta">
+          <div class="artwork-artist">
+            Lai⚡️
+            <span class="verified-badge">NIP-05 ✓</span>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">Precio Inicial</span>
-            <span class="detail-value">100,000 sats</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Pujas</span>
-            <span class="detail-value">5</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Artista npub</span>
-            <span class="detail-value mono">npub1579rj...q6fkqe</span>
-          </div>
-        </div>
-        
-        <div class="countdown">
-          <div class="countdown-label">Tiempo Restante</div>
-          <div class="countdown-time" id="countdown">2d 23h 45m</div>
-        </div>
-        
-        <div class="bid-section">
-          <h4>Realizar Puja</h4>
-          <div class="bid-input-group">
-            <input type="number" class="bid-input" id="bid-amount" placeholder="Tu puja" min="250001">
-            <div class="bid-currency">SATS</div>
-          </div>
-          <button class="bid-submit" id="bid-btn" onclick="placeBid()" disabled>Conectá Nostr para pujar</button>
-          <p class="bid-note">La puja mínima es 250,001 sats</p>
-        </div>
-        
-        <div class="bid-history">
-          <h4>Historial de Pujas</h4>
-          <div class="bid-item">
-            <span class="bidder">npub1a3f...8x2k</span>
-            <span class="bid-amount">⚡ 250,000</span>
-            <span class="bid-time">hace 2h</span>
-          </div>
-          <div class="bid-item">
-            <span class="bidder">npub1k7m...9p4j</span>
-            <span class="bid-amount">⚡ 200,000</span>
-            <span class="bid-time">hace 5h</span>
-          </div>
-          <div class="bid-item">
-            <span class="bidder">npub1x2c...3n8w</span>
-            <span class="bid-amount">⚡ 150,000</span>
-            <span class="bid-time">hace 8h</span>
-          </div>
-          <div class="bid-item">
-            <span class="bidder">npub1m5v...7k2p</span>
-            <span class="bid-amount">⚡ 120,000</span>
-            <span class="bid-time">hace 1d</span>
-          </div>
-          <div class="bid-item">
-            <span class="bidder">npub1j9q...4w6r</span>
-            <span class="bid-amount">⚡ 100,000</span>
-            <span class="bid-time">hace 2d</span>
+          <h1 class="artwork-title">Roatan</h1>
+          <p class="artwork-desc">Obra digital inspirada en los paisajes caribeños de Roatán. Colores vibrantes que capturan la esencia del mar y la libertad.</p>
+          <div class="artwork-npub">
+            🔑 <span id="artist-npub-display">npub1579rj...q6fkqe</span>
+            <button class="copy-btn" onclick="copyNpub()">copiar</button>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="how-it-works">
-      <h2>Cómo Funciona</h2>
-      <div class="steps">
-        <div class="step">
-          <div class="step-number">1</div>
+    <div class="auction-panel" style="position:relative;">
+      <!-- Login Overlay -->
+      <div class="login-overlay" id="login-overlay">
+        <div class="login-box">
           <h3>Conectá Nostr</h3>
-          <p>Usá tu extensión (Alby, nos2x) o cualquier cliente Nostr para autenticarte con tu clave pública.</p>
+          <p>Para ver y participar en subastas necesitás tu identidad Nostr. Todo corre on-chain.</p>
+          <button class="login-btn" onclick="connectNostr()">Conectar Extensión</button>
+          <button class="login-btn secondary" onclick="showManualInput()">Ingresar npub</button>
+          <div id="manual-input" style="display:none;margin-top:20px;">
+            <input type="text" class="bid-input" id="npub-input" placeholder="npub1..." style="width:100%;margin-bottom:10px;font-size:12px;">
+            <button class="login-btn" onclick="connectWithNpub()">Conectar</button>
+          </div>
+          <p class="login-note">¿No tenés Nostr? <a href="https://getalby.com" target="_blank">Alby</a> · <a href="https://primal.net" target="_blank">Primal</a></p>
         </div>
-        <div class="step">
-          <div class="step-number">2</div>
-          <h3>Pujá con Lightning</h3>
-          <p>Realizá tu puja. Cada oferta queda registrada como un evento firmado en la red Nostr.</p>
+      </div>
+
+      <div class="auction-status">
+        <div class="status-dot"></div>
+        <span class="status-text">Subasta Activa</span>
+      </div>
+
+      <div class="current-bid">
+        <div class="bid-label">Puja Actual</div>
+        <div class="bid-amount" id="current-bid-display">
+          250,000 <small>sats</small>
         </div>
-        <div class="step">
-          <div class="step-number">3</div>
-          <h3>Pagá Directo</h3>
-          <p>Si ganás, el pago va directo al artista via Lightning. Sin intermediarios, sin comisiones.</p>
+        <div class="bid-info">
+          <span>Precio inicial: 100,000 sats</span>
+          <span id="bid-count">5 pujas</span>
+        </div>
+      </div>
+
+      <div class="countdown">
+        <span class="countdown-label">Finaliza en</span>
+        <span class="countdown-time" id="countdown">--:--:--</span>
+      </div>
+
+      <div class="bid-form">
+        <div class="bid-form-title">Realizar Puja</div>
+        <div class="bid-input-row">
+          <input type="number" class="bid-input" id="bid-amount" placeholder="0" min="250001">
+          <div class="bid-currency">SATS</div>
+        </div>
+        <button class="bid-submit" id="bid-btn" onclick="placeBid()">Firmar y Enviar Puja</button>
+        <p class="bid-min">Mínimo: <span id="min-bid">250,001</span> sats</p>
+      </div>
+
+      <div class="bid-history">
+        <div class="history-title">
+          Historial de Pujas
+          <span class="history-count" id="history-count">5</span>
+        </div>
+        <div id="bid-list">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <div class="log-panel">
+        <div class="log-title">Nostr Log</div>
+        <div class="log-messages" id="log-messages">
+          <!-- Populated by JS -->
         </div>
       </div>
     </div>
   </main>
 
-  <footer>
-    <p>Hash21 Studio © 2026 — <a href="/">Volver al inicio</a> — Construido sobre <a href="https://nostr.com" target="_blank">Nostr</a></p>
-  </footer>
-
-  <!-- Nostr Login Modal -->
-  <div class="modal-overlay" id="nostr-modal">
-    <div class="modal" style="position:relative;">
-      <button class="modal-close" onclick="closeNostrModal()">×</button>
-      <h3>Conectar con Nostr</h3>
-      <p>Para participar en subastas necesitás una identidad Nostr. Es tu clave, tu identidad soberana.</p>
-      <button class="modal-btn" onclick="connectNostr()">Conectar Extensión</button>
-      <button class="modal-btn secondary" onclick="showNpubInput()">Ingresar npub manualmente</button>
-      <div id="npub-input-section" style="display:none;margin-top:20px;">
-        <input type="text" class="bid-input" id="npub-input" placeholder="npub1..." style="width:100%;margin-bottom:15px;">
-        <button class="modal-btn" onclick="connectWithNpub()">Conectar</button>
-      </div>
-      <p class="modal-note">¿No tenés Nostr? <a href="https://getalby.com" target="_blank">Instalá Alby</a> o <a href="https://primal.net" target="_blank">creá una cuenta en Primal</a></p>
-    </div>
-  </div>
-
   <script>
-    // State
-    let connectedNpub = localStorage.getItem('hash21-auction-npub');
+    // ============================================
+    // NOSTR CONFIG
+    // ============================================
+    const RELAYS = [
+      'wss://relay.damus.io',
+      'wss://nos.lol',
+      'wss://relay.nostr.band',
+      'wss://relay.primal.net'
+    ];
     
-    // Check if already connected
-    if (connectedNpub) {
-      updateConnectedState(connectedNpub);
+    const AUCTION_ID = 'hash21-roatan-001';
+    const ARTIST_NPUB = 'npub1579rjxygc6n69cg544ndcrj88w04v9e5clcf3j249vh9hwzq6fkqes5jjs';
+    const ARTIST_HEX = 'a7c8e4c62118d45a2e229567bf039ce75ecc5e69f30c63195291d25dc41069b6';
+    
+    // Auction data
+    const AUCTION = {
+      id: AUCTION_ID,
+      title: 'Roatan',
+      artist: 'Lai⚡️',
+      artistPubkey: ARTIST_HEX,
+      image: 'https://gxrstqszfzvwvoktsuqg.supabase.co/storage/v1/object/public/Media/works/1774811556694-dvpyr7xcye8.jpeg',
+      startPrice: 100000,
+      endsAt: Date.now() + 86400000 * 3 // 3 days
+    };
+    
+    // ============================================
+    // STATE
+    // ============================================
+    let connectedPubkey = null;
+    let relayPool = null;
+    let connectedRelays = 0;
+    let bids = [];
+    
+    // Demo bids (will be replaced by real Nostr events)
+    const DEMO_BIDS = [
+      { pubkey: 'a3f8k2x9p4m7...', amount: 250000, time: Date.now() - 7200000 },
+      { pubkey: 'k7m9p4j2x8n1...', amount: 200000, time: Date.now() - 18000000 },
+      { pubkey: 'x2c3n8w5q1r6...', amount: 150000, time: Date.now() - 28800000 },
+      { pubkey: 'm5v7k2p9j4x8...', amount: 120000, time: Date.now() - 86400000 },
+      { pubkey: 'j9q4w6r2m8k5...', amount: 100000, time: Date.now() - 172800000 }
+    ];
+    
+    // ============================================
+    // LOGGING
+    // ============================================
+    function log(msg, type = '') {
+      const el = document.getElementById('log-messages');
+      const div = document.createElement('div');
+      div.className = 'log-msg ' + type;
+      div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      el.insertBefore(div, el.firstChild);
+      if (el.children.length > 50) el.removeChild(el.lastChild);
     }
     
-    function openNostrLogin() {
-      document.getElementById('nostr-modal').classList.add('active');
-    }
-    
-    function closeNostrModal() {
-      document.getElementById('nostr-modal').classList.remove('active');
-    }
-    
-    function showNpubInput() {
-      document.getElementById('npub-input-section').style.display = 'block';
-    }
-    
-    async function connectNostr() {
-      if (typeof window.nostr !== 'undefined') {
+    // ============================================
+    // RELAY CONNECTION
+    // ============================================
+    async function connectRelays() {
+      log('Conectando a relays...');
+      
+      const { SimplePool } = window.NostrTools;
+      relayPool = new SimplePool();
+      
+      for (const url of RELAYS) {
         try {
-          const pubkey = await window.nostr.getPublicKey();
-          // Convert hex to npub (simplified - in production use nostr-tools)
-          const npub = 'npub1' + pubkey.slice(0, 8) + '...' + pubkey.slice(-6);
-          localStorage.setItem('hash21-auction-npub', pubkey);
-          updateConnectedState(npub);
-          closeNostrModal();
+          // Test connection
+          const ws = new WebSocket(url);
+          ws.onopen = () => {
+            connectedRelays++;
+            updateRelayStatus();
+            log(`✓ ${url.replace('wss://', '')}`, 'success');
+            ws.close();
+          };
+          ws.onerror = () => {
+            log(`✗ ${url.replace('wss://', '')}`, 'error');
+          };
         } catch (e) {
-          alert('Error: ' + e.message);
+          log(`Error: ${url}`, 'error');
         }
-      } else {
-        alert('No se detectó extensión Nostr. Instalá Alby o nos2x.');
       }
+      
+      // Load bids from relays
+      setTimeout(loadBidsFromNostr, 2000);
+    }
+    
+    function updateRelayStatus() {
+      const dot = document.getElementById('relay-dot');
+      const text = document.getElementById('relay-text');
+      
+      if (connectedRelays > 0) {
+        dot.classList.add('connected');
+        text.textContent = `${connectedRelays}/${RELAYS.length} relays`;
+      } else {
+        text.textContent = 'Sin conexión';
+      }
+    }
+    
+    // ============================================
+    // NOSTR LOGIN
+    // ============================================
+    async function connectNostr() {
+      if (typeof window.nostr === 'undefined') {
+        alert('No se detectó extensión Nostr.\n\nInstalá Alby: getalby.com');
+        return;
+      }
+      
+      try {
+        log('Solicitando clave pública...');
+        const pubkey = await window.nostr.getPublicKey();
+        connectedPubkey = pubkey;
+        
+        const npubShort = pubkey.slice(0, 8) + '...' + pubkey.slice(-4);
+        log(`Conectado: ${npubShort}`, 'success');
+        
+        // Update UI
+        document.getElementById('login-overlay').classList.add('hidden');
+        document.getElementById('connect-btn').textContent = npubShort;
+        document.getElementById('connect-btn').classList.add('connected');
+        
+        localStorage.setItem('hash21-auction-pubkey', pubkey);
+        
+      } catch (e) {
+        log('Error: ' + e.message, 'error');
+        alert('Error al conectar: ' + e.message);
+      }
+    }
+    
+    function showManualInput() {
+      document.getElementById('manual-input').style.display = 'block';
     }
     
     function connectWithNpub() {
-      const npub = document.getElementById('npub-input').value.trim();
-      if (npub && npub.startsWith('npub1')) {
-        localStorage.setItem('hash21-auction-npub', npub);
-        const short = npub.slice(0, 12) + '...' + npub.slice(-6);
-        updateConnectedState(short);
-        closeNostrModal();
-      } else {
-        alert('Ingresá un npub válido');
-      }
-    }
-    
-    function updateConnectedState(npub) {
-      const short = npub.length > 20 ? npub.slice(0, 12) + '...' + npub.slice(-6) : npub;
-      document.getElementById('nostr-status').innerHTML = `
-        <span class="nostr-connected">🟣 ${short}</span>
-        <button class="nostr-btn" onclick="disconnectNostr()" style="padding:6px 15px;font-size:9px;">Salir</button>
-      `;
-      document.getElementById('nostr-notice').style.display = 'none';
-      document.getElementById('bid-btn').disabled = false;
-      document.getElementById('bid-btn').textContent = 'Realizar Puja';
-    }
-    
-    function disconnectNostr() {
-      localStorage.removeItem('hash21-auction-npub');
-      connectedNpub = null;
-      document.getElementById('nostr-status').innerHTML = `
-        <button class="nostr-btn" onclick="openNostrLogin()">Conectar Nostr</button>
-      `;
-      document.getElementById('nostr-notice').style.display = 'flex';
-      document.getElementById('bid-btn').disabled = true;
-      document.getElementById('bid-btn').textContent = 'Conectá Nostr para pujar';
-    }
-    
-    function placeBid() {
-      const amount = parseInt(document.getElementById('bid-amount').value);
-      if (!amount || amount <= 250000) {
-        alert('La puja debe ser mayor a 250,000 sats');
+      const input = document.getElementById('npub-input').value.trim();
+      if (!input.startsWith('npub1')) {
+        alert('Ingresá un npub válido (empieza con npub1)');
         return;
       }
-      // TODO: Implement actual Nostr bid event
-      alert('Función de puja próximamente. Tu puja: ' + amount.toLocaleString() + ' sats');
+      
+      // For demo, just use the npub as identifier
+      connectedPubkey = input;
+      const npubShort = input.slice(0, 12) + '...' + input.slice(-4);
+      
+      log(`Conectado (readonly): ${npubShort}`, 'success');
+      
+      document.getElementById('login-overlay').classList.add('hidden');
+      document.getElementById('connect-btn').textContent = npubShort;
+      document.getElementById('connect-btn').classList.add('connected');
+      
+      localStorage.setItem('hash21-auction-pubkey', input);
     }
     
-    // Countdown timer
-    function updateCountdown() {
-      const endsAt = Date.now() + 86400000 * 2 + 3600000 * 23 + 60000 * 45; // Demo: 2d 23h 45m
-      const now = Date.now();
-      const diff = endsAt - now;
+    // ============================================
+    // LOAD BIDS FROM NOSTR
+    // ============================================
+    async function loadBidsFromNostr() {
+      log('Buscando pujas en Nostr...');
       
+      // For demo, use demo bids + check for real ones
+      bids = [...DEMO_BIDS];
+      
+      try {
+        const { SimplePool } = window.NostrTools;
+        const pool = new SimplePool();
+        
+        // Subscribe to bid events (Kind 1021 per NIP-15)
+        // Tag 'a' references the auction
+        const filter = {
+          kinds: [1021],
+          '#a': [`30020:${ARTIST_HEX}:${AUCTION_ID}`],
+          limit: 50
+        };
+        
+        const events = await pool.list(RELAYS, [filter]);
+        
+        if (events.length > 0) {
+          log(`Encontradas ${events.length} pujas en Nostr`, 'success');
+          events.forEach(e => {
+            const amountTag = e.tags.find(t => t[0] === 'amount');
+            if (amountTag) {
+              bids.push({
+                pubkey: e.pubkey.slice(0, 12) + '...',
+                amount: parseInt(amountTag[1]),
+                time: e.created_at * 1000
+              });
+            }
+          });
+        } else {
+          log('Usando datos demo (no hay pujas en Nostr aún)');
+        }
+        
+        pool.close(RELAYS);
+      } catch (e) {
+        log('Error leyendo Nostr: ' + e.message, 'error');
+      }
+      
+      // Sort and render
+      bids.sort((a, b) => b.amount - a.amount);
+      renderBids();
+    }
+    
+    // ============================================
+    // PLACE BID
+    // ============================================
+    async function placeBid() {
+      const amount = parseInt(document.getElementById('bid-amount').value);
+      const minBid = bids.length > 0 ? bids[0].amount + 1 : AUCTION.startPrice;
+      
+      if (!amount || amount < minBid) {
+        alert(`La puja debe ser al menos ${minBid.toLocaleString()} sats`);
+        return;
+      }
+      
+      if (!connectedPubkey) {
+        alert('Conectá tu Nostr primero');
+        return;
+      }
+      
+      if (typeof window.nostr === 'undefined' || connectedPubkey.startsWith('npub')) {
+        // Read-only mode with npub
+        alert('Para pujar necesitás una extensión Nostr que pueda firmar.\n\nInstalá Alby: getalby.com');
+        return;
+      }
+      
+      try {
+        log(`Creando puja: ${amount.toLocaleString()} sats...`);
+        
+        const { SimplePool, getEventHash, getSignature } = window.NostrTools;
+        
+        // Create bid event (Kind 1021)
+        const event = {
+          kind: 1021,
+          pubkey: connectedPubkey,
+          created_at: Math.floor(Date.now() / 1000),
+          tags: [
+            ['a', `30020:${ARTIST_HEX}:${AUCTION_ID}`],
+            ['amount', amount.toString()],
+            ['currency', 'sats']
+          ],
+          content: `Bid ${amount} sats on ${AUCTION.title}`
+        };
+        
+        event.id = getEventHash(event);
+        
+        log('Solicitando firma...');
+        const signedEvent = await window.nostr.signEvent(event);
+        
+        log('Publicando en relays...');
+        const pool = new SimplePool();
+        
+        const pubs = pool.publish(RELAYS, signedEvent);
+        await Promise.any(pubs);
+        
+        log(`¡Puja enviada! ${amount.toLocaleString()} sats`, 'success');
+        
+        // Add to local list
+        bids.unshift({
+          pubkey: connectedPubkey.slice(0, 12) + '...',
+          amount: amount,
+          time: Date.now()
+        });
+        bids.sort((a, b) => b.amount - a.amount);
+        renderBids();
+        
+        document.getElementById('bid-amount').value = '';
+        
+        pool.close(RELAYS);
+        
+      } catch (e) {
+        log('Error: ' + e.message, 'error');
+        alert('Error al pujar: ' + e.message);
+      }
+    }
+    
+    // ============================================
+    // RENDER
+    // ============================================
+    function renderBids() {
+      const list = document.getElementById('bid-list');
+      const currentBid = bids.length > 0 ? bids[0].amount : AUCTION.startPrice;
+      
+      // Update current bid display
+      document.getElementById('current-bid-display').innerHTML = 
+        `${currentBid.toLocaleString()} <small>sats</small>`;
+      document.getElementById('bid-count').textContent = `${bids.length} pujas`;
+      document.getElementById('history-count').textContent = bids.length;
+      document.getElementById('min-bid').textContent = (currentBid + 1).toLocaleString();
+      
+      // Render bid list
+      list.innerHTML = bids.map(b => `
+        <div class="bid-item">
+          <div class="bidder-info">
+            <span class="bidder-npub">${b.pubkey}</span>
+            <span class="bid-time">${formatTime(b.time)}</span>
+          </div>
+          <div class="bid-value">
+            <span class="bid-sats">⚡ ${b.amount.toLocaleString()}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    function formatTime(ts) {
+      const diff = Date.now() - ts;
+      const mins = Math.floor(diff / 60000);
+      const hours = Math.floor(diff / 3600000);
+      const days = Math.floor(diff / 86400000);
+      
+      if (days > 0) return `hace ${days}d`;
+      if (hours > 0) return `hace ${hours}h`;
+      if (mins > 0) return `hace ${mins}m`;
+      return 'ahora';
+    }
+    
+    function updateCountdown() {
+      const diff = AUCTION.endsAt - Date.now();
       if (diff <= 0) {
-        document.getElementById('countdown').textContent = 'Finalizada';
+        document.getElementById('countdown').textContent = 'FINALIZADA';
         return;
       }
       
       const d = Math.floor(diff / 86400000);
       const h = Math.floor((diff % 86400000) / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
       
-      document.getElementById('countdown').textContent = `${d}d ${h}h ${m}m`;
+      document.getElementById('countdown').textContent = 
+        `${d}d ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     }
     
-    updateCountdown();
-    setInterval(updateCountdown, 60000);
+    function copyNpub() {
+      navigator.clipboard.writeText(ARTIST_NPUB);
+      const btn = event.target;
+      btn.textContent = '✓';
+      setTimeout(() => btn.textContent = 'copiar', 1500);
+    }
+    
+    // ============================================
+    // INIT
+    // ============================================
+    function init() {
+      // Check for saved session
+      const saved = localStorage.getItem('hash21-auction-pubkey');
+      if (saved) {
+        connectedPubkey = saved;
+        const short = saved.startsWith('npub') 
+          ? saved.slice(0, 12) + '...' + saved.slice(-4)
+          : saved.slice(0, 8) + '...' + saved.slice(-4);
+        document.getElementById('login-overlay').classList.add('hidden');
+        document.getElementById('connect-btn').textContent = short;
+        document.getElementById('connect-btn').classList.add('connected');
+        log('Sesión restaurada: ' + short, 'success');
+      }
+      
+      // Connect to relays
+      connectRelays();
+      
+      // Start countdown
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+      
+      // Initial render
+      bids = [...DEMO_BIDS];
+      renderBids();
+    }
+    
+    init();
   </script>
 </body>
 </html>
