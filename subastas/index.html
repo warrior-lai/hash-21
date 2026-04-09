@@ -11,17 +11,17 @@
   <script src="https://unpkg.com/nostr-tools@2.7.0/lib/nostr.bundle.js"></script>
   <style>
     :root {
-      --bg: #060606;
-      --surface: #0c0c0c;
-      --surface2: #121212;
-      --gold: #b8956e;
-      --gold-soft: rgba(184,149,110,0.1);
-      --text: #e8e4dc;
-      --text-mid: #8a857c;
-      --text-dim: #4a4640;
-      --border: #1c1a18;
-      --success: #5a8a5a;
-      --error: #8a5a5a;
+      --bg: #faf9f7;
+      --surface: #ffffff;
+      --surface2: #f5f4f2;
+      --gold: #9a7b4f;
+      --gold-soft: rgba(154,123,79,0.1);
+      --text: #1a1a1a;
+      --text-mid: #5a5550;
+      --text-dim: #8a8580;
+      --border: #e5e2de;
+      --success: #4a8a4a;
+      --error: #8a4a4a;
     }
     
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -43,7 +43,7 @@
       left: 0;
       right: 0;
       height: 56px;
-      background: rgba(6,6,6,0.95);
+      background: rgba(255,255,255,0.95);
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
       display: flex;
@@ -62,6 +62,16 @@
       text-decoration: none;
     }
     .logo span { color: var(--gold); }
+    
+    .back-link {
+      color: var(--text-mid);
+      text-decoration: none;
+      font-size: 12px;
+      transition: color 0.2s;
+    }
+    .back-link:hover {
+      color: var(--gold);
+    }
     
     .header-actions {
       display: flex;
@@ -105,10 +115,10 @@
     .btn.primary {
       background: var(--gold);
       border-color: var(--gold);
-      color: var(--bg);
+      color: #fff;
     }
     .btn.primary:hover {
-      background: #c9a67e;
+      background: #8a6b3f;
     }
     
     .user-info {
@@ -201,10 +211,12 @@
       border: 1px solid var(--border);
       cursor: pointer;
       transition: all 0.3s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
     .auction-card:hover {
       border-color: var(--gold);
       transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
     }
     .auction-card-img {
       width: 100%;
@@ -275,7 +287,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0,0,0,0.9);
+      background: rgba(0,0,0,0.6);
       z-index: 200;
       overflow-y: auto;
     }
@@ -462,7 +474,7 @@
     .bid-submit {
       width: 100%;
       background: var(--gold);
-      color: var(--bg);
+      color: #fff;
       border: none;
       padding: 16px;
       font-size: 10px;
@@ -473,7 +485,7 @@
       font-weight: 500;
       transition: background 0.2s;
     }
-    .bid-submit:hover { background: #c9a67e; }
+    .bid-submit:hover { background: #8a6b3f; }
     .bid-submit:disabled {
       background: var(--text-dim);
       cursor: not-allowed;
@@ -578,9 +590,9 @@
     .login-btn.primary {
       background: var(--gold);
       border: none;
-      color: var(--bg);
+      color: #fff;
     }
-    .login-btn.primary:hover { background: #c9a67e; }
+    .login-btn.primary:hover { background: #8a6b3f; }
     .login-btn.secondary {
       background: transparent;
       border: 1px solid var(--border);
@@ -768,10 +780,10 @@
     .cta-btn.primary {
       background: var(--gold);
       border-color: var(--gold);
-      color: var(--bg);
+      color: #fff;
     }
     .cta-btn.primary:hover {
-      background: #c9a67e;
+      background: #8a6b3f;
     }
     .cta-btn.secondary {
       background: transparent;
@@ -845,7 +857,10 @@
 
   <!-- HEADER -->
   <header class="header">
-    <a href="/subastas/" class="logo">HASH<span>21</span></a>
+    <div style="display:flex;align-items:center;gap:20px;">
+      <a href="/" class="back-link">← Galería</a>
+      <a href="/subastas/" class="logo">HASH<span>21</span></a>
+    </div>
     <div class="header-actions">
       <button class="btn" id="lang-btn" onclick="toggleLang()" style="padding:6px 12px;font-size:9px;">EN</button>
       <div class="relay-indicator">
