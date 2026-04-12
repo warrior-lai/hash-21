@@ -106,6 +106,67 @@
   border: 1px solid #e5e2de;
 }
 
+/* Upload Area */
+.upload-area {
+  border: 2px dashed #e5e2de;
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #faf9f7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.upload-area:hover,
+.upload-area.drag-active {
+  border-color: #9a7b4f;
+  background: rgba(154, 123, 79, 0.05);
+}
+
+.upload-area.has-preview {
+  padding: 0;
+  border-style: solid;
+}
+
+.upload-icon {
+  font-size: 32px;
+  color: #8a8580;
+}
+
+.upload-text {
+  font-size: 14px;
+  color: #5a5550;
+}
+
+.upload-hint {
+  font-size: 12px;
+  color: #8a8580;
+}
+
+.upload-preview {
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+}
+
+.url-toggle {
+  background: none;
+  border: none;
+  color: #8a8580;
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: 8px;
+  display: block;
+}
+
+.url-toggle:hover {
+  color: #9a7b4f;
+}
+
 .form-error {
   color: #c44;
   font-size: 13px;

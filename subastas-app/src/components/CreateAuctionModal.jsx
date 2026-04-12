@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import './Modal.css'
 
 const DURATIONS = [
@@ -15,12 +15,54 @@ export function CreateAuctionModal({ onClose, onCreate }) {
     title: '',
     description: '',
     image: '',
-    startPrice: '',
+    startPrice: '10000',
     reservePrice: '',
     duration: 86400
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [showUrlInput, setShowUrlInput] = useState(false)
+  const [dragActive, setDragActive] = useState(false)
+  const [previewUrl, setPreviewUrl] = useState('')
+  const fileInputRef = useRef(null)
+
+  const handleDrag = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true)
+    } else if (e.type === 'dragleave') {
+      setDragActive(false)
+    }
+  }
+
+  const handleDrop = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFile(e.dataTransfer.files[0])
+    }
+  }
+
+  const handleFile = (file) => {
+    if (file.size > 10 * 1024 * 1024) {
+      setError('La imagen debe ser menor a 10MB')
+      return
+    }
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      setPreviewUrl(e.target.result)
+      setForm({ ...form, image: e.target.result })
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const handleFileInput = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFile(e.target.files[0])
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -83,19 +125,49 @@ export function CreateAuctionModal({ onClose, onCreate }) {
           </div>
 
           <div className="form-group">
-            <label>Imagen (URL)</label>
+            <label>Imagen de la obra</label>
+            <div 
+              className={`upload-area ${dragActive ? 'drag-active' : ''} ${previewUrl ? 'has-preview' : ''}`}
+              onDragEnter={handleDrag}
+              onDragLeave={handleDrag}
+              onDragOver={handleDrag}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {previewUrl ? (
+                <img src={previewUrl} alt="Preview" className="upload-preview" />
+              ) : (
+                <>
+                  <span className="upload-icon">↑</span>
+                  <span className="upload-text">Click o arrastrá una imagen</span>
+                  <span className="upload-hint">PNG, JPG hasta 10MB</span>
+                </>
+              )}
+            </div>
             <input
-              type="url"
-              value={form.image}
-              onChange={e => setForm({ ...form, image: e.target.value })}
-              placeholder="https://nostr.build/..."
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileInput}
+              accept="image/*"
+              style={{ display: 'none' }}
             />
-            {form.image && (
-              <img 
-                src={form.image} 
-                alt="Preview" 
-                className="image-preview"
-                onError={e => e.target.style.display = 'none'}
+            <button 
+              type="button" 
+              className="url-toggle"
+              onClick={() => setShowUrlInput(!showUrlInput)}
+            >
+              o pegá una URL
+            </button>
+            {showUrlInput && (
+              <input
+                type="url"
+                value={form.image}
+                onChange={e => {
+                  setForm({ ...form, image: e.target.value })
+                  setPreviewUrl(e.target.value)
+                }}
+                placeholder="https://nostr.build/..."
+                style={{ marginTop: '8px' }}
               />
             )}
           </div>
