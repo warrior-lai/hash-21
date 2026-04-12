@@ -20,6 +20,7 @@ export function useNostr() {
 
   // Connect to relays
   const connect = useCallback(() => {
+    console.log('[Nostr] Connecting to relays...')
     setStatus('connecting')
     setError(null)
     const connected = []
@@ -48,17 +49,19 @@ export function useNostr() {
         socketsRef.current.push(ws)
 
         ws.onopen = () => {
+          console.log('[Nostr] Connected to:', url)
           connected.push(url)
           setConnectedRelays([...connected])
           if (!resolved && connected.length >= 2) {
             resolved = true
             clearTimeout(timeout)
             setStatus('connected')
+            console.log('[Nostr] Status: connected')
           }
         }
 
-        ws.onerror = () => {
-          // Silent fail for individual relays
+        ws.onerror = (e) => {
+          console.error('[Nostr] Error connecting to:', url, e)
         }
 
         ws.onclose = () => {
@@ -176,6 +179,7 @@ export function useNostr() {
 
   // Auto-connect and restore session
   useEffect(() => {
+    console.log('[Nostr] useEffect mounting, calling connect()')
     connect()
 
     const savedUser = localStorage.getItem('hash21-user')
@@ -191,7 +195,8 @@ export function useNostr() {
         clearTimeout(reconnectTimeoutRef.current)
       }
     }
-  }, [connect])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return {
     status,
