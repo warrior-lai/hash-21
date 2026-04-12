@@ -1,0 +1,149 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid #e5e2de;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.back-link {
+  color: #8a8580;
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: #9a7b4f;
+}
+
+.logo {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  color: #1a1a1a;
+  text-decoration: none;
+}
+
+.logo span {
+  color: #9a7b4f;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.relay-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #8a8580;
+}
+
+.relay-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.retry-btn {
+  background: none;
+  border: none;
+  color: #9a7b4f;
+  font-size: 11px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.connect-btn {
+  background: #9a7b4f;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+
+.connect-btn:hover {
+  background: #8a6b3f;
+}
+
+.connect-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.user-menu {
+  position: relative;
+}
+
+.user-btn {
+  background: #f5f4f2;
+  border: 1px solid #e5e2de;
+  padding: 8px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: monospace;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: white;
+  border: 1px solid #e5e2de;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  min-width: 160px;
+}
+
+.dropdown button {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.dropdown button:hover {
+  background: #f5f4f2;
+}
+
+@media (max-width: 600px) {
+  .header {
+    padding: 0 16px;
+  }
+  
+  .back-link {
+    display: none;
+  }
+  
+  .relay-text {
+    display: none;
+  }
+}

@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hash21 Auctions</title>
+  <meta name="description" content="Subastas de arte descentralizadas sobre Nostr. Sin intermediarios.">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/nostr-tools@2.7.0/lib/nostr.bundle.js"></script>
+  <style>
+    :root {
+      --bg: #faf9f7;
+      --surface: #ffffff;
+      --surface2: #f5f4f2;
+      --gold: #9a7b4f;
+      --gold-soft: rgba(154,123,79,0.1);
+      --text: #1a1a1a;
+      --text-mid: #5a5550;
+      --text-dim: #8a8580;
+      --border: #e5e2de;
+      --success: #4a8a4a;
+      --error: #8a4a4a;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-weight: 300;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    
+    /* ========== HEADER ========== */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      z-index: 100;
+    }
+    
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 3px;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .logo span { color: var(--gold); }
+    
+    .back-link {
+      color: var(--text-mid);
+      text-decoration: none;
+      font-size: 12px;
+      transition: color 0.2s;
+    }
+    .back-link:hover {
+      color: var(--gold);
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .relay-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+    .relay-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      transition: background 0.3s;
+    }
+    .relay-dot.active { background: var(--success); }
+    
+    .btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-mid);
+      padding: 8px 18px;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    .btn.primary {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #fff;
+    }
+    .btn.primary:hover {
+      background: #8a6b3f;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: monospace;
+      font-size: 11px;
+      color: var(--gold);
+    }
+    
+    /* ========== LAYOUT ========== */
+    .app {
+      padding-top: 56px;
+      min-height: 100vh;
+    }
+    
+    /* ========== HERO / INTRO ========== */
+    .hero {
+      padding: 80px 30px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-tag {
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px;
+      font-weight: 300;
+      margin-bottom: 15px;
+      letter-spacing: 1px;
+    }
+    .hero p {
+      color: var(--text-mid);
+      max-width: 480px;
+      margin: 0 auto;
+      font-size: 14px;
+    }
+    
+    /* ========== AUCTIONS GRID ========== */
+    .auctions-section {
+      padding: 60px 30px;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+    .section-title {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .filters {
+      display: flex;
+      gap: 10px;
+    }
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      padding: 6px 14px;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    
+    .auctions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 25px;
+    }
+    
+    .auction-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .auction-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+    .auction-card-img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      background: var(--surface2);
+    }
+    .auction-card-body {
+      padding: 20px;
+    }
+    .auction-card-status {
+      display: inline-block;
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      margin-bottom: 12px;
+    }
+    .status-active {
+      background: rgba(90,138,90,0.2);
+      color: var(--success);
+    }
+    .status-ending {
+      background: rgba(200,150,50,0.2);
+      color: #c89632;
+    }
+    .status-ended {
+      background: rgba(100,100,100,0.2);
+      color: var(--text-dim);
+    }
+    .auction-card-artist {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .auction-card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 400;
+      margin-bottom: 15px;
+    }
+    .auction-card-meta {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 15px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .meta-label {
+      color: var(--text-dim);
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+    .meta-value {
+      color: var(--text);
+    }
+    .meta-value.gold { color: var(--gold); }
+    
+    /* ========== AUCTION DETAIL MODAL ========== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 200;
+      overflow-y: auto;
+    }
+    .modal-overlay.active { display: block; }
+    
+    .auction-detail {
+      max-width: 1100px;
+      margin: 40px auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 400px;
+    }
+    
+    .detail-artwork {
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+    }
+    .detail-img {
+      width: 100%;
+      max-height: 500px;
+      object-fit: contain;
+      background: var(--bg);
+      margin-bottom: 25px;
+    }
+    .detail-artist {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .detail-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 400;
+      margin-bottom: 15px;
+    }
+    .detail-desc {
+      color: var(--text-mid);
+      font-size: 14px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+    .detail-npub {
+      font-family: monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+      padding: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .detail-npub button {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      padding: 4px 10px;
+      font-size: 9px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .detail-npub button:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    
+    .detail-sidebar {
+      background: var(--surface2);
+      padding: 30px;
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 28px;
+      cursor: pointer;
+    }
+    .close-btn:hover { color: var(--text); }
+    
+    .bid-current {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+    .bid-current-label {
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .bid-current-amount {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      color: var(--gold);
+    }
+    .bid-current-amount small {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--text-mid);
+    }
+    .bid-current-info {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--text-dim);
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .countdown-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 15px 25px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .countdown-label {
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .countdown-value {
+      font-family: monospace;
+      font-size: 16px;
+      letter-spacing: 1px;
+    }
+    
+    .bid-form {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+    .bid-form-label {
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 15px;
+    }
+    .bid-input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .bid-input {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 14px;
+      font-size: 16px;
+      font-family: monospace;
+    }
+    .bid-input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+    .bid-currency {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--gold);
+      padding: 14px 18px;
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+    .bid-submit {
+      width: 100%;
+      background: var(--gold);
+      color: #fff;
+      border: none;
+      padding: 16px;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .bid-submit:hover { background: #8a6b3f; }
+    .bid-submit:disabled {
+      background: var(--text-dim);
+      cursor: not-allowed;
+    }
+    .bid-min {
+      text-align: center;
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-top: 10px;
+    }
+    
+    .bid-history {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .bid-history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .bid-history-title {
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .bid-history-count {
+      background: var(--bg);
+      padding: 3px 10px;
+      font-size: 10px;
+      color: var(--text-mid);
+    }
+    .bid-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .bid-item:last-child { border-bottom: none; }
+    .bidder {
+      font-family: monospace;
+      color: var(--text-mid);
+      font-size: 11px;
+    }
+    .bid-amount {
+      color: var(--gold);
+    }
+    .bid-time {
+      color: var(--text-dim);
+      font-size: 10px;
+    }
+    
+    /* ========== LOGIN OVERLAY ========== */
+    .login-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(6,6,6,0.98);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+    }
+    .login-overlay.active { display: flex; }
+    
+    .login-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 50px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+    .login-box h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: 10px;
+    }
+    .login-box p {
+      color: var(--text-mid);
+      font-size: 13px;
+      margin-bottom: 30px;
+      line-height: 1.7;
+    }
+    .login-btn {
+      width: 100%;
+      padding: 16px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: inherit;
+      margin-bottom: 12px;
+      transition: all 0.2s;
+    }
+    .login-btn.primary {
+      background: var(--gold);
+      border: none;
+      color: #fff;
+    }
+    .login-btn.primary:hover { background: #8a6b3f; }
+    .login-btn.secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-mid);
+    }
+    .login-btn.secondary:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    .login-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 14px;
+      font-size: 12px;
+      font-family: monospace;
+      margin-bottom: 12px;
+      display: none;
+    }
+    .login-input.visible { display: block; }
+    .login-input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+    .login-note {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 20px;
+    }
+    .login-note a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+    
+    /* ========== CREATE FORM ========== */
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .form-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px 14px;
+      font-size: 13px;
+      font-family: inherit;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+    .form-input::placeholder {
+      color: var(--text-dim);
+    }
+    textarea.form-input {
+      resize: vertical;
+      min-height: 80px;
+    }
+    select.form-input {
+      cursor: pointer;
+    }
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+    
+    /* ========== HOW IT WORKS ========== */
+    .how-section {
+      padding: 80px 30px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+    .how-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .how-header h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: 10px;
+    }
+    .how-header p {
+      color: var(--text-dim);
+      font-size: 13px;
+    }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+      max-width: 1000px;
+      margin: 0 auto 50px;
+    }
+    .step {
+      text-align: center;
+      padding: 30px 20px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+    }
+    .step-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      color: var(--gold);
+      margin-bottom: 15px;
+    }
+    .step h3 {
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      font-weight: 400;
+    }
+    .step p {
+      font-size: 12px;
+      color: var(--text-mid);
+      line-height: 1.6;
+    }
+    .tech-info {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      padding-top: 30px;
+      border-top: 1px solid var(--border);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .tech-item {
+      text-align: center;
+    }
+    .tech-label {
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 5px;
+    }
+    .tech-value {
+      font-size: 12px;
+      color: var(--gold);
+    }
+    
+    /* ========== CTA SECTION ========== */
+    .cta-section {
+      padding: 80px 30px;
+      text-align: center;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+    .cta-section h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: 12px;
+    }
+    .cta-section p {
+      color: var(--text-mid);
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    .cta-btn {
+      padding: 16px 35px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+    }
+    .cta-btn.primary {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #fff;
+    }
+    .cta-btn.primary:hover {
+      background: #8a6b3f;
+    }
+    .cta-btn.secondary {
+      background: transparent;
+      color: var(--text-mid);
+    }
+    .cta-btn.secondary:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    
+    /* ========== FOOTER ========== */
+    .footer {
+      padding: 30px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+    .footer a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+    
+    /* ========== NOSTR LOG ========== */
+    .nostr-log {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 10px 20px;
+      font-family: monospace;
+      font-size: 10px;
+      color: var(--text-dim);
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      z-index: 50;
+    }
+    .log-item { white-space: nowrap; }
+    .log-item.success { color: var(--success); }
+    .log-item.error { color: var(--error); }
+    
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 900px) {
+      .auction-detail {
+        grid-template-columns: 1fr;
+        margin: 20px;
+      }
+      .detail-sidebar {
+        border-left: none;
+        border-top: 1px solid var(--border);
+      }
+      .steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .hero h1 { font-size: 32px; }
+    }
+    @media (max-width: 600px) {
+      .header { padding: 0 15px; }
+      .hero { padding: 50px 20px; }
+      .auctions-section { padding: 40px 15px; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .tech-info { flex-direction: column; gap: 20px; }
+      .filters { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div style="display:flex;align-items:center;gap:20px;">
+      <a href="/" class="back-link">← Galería</a>
+      <a href="/subastas/" class="logo">HASH<span>21</span></a>
+    </div>
+    <div class="header-actions">
+      <button class="btn" id="lang-btn" onclick="toggleLang()" style="padding:6px 12px;font-size:9px;">EN</button>
+      <div class="relay-indicator">
+        <div class="relay-dot" id="relay-dot"></div>
+        <span id="relay-status">Conectando...</span>
+      </div>
+      <a href="/subastas/crear/" class="btn" data-i18n="create_auction" style="text-decoration:none;">+ Crear Subasta</a>
+      <div id="user-area">
+        <button class="btn primary" onclick="openLogin()" data-i18n="connect_nostr">Conectar Nostr</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- APP -->
+  <div class="app">
+    
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-tag" data-i18n="hero_tag">Nostr Native Auctions</div>
+      <h1 data-i18n="hero_title">Subastas de Arte Descentralizadas</h1>
+      <p data-i18n="hero_desc">Pujá con Bitcoin Lightning. Firmá con tu clave Nostr. Sin intermediarios, sin custodia, sin confianza requerida.</p>
+    </section>
+
+    <!-- AUCTIONS GRID -->
+    <section class="auctions-section">
+      <div class="section-header">
+        <div class="section-title" data-i18n="active_auctions">Subastas Activas</div>
+        <div class="filters">
+          <button class="filter-btn active" data-filter="all" data-i18n="filter_all">Todas</button>
+          <button class="filter-btn" data-filter="active" data-i18n="filter_active">Activas</button>
+          <button class="filter-btn" data-filter="ending" data-i18n="filter_ending">Terminando</button>
+          <button class="filter-btn" data-filter="ended" data-i18n="filter_ended">Finalizadas</button>
+        </div>
+      </div>
+      <div class="auctions-grid" id="auctions-grid">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="how-section">
+      <div class="how-header">
+        <h2 data-i18n="how_title">Cómo Funciona</h2>
+        <p data-i18n="how_desc">Protocolo abierto, pagos directos, verificación criptográfica</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3 data-i18n="step1_title">Conectá Nostr</h3>
+          <p data-i18n="step1_desc">Tu clave pública es tu identidad. Sin emails, sin contraseñas.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3 data-i18n="step2_title">Explorá Subastas</h3>
+          <p data-i18n="step2_desc">Obras de artistas verificados. Cada subasta es un evento Nostr.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3 data-i18n="step3_title">Pujá y Firmá</h3>
+          <p data-i18n="step3_desc">Tu puja queda registrada en los relays, firmada con tu clave.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <h3 data-i18n="step4_title">Pagá Directo</h3>
+          <p data-i18n="step4_desc">Lightning invoice directo al artista. Cero intermediarios.</p>
+        </div>
+      </div>
+      <div class="tech-info">
+        <div class="tech-item">
+          <div class="tech-label" data-i18n="tech_events">Eventos</div>
+          <div class="tech-value">Kind 30020, 1021, 1022</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-label" data-i18n="tech_payments">Pagos</div>
+          <div class="tech-value">Lightning (NIP-57)</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-label" data-i18n="tech_custody">Custodia</div>
+          <div class="tech-value" data-i18n="tech_custody_val">Ninguna</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- READY TO START -->
+    <section class="cta-section">
+      <h2 data-i18n="cta_title">¿Listo para empezar?</h2>
+      <p data-i18n="cta_desc">Conectá tu identidad Nostr para explorar subastas o crear tu primera publicación</p>
+      <div class="cta-buttons">
+        <button class="cta-btn secondary" onclick="document.querySelector('.auctions-section').scrollIntoView({behavior:'smooth'})" data-i18n="cta_explore">Explorar Subastas</button>
+        <button class="cta-btn primary" onclick="openCreateAuction()" data-i18n="cta_create">Crear Subasta</button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <a href="/">hash21.studio</a> · Construido sobre <a href="https://nostr.com" target="_blank">Nostr</a>
+  </footer>
+
+  <!-- AUCTION DETAIL MODAL -->
+  <div class="modal-overlay" id="auction-modal">
+    <button class="close-btn" onclick="closeModal()">&times;</button>
+    <div class="auction-detail" id="auction-detail">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- LOGIN OVERLAY -->
+  <div class="login-overlay" id="login-overlay">
+    <div class="login-box">
+      <h2 data-i18n="login_title">Conectar Nostr</h2>
+      <p data-i18n="login_desc">Tu identidad soberana. Sin intermediarios, sin custodias, sin permisos.</p>
+      <button class="login-btn primary" onclick="connectExtension()" data-i18n="login_extension">Usar Extensión (Alby)</button>
+      <button class="login-btn secondary" onclick="showNpubInput()" data-i18n="login_npub">Ingresar npub</button>
+      <input type="text" class="login-input" id="npub-input" placeholder="npub1...">
+      <button class="login-btn secondary" id="npub-submit" style="display:none;" onclick="connectNpub()" data-i18n="connect_nostr">Conectar</button>
+      <button class="login-btn secondary" onclick="closeLogin()" data-i18n="login_cancel">Cancelar</button>
+      <p class="login-note"><span data-i18n="login_note">¿No tenés Nostr?</span> <a href="https://getalby.com" target="_blank">Alby</a> · <a href="https://primal.net" target="_blank">Primal</a></p>
+    </div>
+  </div>
+
+  <!-- CREATE AUCTION MODAL -->
+  <div class="login-overlay" id="create-overlay">
+    <div class="login-box" style="max-width:500px;text-align:left;">
+      <h2 style="text-align:center;margin-bottom:25px;">Crear Subasta</h2>
+      
+      <div class="form-group">
+        <label class="form-label">Título de la obra *</label>
+        <input type="text" class="form-input" id="create-title" placeholder="Ej: Roatan">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Descripción *</label>
+        <textarea class="form-input" id="create-desc" rows="3" placeholder="Descripción de la obra..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">URL de imagen *</label>
+        <input type="url" class="form-input" id="create-image" placeholder="https://...">
+        <small style="color:var(--text-dim);font-size:10px;">Subí tu imagen a nostr.build o similar</small>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Precio inicial (sats) *</label>
+          <input type="number" class="form-input" id="create-price" placeholder="100000" min="1000">
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Duración *</label>
+          <select class="form-input" id="create-duration">
+            <option value="3600">1 hora</option>
+            <option value="21600">6 horas</option>
+            <option value="43200">12 horas</option>
+            <option value="86400" selected>1 día</option>
+            <option value="259200">3 días</option>
+            <option value="604800">7 días</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Precio de reserva (opcional)</label>
+        <input type="number" class="form-input" id="create-reserve" placeholder="Mínimo para venta válida">
+        <small style="color:var(--text-dim);font-size:10px;">Si no se alcanza, la subasta no es válida</small>
+      </div>
+      
+      <div style="display:flex;gap:10px;margin-top:25px;">
+        <button class="login-btn secondary" onclick="closeCreateAuction()" style="flex:1;">Cancelar</button>
+        <button class="login-btn primary" onclick="createAuction()" style="flex:1;">Crear y Firmar</button>
+      </div>
+      
+      <p class="login-note" style="text-align:center;">La subasta se publicará en los relays Nostr como evento Kind 30020</p>
+    </div>
+  </div>
+
+  <!-- NOSTR LOG -->
+  <div class="nostr-log" id="nostr-log"></div>
+
+  <script>
+    // =============================================
+    // I18N - TRANSLATIONS
+    // =============================================
+    const i18n = {
+      es: {
+        connecting: 'Conectando...',
+        relays: 'relays',
+        connect_nostr: 'Conectar Nostr',
+        create_auction: '+ Crear Subasta',
+        hero_tag: 'Nostr Native Auctions',
+        hero_title: 'Subastas de Arte Descentralizadas',
+        hero_desc: 'Pujá con Bitcoin Lightning. Firmá con tu clave Nostr. Sin intermediarios, sin custodia, sin confianza requerida.',
+        active_auctions: 'Subastas Activas',
+        filter_all: 'Todas',
+        filter_active: 'Activas',
+        filter_ending: 'Terminando',
+        filter_ended: 'Finalizadas',
+        current_bid: 'Puja actual',
+        ends: 'Finaliza',
+        status_active: 'Activa',
+        status_ending: 'Terminando',
+        status_ended: 'Finalizada',
+        how_title: 'Cómo Funciona',
+        how_desc: 'Protocolo abierto, pagos directos, verificación criptográfica',
+        step1_title: 'Conectá Nostr',
+        step1_desc: 'Tu clave pública es tu identidad. Sin emails, sin contraseñas.',
+        step2_title: 'Explorá Subastas',
+        step2_desc: 'Obras de artistas verificados. Cada subasta es un evento Nostr.',
+        step3_title: 'Pujá y Firmá',
+        step3_desc: 'Tu puja queda registrada en los relays, firmada con tu clave.',
+        step4_title: 'Pagá Directo',
+        step4_desc: 'Lightning invoice directo al artista. Cero intermediarios.',
+        tech_events: 'Eventos',
+        tech_payments: 'Pagos',
+        tech_custody: 'Custodia',
+        tech_custody_val: 'Ninguna',
+        cta_title: '¿Listo para empezar?',
+        cta_desc: 'Conectá tu identidad Nostr para explorar subastas o crear tu primera publicación',
+        cta_explore: 'Explorar Subastas',
+        cta_create: 'Crear Subasta',
+        login_title: 'Conectar Nostr',
+        login_desc: 'Tu identidad soberana. Sin intermediarios, sin custodias, sin permisos.',
+        login_extension: 'Usar Extensión (Alby)',
+        login_npub: 'Ingresar npub',
+        login_cancel: 'Cancelar',
+        login_note: '¿No tenés Nostr?',
+        create_title: 'Crear Subasta',
+        form_title: 'Título de la obra *',
+        form_desc: 'Descripción *',
+        form_image: 'URL de imagen *',
+        form_image_hint: 'Subí tu imagen a nostr.build o similar',
+        form_price: 'Precio inicial (sats) *',
+        form_duration: 'Duración *',
+        form_reserve: 'Precio de reserva (opcional)',
+        form_reserve_hint: 'Si no se alcanza, la subasta no es válida',
+        form_cancel: 'Cancelar',
+        form_submit: 'Crear y Firmar',
+        form_note: 'La subasta se publicará en los relays Nostr como evento Kind 30020',
+        duration_1h: '1 hora',
+        duration_6h: '6 horas',
+        duration_12h: '12 horas',
+        duration_1d: '1 día',
+        duration_3d: '3 días',
+        duration_7d: '7 días',
+        detail_current: 'Puja Actual',
+        detail_start: 'Inicio',
+        detail_bids: 'pujas',
+        detail_ends: 'Finaliza en',
+        detail_place: 'Realizar Puja',
+        detail_sign: 'Firmar y Enviar Puja',
+        detail_connect: 'Conectá Nostr para pujar',
+        detail_min: 'Mínimo',
+        detail_history: 'Historial',
+        no_auctions: 'No hay subastas',
+        logout: 'Salir',
+        copy: 'copiar',
+        ended: 'FINALIZADA',
+        now: 'ahora',
+        ago: 'hace'
+      },
+      en: {
+        connecting: 'Connecting...',
+        relays: 'relays',
+        connect_nostr: 'Connect Nostr',
+        create_auction: '+ Create Auction',
+        hero_tag: 'Nostr Native Auctions',
+        hero_title: 'Decentralized Art Auctions',
+        hero_desc: 'Bid with Bitcoin Lightning. Sign with your Nostr key. No intermediaries, no custody, no trust required.',
+        active_auctions: 'Active Auctions',
+        filter_all: 'All',
+        filter_active: 'Active',
+        filter_ending: 'Ending',
+        filter_ended: 'Ended',
+        current_bid: 'Current bid',
+        ends: 'Ends',
+        status_active: 'Active',
+        status_ending: 'Ending',
+        status_ended: 'Ended',
+        how_title: 'How It Works',
+        how_desc: 'Open protocol, direct payments, cryptographic verification',
+        step1_title: 'Connect Nostr',
+        step1_desc: 'Your public key is your identity. No emails, no passwords.',
+        step2_title: 'Explore Auctions',
+        step2_desc: 'Works from verified artists. Each auction is a Nostr event.',
+        step3_title: 'Bid & Sign',
+        step3_desc: 'Your bid is recorded on relays, signed with your key.',
+        step4_title: 'Pay Direct',
+        step4_desc: 'Lightning invoice direct to artist. Zero middlemen.',
+        tech_events: 'Events',
+        tech_payments: 'Payments',
+        tech_custody: 'Custody',
+        tech_custody_val: 'None',
+        cta_title: 'Ready to start?',
+        cta_desc: 'Connect your Nostr identity to explore auctions or create your first listing',
+        cta_explore: 'Explore Auctions',
+        cta_create: 'Create Auction',
+        login_title: 'Connect Nostr',
+        login_desc: 'Your sovereign identity. No intermediaries, no custody, no permissions.',
+        login_extension: 'Use Extension (Alby)',
+        login_npub: 'Enter npub',
+        login_cancel: 'Cancel',
+        login_note: "Don't have Nostr?",
+        create_title: 'Create Auction',
+        form_title: 'Artwork title *',
+        form_desc: 'Description *',
+        form_image: 'Image URL *',
+        form_image_hint: 'Upload your image to nostr.build or similar',
+        form_price: 'Starting price (sats) *',
+        form_duration: 'Duration *',
+        form_reserve: 'Reserve price (optional)',
+        form_reserve_hint: 'If not reached, auction is invalid',
+        form_cancel: 'Cancel',
+        form_submit: 'Create & Sign',
+        form_note: 'The auction will be published to Nostr relays as Kind 30020 event',
+        duration_1h: '1 hour',
+        duration_6h: '6 hours',
+        duration_12h: '12 hours',
+        duration_1d: '1 day',
+        duration_3d: '3 days',
+        duration_7d: '7 days',
+        detail_current: 'Current Bid',
+        detail_start: 'Start',
+        detail_bids: 'bids',
+        detail_ends: 'Ends in',
+        detail_place: 'Place Bid',
+        detail_sign: 'Sign & Submit Bid',
+        detail_connect: 'Connect Nostr to bid',
+        detail_min: 'Minimum',
+        detail_history: 'History',
+        no_auctions: 'No auctions',
+        logout: 'Logout',
+        copy: 'copy',
+        ended: 'ENDED',
+        now: 'now',
+        ago: 'ago'
+      }
+    };
+    
+    let currentLang = localStorage.getItem('hash21-lang') || 'es';
+    
+    function t(key) {
+      return i18n[currentLang][key] || i18n['es'][key] || key;
+    }
+    
+    function toggleLang() {
+      currentLang = currentLang === 'es' ? 'en' : 'es';
+      localStorage.setItem('hash21-lang', currentLang);
+      document.getElementById('lang-btn').textContent = currentLang === 'es' ? 'EN' : 'ES';
+      updateAllText();
+      renderAuctions();
+    }
+    
+    function updateAllText() {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+          el.placeholder = t(key);
+        } else {
+          el.textContent = t(key);
+        }
+      });
+    }
+    
+    // =============================================
+    // CONFIGURATION
+    // =============================================
+    const RELAYS = [
+      'wss://relay.damus.io',
+      'wss://nos.lol',
+      'wss://relay.nostr.band',
+      'wss://relay.primal.net'
+    ];
+    
+    const KIND_AUCTION = 30020;
+    const KIND_BID = 1021;
+    const KIND_BID_CONFIRM = 1022;
+    
+    // =============================================
+    // STATE
+    // =============================================
+    let userPubkey = null;
+    let connectedRelays = 0;
+    let auctions = [];
+    
+    // Demo auction data (will be replaced by Nostr events)
+    const DEMO_AUCTIONS = [{
+      id: 'roatan-001',
+      pubkey: 'a7c8e4c62118d45a2e229567bf039ce75ecc5e69f30c63195291d25dc41069b6',
+      title: 'Roatan',
+      artist: 'Lai⚡️',
+      artistNpub: 'npub1579rjxygc6n69cg544ndcrj88w04v9e5clcf3j249vh9hwzq6fkqes5jjs',
+      description: 'Obra digital inspirada en los paisajes caribeños de Roatán. Colores vibrantes que capturan la esencia del mar y la libertad.',
+      image: 'https://gxrstqszfzvwvoktsuqg.supabase.co/storage/v1/object/public/Media/works/1774811556694-dvpyr7xcye8.jpeg',
+      startPrice: 100000,
+      currentBid: 250000,
+      bidCount: 5,
+      endsAt: Date.now() + 86400000 * 3,
+      status: 'active',
+      bids: [
+        { pubkey: 'npub1a3f8...2k9x', amount: 250000, time: Date.now() - 7200000 },
+        { pubkey: 'npub1k7m9...4j8p', amount: 200000, time: Date.now() - 18000000 },
+        { pubkey: 'npub1x2c3...8w5n', amount: 150000, time: Date.now() - 28800000 },
+        { pubkey: 'npub1m5v7...2p9k', amount: 120000, time: Date.now() - 86400000 },
+        { pubkey: 'npub1j9q4...6r2w', amount: 100000, time: Date.now() - 172800000 }
+      ]
+    }];
+    
+    // =============================================
+    // LOGGING
+    // =============================================
+    function log(msg, type = '') {
+      const el = document.getElementById('nostr-log');
+      const span = document.createElement('span');
+      span.className = 'log-item ' + type;
+      span.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      el.insertBefore(span, el.firstChild);
+      if (el.children.length > 10) el.removeChild(el.lastChild);
+    }
+    
+    // =============================================
+    // RELAY CONNECTION
+    // =============================================
+    async function connectRelays() {
+      log('Iniciando conexión a relays...');
+      
+      for (const url of RELAYS) {
+        try {
+          const ws = new WebSocket(url);
+          ws.onopen = () => {
+            connectedRelays++;
+            updateRelayUI();
+            log(`✓ ${url.replace('wss://', '')}`, 'success');
+            ws.close();
+          };
+          ws.onerror = () => {
+            log(`✗ ${url.replace('wss://', '')}`, 'error');
+          };
+        } catch (e) {
+          log(`Error: ${url}`, 'error');
+        }
+      }
+      
+      setTimeout(() => {
+        loadAuctions();
+      }, 2000);
+    }
+    
+    function updateRelayUI() {
+      const dot = document.getElementById('relay-dot');
+      const status = document.getElementById('relay-status');
+      if (connectedRelays > 0) {
+        dot.classList.add('active');
+        status.textContent = `${connectedRelays}/${RELAYS.length} relays`;
+      }
+    }
+    
+    // =============================================
+    // LOAD AUCTIONS FROM NOSTR
+    // =============================================
+    async function loadAuctions() {
+      log('Buscando subastas en Nostr...');
+      
+      // For now, use demo data
+      // In production, query relays for Kind 30020 events
+      auctions = DEMO_AUCTIONS;
+      
+      try {
+        // Query for auction events
+        // const events = await queryRelays({ kinds: [KIND_AUCTION], limit: 50 });
+        // auctions = events.map(parseAuctionEvent);
+        log(`Cargadas ${auctions.length} subastas`, 'success');
+      } catch (e) {
+        log('Error cargando subastas', 'error');
+      }
+      
+      renderAuctions();
+    }
+    
+    // =============================================
+    // RENDER AUCTIONS
+    // =============================================
+    function renderAuctions(filter = 'all') {
+      const grid = document.getElementById('auctions-grid');
+      let filtered = auctions;
+      
+      if (filter !== 'all') {
+        filtered = auctions.filter(a => a.status === filter);
+      }
+      
+      if (filtered.length === 0) {
+        grid.innerHTML = `<p style="color:var(--text-dim);grid-column:1/-1;text-align:center;padding:60px;">${t('no_auctions')}</p>`;
+        return;
+      }
+      
+      grid.innerHTML = filtered.map(a => `
+        <div class="auction-card" onclick="openAuction('${a.id}')">
+          <img src="${a.image}" alt="${a.title}" class="auction-card-img" loading="lazy">
+          <div class="auction-card-body">
+            <span class="auction-card-status status-${a.status}">${t('status_' + a.status)}</span>
+            <div class="auction-card-artist">${a.artist}</div>
+            <h3 class="auction-card-title">${a.title}</h3>
+            <div class="auction-card-meta">
+              <div>
+                <div class="meta-label">${t('current_bid')}</div>
+                <div class="meta-value gold">⚡ ${a.currentBid.toLocaleString()}</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="meta-label">${t('ends')}</div>
+                <div class="meta-value">${formatTimeLeft(a.endsAt)}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    // =============================================
+    // AUCTION DETAIL
+    // =============================================
+    function openAuction(id) {
+      const auction = auctions.find(a => a.id === id);
+      if (!auction) return;
+      
+      const modal = document.getElementById('auction-modal');
+      const detail = document.getElementById('auction-detail');
+      
+      detail.innerHTML = `
+        <div class="detail-artwork">
+          <img src="${auction.image}" alt="${auction.title}" class="detail-img">
+          <div class="detail-artist">${auction.artist}</div>
+          <h2 class="detail-title">${auction.title}</h2>
+          <p class="detail-desc">${auction.description}</p>
+          <div class="detail-npub">
+            <span>🔑 ${auction.artistNpub.slice(0,20)}...${auction.artistNpub.slice(-8)}</span>
+            <button onclick="copyToClipboard('${auction.artistNpub}', this)">copiar</button>
+          </div>
+        </div>
+        <div class="detail-sidebar">
+          <div class="bid-current">
+            <div class="bid-current-label">Puja Actual</div>
+            <div class="bid-current-amount">${auction.currentBid.toLocaleString()} <small>sats</small></div>
+            <div class="bid-current-info">
+              <span>Inicio: ${auction.startPrice.toLocaleString()} sats</span>
+              <span>${auction.bidCount} pujas</span>
+            </div>
+          </div>
+          
+          <div class="countdown-box">
+            <span class="countdown-label">Finaliza en</span>
+            <span class="countdown-value" id="modal-countdown">${formatCountdown(auction.endsAt)}</span>
+          </div>
+          
+          <div class="bid-form">
+            <div class="bid-form-label">Realizar Puja</div>
+            <div class="bid-input-row">
+              <input type="number" class="bid-input" id="bid-input" placeholder="0" min="${auction.currentBid + 1}">
+              <div class="bid-currency">SATS</div>
+            </div>
+            <button class="bid-submit" id="bid-submit" onclick="placeBid('${auction.id}')" ${!userPubkey ? 'disabled' : ''}>
+              ${userPubkey ? 'Firmar y Enviar Puja' : 'Conectá Nostr para pujar'}
+            </button>
+            <div class="bid-min">Mínimo: ${(auction.currentBid + 1).toLocaleString()} sats</div>
+          </div>
+          
+          <div class="bid-history">
+            <div class="bid-history-header">
+              <span class="bid-history-title">Historial</span>
+              <span class="bid-history-count">${auction.bids.length}</span>
+            </div>
+            ${auction.bids.map(b => `
+              <div class="bid-item">
+                <div>
+                  <div class="bidder">${b.pubkey}</div>
+                  <div class="bid-time">${formatTimeAgo(b.time)}</div>
+                </div>
+                <div class="bid-amount">⚡ ${b.amount.toLocaleString()}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      
+      // Start countdown update
+      const countdownInterval = setInterval(() => {
+        const el = document.getElementById('modal-countdown');
+        if (el) {
+          el.textContent = formatCountdown(auction.endsAt);
+        } else {
+          clearInterval(countdownInterval);
+        }
+      }, 1000);
+    }
+    
+    function closeModal() {
+      document.getElementById('auction-modal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    // =============================================
+    // PLACE BID
+    // =============================================
+    async function placeBid(auctionId) {
+      const auction = auctions.find(a => a.id === auctionId);
+      const amount = parseInt(document.getElementById('bid-input').value);
+      
+      if (!amount || amount <= auction.currentBid) {
+        alert(`La puja debe ser mayor a ${auction.currentBid.toLocaleString()} sats`);
+        return;
+      }
+      
+      if (!userPubkey) {
+        openLogin();
+        return;
+      }
+      
+      if (typeof window.nostr === 'undefined') {
+        alert('Necesitás una extensión Nostr para firmar pujas.\nInstalá Alby: getalby.com');
+        return;
+      }
+      
+      try {
+        log(`Creando puja: ${amount.toLocaleString()} sats...`);
+        
+        const event = {
+          kind: KIND_BID,
+          pubkey: userPubkey,
+          created_at: Math.floor(Date.now() / 1000),
+          tags: [
+            ['a', `${KIND_AUCTION}:${auction.pubkey}:${auctionId}`],
+            ['amount', amount.toString()],
+            ['currency', 'sats']
+          ],
+          content: `Bid ${amount} sats on ${auction.title}`
+        };
+        
+        log('Solicitando firma...');
+        const signedEvent = await window.nostr.signEvent(event);
+        
+        log('Publicando en relays...');
+        // In production: publish to relays
+        // await publishToRelays(signedEvent);
+        
+        log(`✓ Puja enviada: ${amount.toLocaleString()} sats`, 'success');
+        
+        // Update local state
+        auction.currentBid = amount;
+        auction.bidCount++;
+        auction.bids.unshift({
+          pubkey: userPubkey.slice(0, 12) + '...',
+          amount: amount,
+          time: Date.now()
+        });
+        
+        openAuction(auctionId);
+        renderAuctions();
+        
+      } catch (e) {
+        log(`Error: ${e.message}`, 'error');
+        alert('Error al pujar: ' + e.message);
+      }
+    }
+    
+    // =============================================
+    // LOGIN
+    // =============================================
+    function openLogin() {
+      document.getElementById('login-overlay').classList.add('active');
+    }
+    
+    function closeLogin() {
+      document.getElementById('login-overlay').classList.remove('active');
+    }
+    
+    function showNpubInput() {
+      document.getElementById('npub-input').classList.add('visible');
+      document.getElementById('npub-submit').style.display = 'block';
+    }
+    
+    async function connectExtension() {
+      if (typeof window.nostr === 'undefined') {
+        alert('No se detectó extensión Nostr.\nInstalá Alby: getalby.com');
+        return;
+      }
+      
+      try {
+        log('Solicitando clave pública...');
+        const pubkey = await window.nostr.getPublicKey();
+        userPubkey = pubkey;
+        localStorage.setItem('hash21-auction-pubkey', pubkey);
+        updateUserUI();
+        closeLogin();
+        log(`✓ Conectado: ${pubkey.slice(0,8)}...`, 'success');
+      } catch (e) {
+        log(`Error: ${e.message}`, 'error');
+        alert('Error: ' + e.message);
+      }
+    }
+    
+    function connectNpub() {
+      const npub = document.getElementById('npub-input').value.trim();
+      if (!npub.startsWith('npub1')) {
+        alert('Ingresá un npub válido');
+        return;
+      }
+      userPubkey = npub;
+      localStorage.setItem('hash21-auction-pubkey', npub);
+      updateUserUI();
+      closeLogin();
+      log(`✓ Conectado (readonly): ${npub.slice(0,12)}...`, 'success');
+    }
+    
+    function updateUserUI() {
+      const area = document.getElementById('user-area');
+      const short = userPubkey.startsWith('npub') 
+        ? userPubkey.slice(0,12) + '...' 
+        : userPubkey.slice(0,8) + '...';
+      
+      area.innerHTML = `
+        <div class="user-info">
+          <span>🟣 ${short}</span>
+          <button class="btn" onclick="logout()">Salir</button>
+        </div>
+      `;
+      
+      // Show create button when logged in
+      document.getElementById('create-btn').style.display = 'block';
+    }
+    
+    function logout() {
+      userPubkey = null;
+      localStorage.removeItem('hash21-auction-pubkey');
+      document.getElementById('user-area').innerHTML = `
+        <button class="btn primary" onclick="openLogin()">Conectar Nostr</button>
+      `;
+      document.getElementById('create-btn').style.display = 'none';
+      log('Sesión cerrada');
+    }
+    
+    // =============================================
+    // CREATE AUCTION
+    // =============================================
+    function openCreateAuction() {
+      if (!userPubkey) {
+        openLogin();
+        return;
+      }
+      document.getElementById('create-overlay').classList.add('active');
+    }
+    
+    function closeCreateAuction() {
+      document.getElementById('create-overlay').classList.remove('active');
+    }
+    
+    async function createAuction() {
+      const title = document.getElementById('create-title').value.trim();
+      const desc = document.getElementById('create-desc').value.trim();
+      const image = document.getElementById('create-image').value.trim();
+      const price = parseInt(document.getElementById('create-price').value);
+      const duration = parseInt(document.getElementById('create-duration').value);
+      const reserve = document.getElementById('create-reserve').value ? parseInt(document.getElementById('create-reserve').value) : null;
+      
+      // Validation
+      if (!title || !desc || !image || !price) {
+        alert('Completá todos los campos obligatorios');
+        return;
+      }
+      
+      if (!image.startsWith('http')) {
+        alert('La URL de imagen debe empezar con http:// o https://');
+        return;
+      }
+      
+      if (price < 1000) {
+        alert('El precio mínimo es 1000 sats');
+        return;
+      }
+      
+      if (typeof window.nostr === 'undefined') {
+        alert('Necesitás una extensión Nostr para crear subastas.\nInstalá Alby: getalby.com');
+        return;
+      }
+      
+      try {
+        log('Creando subasta...');
+        
+        const auctionId = title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Date.now();
+        const startsAt = Math.floor(Date.now() / 1000);
+        const endsAt = startsAt + duration;
+        
+        // Create auction event (Kind 30020 per NIP-15)
+        const event = {
+          kind: KIND_AUCTION,
+          pubkey: userPubkey,
+          created_at: startsAt,
+          tags: [
+            ['d', auctionId],
+            ['title', title],
+            ['summary', desc],
+            ['image', image],
+            ['start_price', price.toString()],
+            ['currency', 'sats'],
+            ['start_time', startsAt.toString()],
+            ['end_time', endsAt.toString()]
+          ],
+          content: desc
+        };
+        
+        if (reserve) {
+          event.tags.push(['reserve_price', reserve.toString()]);
+        }
+        
+        log('Solicitando firma...');
+        const signedEvent = await window.nostr.signEvent(event);
+        
+        log('Publicando en relays...');
+        // In production: publish to all relays
+        // await publishToRelays(signedEvent);
+        
+        log(`✓ Subasta creada: ${title}`, 'success');
+        
+        // Add to local state
+        const newAuction = {
+          id: auctionId,
+          pubkey: userPubkey,
+          title: title,
+          artist: 'Tú',
+          artistNpub: userPubkey,
+          description: desc,
+          image: image,
+          startPrice: price,
+          currentBid: price,
+          bidCount: 0,
+          endsAt: endsAt * 1000,
+          status: 'active',
+          bids: []
+        };
+        
+        auctions.unshift(newAuction);
+        renderAuctions();
+        closeCreateAuction();
+        
+        // Clear form
+        document.getElementById('create-title').value = '';
+        document.getElementById('create-desc').value = '';
+        document.getElementById('create-image').value = '';
+        document.getElementById('create-price').value = '';
+        document.getElementById('create-reserve').value = '';
+        
+        alert('¡Subasta creada!\n\nTítulo: ' + title + '\nPrecio inicial: ' + price.toLocaleString() + ' sats\nDuración: ' + (duration / 3600) + ' horas');
+        
+      } catch (e) {
+        log(`Error: ${e.message}`, 'error');
+        alert('Error al crear subasta: ' + e.message);
+      }
+    }
+    
+    // =============================================
+    // HELPERS
+    // =============================================
+    function formatTimeLeft(ts) {
+      const diff = ts - Date.now();
+      if (diff <= 0) return 'Finalizada';
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      if (d > 0) return `${d}d ${h}h`;
+      const m = Math.floor((diff % 3600000) / 60000);
+      return `${h}h ${m}m`;
+    }
+    
+    function formatCountdown(ts) {
+      const diff = ts - Date.now();
+      if (diff <= 0) return 'FINALIZADA';
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      return `${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+    
+    function formatTimeAgo(ts) {
+      const diff = Date.now() - ts;
+      const m = Math.floor(diff / 60000);
+      const h = Math.floor(diff / 3600000);
+      const d = Math.floor(diff / 86400000);
+      if (d > 0) return `hace ${d}d`;
+      if (h > 0) return `hace ${h}h`;
+      if (m > 0) return `hace ${m}m`;
+      return 'ahora';
+    }
+    
+    function copyToClipboard(text, btn) {
+      navigator.clipboard.writeText(text);
+      btn.textContent = '✓';
+      setTimeout(() => btn.textContent = 'copiar', 1500);
+    }
+    
+    // =============================================
+    // FILTERS
+    // =============================================
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderAuctions(btn.dataset.filter);
+      });
+    });
+    
+    // =============================================
+    // INIT
+    // =============================================
+    function init() {
+      // Apply saved language
+      document.getElementById('lang-btn').textContent = currentLang === 'es' ? 'EN' : 'ES';
+      updateAllText();
+      
+      // Check saved session
+      const saved = localStorage.getItem('hash21-auction-pubkey');
+      if (saved) {
+        userPubkey = saved;
+        updateUserUI();
+        log(currentLang === 'es' ? 'Sesión restaurada' : 'Session restored', 'success');
+      }
+      
+      // Connect to relays
+      connectRelays();
+    }
+    
+    init();
+  </script>
+</body>
+</html>
