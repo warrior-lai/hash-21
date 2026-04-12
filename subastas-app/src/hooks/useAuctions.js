@@ -29,8 +29,8 @@ export function useAuctions(nostr) {
     const seen = new Set()
     const newAuctions = []
 
-    // Subscribe to Kind 30020 (auctions)
-    const filters = [{ kinds: [30020], limit: 50 }]
+    // Subscribe to Kind 30020 (auctions) - only Hash21 tagged
+    const filters = [{ kinds: [30020], '#t': ['hash21'], limit: 50 }]
     
     const timeout = setTimeout(() => {
       console.log('[Auctions] Timeout reached, found:', newAuctions.length, 'auctions')
@@ -90,6 +90,7 @@ export function useAuctions(nostr) {
       created_at: now,
       tags: [
         ['d', auctionId],
+        ['t', 'hash21'],  // Tag to identify Hash21 auctions
         ['title', title],
         ['summary', description || ''],
         ['image', image],
