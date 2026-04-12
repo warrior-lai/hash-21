@@ -1,0 +1,67 @@
+.cta-section {
+  padding: 80px 24px;
+  text-align: center;
+  background: #faf9f7;
+  border-top: 1px solid #e5e2de;
+}
+
+.cta-section h2 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 32px;
+  font-weight: 400;
+  color: #1a1a1a;
+  margin: 0 0 12px;
+}
+
+.cta-section p {
+  font-size: 14px;
+  color: #8a8580;
+  margin: 0 0 32px;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cta-btn {
+  padding: 14px 32px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid #1a1a1a;
+  background: transparent;
+  color: #1a1a1a;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.cta-btn:hover {
+  background: #1a1a1a;
+  color: white;
+}
+
+.cta-btn.primary {
+  background: #9a7b4f;
+  border-color: #9a7b4f;
+  color: white;
+}
+
+.cta-btn.primary:hover {
+  background: #8a6b3f;
+  border-color: #8a6b3f;
+}
+
+@media (max-width: 500px) {
+  .cta-section {
+    padding: 50px 20px;
+  }
+  
+  .cta-buttons {
+    flex-direction: column;
+  }
+}

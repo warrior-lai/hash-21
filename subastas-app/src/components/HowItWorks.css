@@ -1,72 +1,111 @@
 .how-it-works {
-  padding: 60px 24px;
+  padding: 80px 24px;
   text-align: center;
   background: #faf9f7;
-  border-bottom: 1px solid #e5e2de;
 }
 
 .how-it-works h2 {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 400;
   color: #1a1a1a;
-  margin: 0 0 40px;
+  margin: 0 0 12px;
+}
+
+.how-subtitle {
+  font-size: 14px;
+  color: #8a8580;
+  margin: 0 0 50px;
 }
 
 .steps {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 32px;
-  max-width: 900px;
-  margin: 0 auto 40px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1000px;
+  margin: 0 auto 50px;
 }
 
-.step {
-  padding: 24px;
+.step-card {
+  border: 1px solid #e5e2de;
+  padding: 40px 24px;
+  background: white;
+  text-align: center;
 }
 
-.step-icon {
-  font-size: 36px;
-  display: block;
-  margin-bottom: 16px;
-}
-
-.step h3 {
-  font-size: 16px;
-  font-weight: 500;
-  margin: 0 0 8px;
+.step-num {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 28px;
+  font-weight: 300;
   color: #1a1a1a;
+  display: block;
+  margin-bottom: 24px;
 }
 
-.step p {
-  font-size: 14px;
+.step-card h3 {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  color: #1a1a1a;
+  margin: 0 0 16px;
+}
+
+.step-card p {
+  font-size: 13px;
   color: #5a5550;
-  line-height: 1.5;
+  line-height: 1.6;
   margin: 0;
 }
 
-.tech-note {
+.tech-footer {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  padding-top: 40px;
+  border-top: 1px solid #e5e2de;
   max-width: 600px;
   margin: 0 auto;
-  padding: 20px 24px;
-  background: rgba(154, 123, 79, 0.08);
-  border-left: 3px solid #9a7b4f;
-  text-align: left;
-  font-size: 13px;
-  color: #5a5550;
 }
 
-.tech-note strong {
-  color: #9a7b4f;
+.tech-item {
+  text-align: center;
 }
 
-@media (max-width: 600px) {
+.tech-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: #8a8580;
+  margin-bottom: 6px;
+}
+
+.tech-value {
+  font-size: 12px;
+  color: #1a1a1a;
+}
+
+@media (max-width: 800px) {
+  .steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
   .how-it-works {
-    padding: 40px 20px;
+    padding: 50px 20px;
   }
   
   .steps {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .step-card {
+    padding: 30px 20px;
+  }
+  
+  .tech-footer {
+    flex-direction: column;
     gap: 24px;
   }
 }

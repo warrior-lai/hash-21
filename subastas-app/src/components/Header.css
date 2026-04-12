@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   height: 56px;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid #e5e2de;
   display: flex;
@@ -23,7 +23,7 @@
 .back-link {
   color: #8a8580;
   text-decoration: none;
-  font-size: 13px;
+  font-size: 12px;
   transition: color 0.2s;
 }
 
@@ -47,7 +47,21 @@
 .header-right {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
+}
+
+.lang-btn {
+  background: transparent;
+  border: 1px solid #e5e2de;
+  padding: 6px 12px;
+  font-size: 10px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  color: #1a1a1a;
+}
+
+.lang-btn:hover {
+  border-color: #1a1a1a;
 }
 
 .relay-status {
@@ -62,54 +76,54 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
+  background: #8a8580;
 }
 
-.retry-btn {
-  background: none;
-  border: none;
-  color: #9a7b4f;
-  font-size: 11px;
-  cursor: pointer;
-  text-decoration: underline;
+.relay-dot[data-status="connecting"] {
+  background: #d4a84b;
+}
+
+.relay-dot[data-status="connected"] {
+  background: #5a8a5a;
+}
+
+.relay-dot[data-status="error"] {
+  background: #8a4a4a;
 }
 
 .create-btn {
-  background: #9a7b4f;
-  color: white;
+  background: transparent;
   border: none;
-  padding: 10px 20px;
-  font-size: 12px;
+  padding: 8px 0;
+  font-size: 11px;
   letter-spacing: 1px;
-  text-transform: uppercase;
   cursor: pointer;
-  font-family: inherit;
+  color: #1a1a1a;
   font-weight: 500;
-  transition: background 0.2s;
 }
 
 .create-btn:hover {
-  background: #8a6b3f;
+  color: #9a7b4f;
 }
 
 .connect-btn {
-  background: #9a7b4f;
-  color: white;
-  border: none;
-  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid #e5e2de;
+  color: #1a1a1a;
+  padding: 8px 16px;
   font-size: 11px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
+  letter-spacing: 0.5px;
   cursor: pointer;
   font-family: inherit;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 
 .connect-btn:hover {
-  background: #8a6b3f;
+  border-color: #1a1a1a;
 }
 
 .connect-btn:disabled {
-  background: #ccc;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -118,12 +132,13 @@
 }
 
 .user-btn {
-  background: #f5f4f2;
-  border: 1px solid #e5e2de;
-  padding: 8px 14px;
+  background: transparent;
+  border: none;
+  padding: 8px 0;
   font-size: 12px;
   cursor: pointer;
   font-family: monospace;
+  color: #1a1a1a;
 }
 
 .dropdown {
@@ -134,7 +149,7 @@
   background: white;
   border: 1px solid #e5e2de;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  min-width: 160px;
+  min-width: 120px;
 }
 
 .dropdown button {
@@ -144,7 +159,8 @@
   border: none;
   background: none;
   text-align: left;
-  font-size: 13px;
+  font-size: 11px;
+  letter-spacing: 1px;
   cursor: pointer;
 }
 
@@ -152,16 +168,18 @@
   background: #f5f4f2;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .header {
     padding: 0 16px;
   }
   
-  .back-link {
+  .back-link,
+  .lang-btn,
+  .relay-status span:not(.relay-dot) {
     display: none;
   }
   
-  .relay-text {
-    display: none;
+  .header-right {
+    gap: 12px;
   }
 }
