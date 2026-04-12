@@ -1,14 +1,22 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 
 export function useAuctions(nostr) {
   const [auctions, setAuctions] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const nostrRef = useRef(nostr)
+  
+  // Keep ref updated
+  useEffect(() => {
+    nostrRef.current = nostr
+  }, [nostr])
 
   // Fetch auctions from relays
   const fetchAuctions = useCallback(() => {
-    console.log('[Auctions] fetchAuctions called, status:', nostr.status)
-    if (nostr.status !== 'connected') {
+    const n = nostrRef.current
+    console.log('[Auctions] fetchAuctions called')
+    
+    if (!n || n.status !== 'connected') {
       console.log('[Auctions] Not connected, skipping')
       return
     }
@@ -27,9 +35,9 @@ export function useAuctions(nostr) {
     const timeout = setTimeout(() => {
       console.log('[Auctions] Timeout reached, found:', newAuctions.length, 'auctions')
       setLoading(false)
-    }, 3000)  // Reduced to 3 seconds
+    }, 3000)
 
-    const unsub = nostr.subscribe(filters, (event) => {
+    const unsub = n.subscribe(filters, (event) => {
       if (seen.has(event.id)) return
       seen.add(event.id)
 
@@ -67,11 +75,12 @@ export function useAuctions(nostr) {
       clearTimeout(timeout)
       unsub?.()
     }
-  }, [nostr])
+  }, [])  // Empty deps - uses ref
 
   // Create auction
   const createAuction = useCallback(async ({ title, description, image, startPrice, reservePrice, duration }) => {
-    if (!nostr.user) throw new Error('Conectá tu Nostr primero')
+    const n = nostrRef.current
+    if (!n?.user) throw new Error('Conectá tu Nostr primero')
 
     const now = Math.floor(Date.now() / 1000)
     const auctionId = `${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${now}`
@@ -96,7 +105,7 @@ export function useAuctions(nostr) {
       event.tags.push(['reserve_price', reservePrice.toString()])
     }
 
-    const signed = await nostr.publish(event)
+    const signed = await n.publish(event)
     
     // Add to local state immediately
     const newAuction = {
@@ -116,11 +125,12 @@ export function useAuctions(nostr) {
     
     setAuctions(prev => [newAuction, ...prev])
     return newAuction
-  }, [nostr])
+  }, [])  // Empty deps - uses ref
 
   // Place bid
   const placeBid = useCallback(async (auctionId, amount) => {
-    if (!nostr.user) throw new Error('Conectá tu Nostr primero')
+    const n = nostrRef.current
+    if (!n?.user) throw new Error('Conectá tu Nostr primero')
 
     const now = Math.floor(Date.now() / 1000)
     
@@ -135,7 +145,7 @@ export function useAuctions(nostr) {
       content: `Bid ${amount} sats`
     }
 
-    await nostr.publish(event)
+    await n.publish(event)
 
     // Update local state
     setAuctions(prev => prev.map(a => {
@@ -144,29 +154,28 @@ export function useAuctions(nostr) {
       }
       return a
     }))
-  }, [nostr])
+  }, [])  // Empty deps - uses ref
 
-  // Auto-fetch when connected
+  // Auto-fetch when connected - only depends on status string
   useEffect(() => {
-    console.log('[Auctions] useEffect triggered, nostr.status:', nostr.status)
+    console.log('[Auctions] useEffect triggered, status:', nostr.status)
     
     if (nostr.status === 'connected') {
       console.log('[Auctions] Connected! Calling fetchAuctions')
-      const cleanup = fetchAuctions()
-      return cleanup
+      fetchAuctions()
     } else if (nostr.status === 'error' || nostr.status === 'disconnected') {
       console.log('[Auctions] Error or disconnected, stopping loading')
       setLoading(false)
     } else {
       console.log('[Auctions] Still connecting, setting 4s timeout')
-      // Only show loading for max 4 seconds
       const timeout = setTimeout(() => {
         console.log('[Auctions] Timeout: stopping loading')
         setLoading(false)
       }, 4000)
       return () => clearTimeout(timeout)
     }
-  }, [nostr.status, fetchAuctions])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nostr.status])  // Only status string, not the whole object
 
   return {
     auctions,
