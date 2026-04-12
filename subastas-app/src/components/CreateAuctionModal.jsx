@@ -39,6 +39,12 @@ export function CreateAuctionModal({ onClose, onCreate }) {
       return
     }
 
+    // Check if extension available
+    if (typeof window.nostr === 'undefined') {
+      setError('Necesitás una extensión Nostr (Alby). Instalá desde getalby.com')
+      return
+    }
+
     setLoading(true)
     try {
       await onCreate({

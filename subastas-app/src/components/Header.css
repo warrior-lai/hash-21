@@ -73,6 +73,24 @@
   text-decoration: underline;
 }
 
+.create-btn {
+  background: #9a7b4f;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.create-btn:hover {
+  background: #8a6b3f;
+}
+
 .connect-btn {
   background: #9a7b4f;
   color: white;

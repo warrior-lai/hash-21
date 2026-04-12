@@ -82,8 +82,12 @@ export function useAuctions(nostr) {
 
   // Create auction
   const createAuction = useCallback(async ({ title, description, image, startPrice, reservePrice, duration }) => {
-    const n = nostrRef.current
-    if (!n?.user) throw new Error('Conectá tu Nostr primero')
+    if (typeof window.nostr === 'undefined') {
+      throw new Error('Necesitás extensión Nostr (Alby)')
+    }
+    
+    // Get pubkey directly from extension
+    const pubkey = await window.nostr.getPublicKey()
 
     const now = Math.floor(Date.now() / 1000)
     const auctionId = `${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${now}`
@@ -109,12 +113,20 @@ export function useAuctions(nostr) {
       event.tags.push(['reserve_price', reservePrice.toString()])
     }
 
-    const signed = await n.publish(event)
+    // Sign event
+    const signedEvent = await window.nostr.signEvent(event)
+    if (!signedEvent?.sig) throw new Error('Firma cancelada')
+    
+    // Publish to relays
+    const n = nostrRef.current
+    if (n?.publish) {
+      await n.publish(event)
+    }
     
     // Add to local state immediately
     const newAuction = {
-      id: signed.id,
-      pubkey: signed.pubkey,
+      id: signedEvent.id,
+      pubkey: signedEvent.pubkey,
       title,
       description,
       image,

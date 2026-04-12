@@ -45,6 +45,13 @@ export function Header({ nostr, onCreateClick }) {
           )}
         </div>
 
+        <button 
+          className="create-btn"
+          onClick={onCreateClick}
+        >
+          + Crear Subasta
+        </button>
+
         {nostr.user ? (
           <div className="user-menu">
             <button className="user-btn" onClick={() => setShowMenu(!showMenu)}>
@@ -52,7 +59,6 @@ export function Header({ nostr, onCreateClick }) {
             </button>
             {showMenu && (
               <div className="dropdown">
-                <button onClick={onCreateClick}>+ Crear Subasta</button>
                 <button onClick={nostr.logout}>Desconectar</button>
               </div>
             )}
