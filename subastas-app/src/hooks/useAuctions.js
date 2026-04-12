@@ -4,6 +4,7 @@ export function useAuctions(nostr) {
   const [auctions, setAuctions] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [showAll, setShowAll] = useState(false)
   const nostrRef = useRef(nostr)
   
   // Keep ref updated
@@ -29,8 +30,10 @@ export function useAuctions(nostr) {
     const seen = new Set()
     const newAuctions = []
 
-    // Subscribe to Kind 30020 (auctions) - only Hash21 tagged
-    const filters = [{ kinds: [30020], '#t': ['hash21'], limit: 50 }]
+    // Subscribe to Kind 30020 (auctions)
+    const filters = showAll 
+      ? [{ kinds: [30020], limit: 100 }]
+      : [{ kinds: [30020], '#t': ['hash21'], limit: 50 }]
     
     const timeout = setTimeout(() => {
       console.log('[Auctions] Timeout reached, found:', newAuctions.length, 'auctions')
@@ -176,12 +179,14 @@ export function useAuctions(nostr) {
       return () => clearTimeout(timeout)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nostr.status])  // Only status string, not the whole object
+  }, [nostr.status, showAll])  // Re-fetch when toggling showAll
 
   return {
     auctions,
     loading,
     error,
+    showAll,
+    setShowAll,
     fetchAuctions,
     createAuction,
     placeBid

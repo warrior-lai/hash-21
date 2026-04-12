@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { AuctionCard } from './AuctionCard'
 import './AuctionList.css'
 
-export function AuctionList({ auctions, loading, onSelect }) {
+export function AuctionList({ auctions, loading, showAll, onToggleShowAll, onSelect }) {
   const [filter, setFilter] = useState('all')
 
   const filtered = auctions.filter(a => {
@@ -15,7 +15,23 @@ export function AuctionList({ auctions, loading, onSelect }) {
   return (
     <section className="auction-list">
       <div className="list-header">
-        <h2>Subastas</h2>
+        <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+          <h2>Subastas</h2>
+          <button 
+            onClick={onToggleShowAll}
+            style={{
+              background: showAll ? '#9a7b4f' : 'transparent',
+              color: showAll ? 'white' : '#8a8580',
+              border: '1px solid #e5e2de',
+              padding: '6px 12px',
+              fontSize: '11px',
+              cursor: 'pointer',
+              borderRadius: '4px'
+            }}
+          >
+            {showAll ? '🌐 Red Nostr' : 'Ver toda la red'}
+          </button>
+        </div>
         <div className="filters">
           {['all', 'active', 'ended'].map(f => (
             <button

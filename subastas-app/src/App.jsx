@@ -9,7 +9,7 @@ import './App.css'
 
 function App() {
   const nostr = useNostr()
-  const { auctions, loading, createAuction, placeBid } = useAuctions(nostr)
+  const { auctions, loading, showAll, setShowAll, createAuction, placeBid } = useAuctions(nostr)
   const [showCreate, setShowCreate] = useState(false)
   const [selectedAuction, setSelectedAuction] = useState(null)
 
@@ -23,6 +23,8 @@ function App() {
       <AuctionList
         auctions={auctions}
         loading={loading}
+        showAll={showAll}
+        onToggleShowAll={() => setShowAll(!showAll)}
         onSelect={setSelectedAuction}
       />
 
