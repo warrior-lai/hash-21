@@ -32,12 +32,13 @@ export function AuctionList({ auctions, loading, onSelect }) {
       {loading ? (
         <div className="loading-state">
           <div className="spinner"></div>
-          <p>Cargando subastas...</p>
+          <p>Conectando a relays Nostr...</p>
         </div>
       ) : filtered.length === 0 ? (
         <div className="empty-state">
           <span className="empty-icon">🖼</span>
-          <p>No hay subastas {filter !== 'all' ? (filter === 'active' ? 'activas' : 'finalizadas') : ''}</p>
+          <p>No hay subastas {filter !== 'all' ? (filter === 'active' ? 'activas' : 'finalizadas') : 'publicadas aún'}</p>
+          <p style={{fontSize: '13px', marginTop: '8px', color: '#8a8580'}}>Sé el primero en crear una</p>
         </div>
       ) : (
         <div className="auction-grid">

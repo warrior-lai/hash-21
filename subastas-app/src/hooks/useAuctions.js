@@ -148,8 +148,12 @@ export function useAuctions(nostr) {
     if (nostr.status === 'connected') {
       const cleanup = fetchAuctions()
       return cleanup
+    } else if (nostr.status === 'error' || nostr.status === 'disconnected') {
+      setLoading(false)
     } else {
-      setLoading(nostr.status === 'connecting')
+      // Only show loading for max 6 seconds
+      const timeout = setTimeout(() => setLoading(false), 6000)
+      return () => clearTimeout(timeout)
     }
   }, [nostr.status, fetchAuctions])
 
