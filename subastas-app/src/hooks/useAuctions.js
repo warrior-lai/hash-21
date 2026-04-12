@@ -7,8 +7,13 @@ export function useAuctions(nostr) {
 
   // Fetch auctions from relays
   const fetchAuctions = useCallback(() => {
-    if (nostr.status !== 'connected') return
+    console.log('[Auctions] fetchAuctions called, status:', nostr.status)
+    if (nostr.status !== 'connected') {
+      console.log('[Auctions] Not connected, skipping')
+      return
+    }
 
+    console.log('[Auctions] Starting fetch...')
     setLoading(true)
     setError(null)
 
@@ -20,11 +25,9 @@ export function useAuctions(nostr) {
     const filters = [{ kinds: [30020], limit: 50 }]
     
     const timeout = setTimeout(() => {
+      console.log('[Auctions] Timeout reached, found:', newAuctions.length, 'auctions')
       setLoading(false)
-      if (newAuctions.length === 0) {
-        // No auctions found - that's ok, show empty state
-      }
-    }, 5000)
+    }, 3000)  // Reduced to 3 seconds
 
     const unsub = nostr.subscribe(filters, (event) => {
       if (seen.has(event.id)) return
@@ -145,14 +148,22 @@ export function useAuctions(nostr) {
 
   // Auto-fetch when connected
   useEffect(() => {
+    console.log('[Auctions] useEffect triggered, nostr.status:', nostr.status)
+    
     if (nostr.status === 'connected') {
+      console.log('[Auctions] Connected! Calling fetchAuctions')
       const cleanup = fetchAuctions()
       return cleanup
     } else if (nostr.status === 'error' || nostr.status === 'disconnected') {
+      console.log('[Auctions] Error or disconnected, stopping loading')
       setLoading(false)
     } else {
-      // Only show loading for max 6 seconds
-      const timeout = setTimeout(() => setLoading(false), 6000)
+      console.log('[Auctions] Still connecting, setting 4s timeout')
+      // Only show loading for max 4 seconds
+      const timeout = setTimeout(() => {
+        console.log('[Auctions] Timeout: stopping loading')
+        setLoading(false)
+      }, 4000)
       return () => clearTimeout(timeout)
     }
   }, [nostr.status, fetchAuctions])
