@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useProfile } from '../utils/profile'
 import { useNip05Verification } from '../utils/nip05'
+import { useAuctionDetails, formatRelativeTime } from '../hooks/useAuctionDetails'
 import './Modal.css'
 
 function formatTimeLeft(endTime) {
@@ -33,6 +34,11 @@ export function AuctionDetailModal({ auction, onClose, onBid, user }) {
   const { verified } = useNip05Verification(nip05, auction.pubkey)
   const artistName = auction.artist || profile?.displayName || profile?.name || auction.pubkey?.slice(0, 8) + '...'
   const lightningAddress = auction.lnaddr || profile?.lud16 || ''
+  
+  const { bids, comments, loading: detailsLoading, postComment } = useAuctionDetails(auction.id)
+  const [commentText, setCommentText] = useState('')
+  const [postingComment, setPostingComment] = useState(false)
+  const [activeTab, setActiveTab] = useState('bids') // 'bids' | 'comments'
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -174,7 +180,6 @@ export function AuctionDetailModal({ auction, onClose, onBid, user }) {
                     </p>
                     <button
                       onClick={() => {
-                        // Open Lightning payment
                         const lnurl = `lightning:${lightningAddress}?amount=${auction.currentBid * 1000}`
                         window.open(lnurl, '_blank')
                       }}
@@ -202,9 +207,212 @@ export function AuctionDetailModal({ auction, onClose, onBid, user }) {
                 )}
               </div>
             )}
+
+            {/* Tabs: Bid History / Comments */}
+            <div style={{ marginTop: '24px', borderTop: '1px solid #e5e0d8', paddingTop: '20px' }}>
+              <div style={{ display: 'flex', gap: '0', marginBottom: '16px', borderBottom: '1px solid #e5e0d8' }}>
+                <button
+                  onClick={() => setActiveTab('bids')}
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    background: 'none',
+                    border: 'none',
+                    borderBottom: activeTab === 'bids' ? '2px solid #9a7b4f' : '2px solid transparent',
+                    color: activeTab === 'bids' ? '#9a7b4f' : '#8a8580',
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    cursor: 'pointer'
+                  }}
+                >
+                  ↿ Historial de Pujas ({bids.length})
+                </button>
+                <button
+                  onClick={() => setActiveTab('comments')}
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    background: 'none',
+                    border: 'none',
+                    borderBottom: activeTab === 'comments' ? '2px solid #9a7b4f' : '2px solid transparent',
+                    color: activeTab === 'comments' ? '#9a7b4f' : '#8a8580',
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    cursor: 'pointer'
+                  }}
+                >
+                  💬 Comentarios ({comments.length})
+                </button>
+              </div>
+
+              {/* Bid History Tab */}
+              {activeTab === 'bids' && (
+                <div>
+                  {/* Stats */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+                    <div style={{ background: '#f5f4f2', padding: '16px', borderRadius: '8px', textAlign: 'center' }}>
+                      <div style={{ fontSize: '10px', color: '#8a8580', textTransform: 'uppercase', marginBottom: '4px' }}>
+                        ⚡ Puja más alta
+                      </div>
+                      <div style={{ fontSize: '18px', fontWeight: '500', color: '#9a7b4f' }}>
+                        {bids.length > 0 ? bids[0].amount.toLocaleString() : auction.currentBid.toLocaleString()} sats
+                      </div>
+                    </div>
+                    <div style={{ background: '#f5f4f2', padding: '16px', borderRadius: '8px', textAlign: 'center' }}>
+                      <div style={{ fontSize: '10px', color: '#8a8580', textTransform: 'uppercase', marginBottom: '4px' }}>
+                        👥 Participantes
+                      </div>
+                      <div style={{ fontSize: '18px', fontWeight: '500' }}>
+                        {new Set(bids.map(b => b.pubkey)).size}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bid list */}
+                  {detailsLoading ? (
+                    <p style={{ color: '#8a8580', fontSize: '13px', textAlign: 'center', padding: '20px' }}>Cargando...</p>
+                  ) : bids.length === 0 ? (
+                    <p style={{ color: '#8a8580', fontSize: '13px', textAlign: 'center', padding: '20px' }}>Aún no hay pujas</p>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '200px', overflowY: 'auto' }}>
+                      {bids.map((bid, idx) => (
+                        <div key={bid.id} style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '12px',
+                          padding: '12px',
+                          background: idx === 0 ? 'rgba(154, 123, 79, 0.1)' : '#f5f4f2',
+                          borderRadius: '8px',
+                          border: idx === 0 ? '1px solid #9a7b4f' : 'none'
+                        }}>
+                          <span style={{ color: '#8a8580', fontSize: '12px', width: '24px' }}>#{idx + 1}</span>
+                          {bid.profile?.picture ? (
+                            <img src={bid.profile.picture} alt="" style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }} />
+                          ) : (
+                            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#e5e0d8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', color: '#8a8580' }}>
+                              {(bid.profile?.name || bid.pubkey)?.[0]?.toUpperCase() || '?'}
+                            </div>
+                          )}
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '13px', fontWeight: '500' }}>
+                              {bid.profile?.displayName || bid.profile?.name || bid.pubkey.slice(0, 8) + '...'}
+                            </div>
+                            <div style={{ fontSize: '11px', color: '#8a8580' }}>
+                              {formatRelativeTime(bid.createdAt)}
+                            </div>
+                          </div>
+                          <div style={{ textAlign: 'right' }}>
+                            <div style={{ fontSize: '14px', fontWeight: '500', color: '#9a7b4f' }}>
+                              ⚡ {bid.amount.toLocaleString()}
+                            </div>
+                            {idx === 0 && (
+                              <span style={{ fontSize: '10px', background: '#9a7b4f', color: 'white', padding: '2px 6px', borderRadius: '4px' }}>Líder</span>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Comments Tab */}
+              {activeTab === 'comments' && (
+                <div>
+                  {/* Add comment */}
+                  {user && (
+                    <div style={{ marginBottom: '16px' }}>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <input
+                          type="text"
+                          value={commentText}
+                          onChange={e => setCommentText(e.target.value)}
+                          placeholder="Agregar comentario..."
+                          style={{
+                            flex: 1,
+                            padding: '10px 14px',
+                            border: '1px solid #e5e0d8',
+                            borderRadius: '8px',
+                            fontSize: '13px'
+                          }}
+                          onKeyDown={e => {
+                            if (e.key === 'Enter' && commentText.trim()) {
+                              handlePostComment()
+                            }
+                          }}
+                        />
+                        <button
+                          onClick={handlePostComment}
+                          disabled={postingComment || !commentText.trim()}
+                          style={{
+                            padding: '10px 16px',
+                            background: '#9a7b4f',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            fontSize: '13px',
+                            cursor: 'pointer',
+                            opacity: postingComment || !commentText.trim() ? 0.5 : 1
+                          }}
+                        >
+                          {postingComment ? '...' : 'Enviar'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Comment list */}
+                  {detailsLoading ? (
+                    <p style={{ color: '#8a8580', fontSize: '13px', textAlign: 'center', padding: '20px' }}>Cargando...</p>
+                  ) : comments.length === 0 ? (
+                    <p style={{ color: '#8a8580', fontSize: '13px', textAlign: 'center', padding: '20px' }}>Aún no hay comentarios</p>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '200px', overflowY: 'auto' }}>
+                      {comments.map(comment => (
+                        <div key={comment.id} style={{ display: 'flex', gap: '10px' }}>
+                          {comment.profile?.picture ? (
+                            <img src={comment.profile.picture} alt="" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
+                          ) : (
+                            <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#e5e0d8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', color: '#8a8580' }}>
+                              {(comment.profile?.name || comment.pubkey)?.[0]?.toUpperCase() || '?'}
+                            </div>
+                          )}
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '12px', marginBottom: '4px' }}>
+                              <span style={{ fontWeight: '500' }}>
+                                {comment.profile?.displayName || comment.profile?.name || comment.pubkey.slice(0, 8) + '...'}
+                              </span>
+                              <span style={{ color: '#8a8580', marginLeft: '8px' }}>
+                                {formatRelativeTime(comment.createdAt)}
+                              </span>
+                            </div>
+                            <div style={{ fontSize: '13px', color: '#1a1a1a' }}>
+                              {comment.content}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
     </div>
   )
+
+  async function handlePostComment() {
+    if (!commentText.trim() || postingComment) return
+    setPostingComment(true)
+    try {
+      await postComment(commentText)
+      setCommentText('')
+    } catch (e) {
+      alert('Error: ' + e.message)
+    } finally {
+      setPostingComment(false)
+    }
+  }
 }
