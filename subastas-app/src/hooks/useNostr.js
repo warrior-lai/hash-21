@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { nip19 } from 'nostr-tools'
+import { checkSession, saveSession, clearSession } from '../utils/validation'
 
 const RELAYS = [
-  'wss://relay.damus.io',
   'wss://nos.lol',
-  'wss://relay.nostr.band',
-  'wss://relay.primal.net'
+  'wss://relay.primal.net',
+  'wss://relay.snort.social',
+  'wss://relay.damus.io'
 ]
 
 const CONNECTION_TIMEOUT = 5000
@@ -95,7 +96,7 @@ export function useNostr() {
     const npub = nip19.npubEncode(pubkey)
     const userData = { pubkey, npub, method: 'extension' }
     setUser(userData)
-    localStorage.setItem('hash21-user', JSON.stringify(userData))
+    saveSession(userData)
     return userData
   }, [])
 
@@ -106,7 +107,7 @@ export function useNostr() {
       if (type !== 'npub') throw new Error('Formato inválido')
       const userData = { pubkey: data, npub: npubInput, method: 'npub' }
       setUser(userData)
-      localStorage.setItem('hash21-user', JSON.stringify(userData))
+      saveSession(userData)
       return userData
     } catch (e) {
       throw new Error('npub inválido')
@@ -116,7 +117,7 @@ export function useNostr() {
   // Logout
   const logout = useCallback(() => {
     setUser(null)
-    localStorage.removeItem('hash21-user')
+    clearSession()
   }, [])
 
   // Publish event
@@ -182,11 +183,9 @@ export function useNostr() {
     console.log('[Nostr] useEffect mounting, calling connect()')
     connect()
 
-    const savedUser = localStorage.getItem('hash21-user')
+    const savedUser = checkSession()
     if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser))
-      } catch {}
+      setUser(savedUser)
     }
 
     return () => {

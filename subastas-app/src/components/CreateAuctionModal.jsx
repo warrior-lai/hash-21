@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { validateImageUrl, validateFile, checkRateLimit, setLastPublish } from '../utils/validation'
 import './Modal.css'
 
 const DURATIONS = [
@@ -48,16 +49,17 @@ export function CreateAuctionModal({ onClose, onCreate }) {
   }
 
   const handleFile = (file) => {
-    if (file.size > 10 * 1024 * 1024) {
-      setError('La imagen debe ser menor a 10MB')
-      return
+    try {
+      validateFile(file)
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setPreviewUrl(e.target.result)
+        setForm({ ...form, image: e.target.result })
+      }
+      reader.readAsDataURL(file)
+    } catch (err) {
+      setError(err.message)
     }
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      setPreviewUrl(e.target.result)
-      setForm({ ...form, image: e.target.result })
-    }
-    reader.readAsDataURL(file)
   }
 
   const handleFileInput = (e) => {
@@ -78,8 +80,25 @@ export function CreateAuctionModal({ onClose, onCreate }) {
       setError('Ingresá URL de la imagen')
       return
     }
+    // Validate URL if it's not a data URL (uploaded file)
+    if (!form.image.startsWith('data:') && !validateImageUrl(form.image)) {
+      setError('URL inválida. Debe ser http:// o https://')
+      return
+    }
     if (!form.startPrice || parseInt(form.startPrice) < 1000) {
       setError('El precio mínimo es 1000 sats')
+      return
+    }
+    if (parseInt(form.startPrice) > 999999999) {
+      setError('El precio máximo es 999,999,999 sats')
+      return
+    }
+
+    // Rate limiting
+    try {
+      checkRateLimit()
+    } catch (err) {
+      setError(err.message)
       return
     }
 
@@ -101,6 +120,7 @@ export function CreateAuctionModal({ onClose, onCreate }) {
         reservePrice: form.reservePrice ? parseInt(form.reservePrice) : 0,
         duration: form.duration
       })
+      setLastPublish()
       onClose()
     } catch (e) {
       setError(e.message)
@@ -125,6 +145,8 @@ export function CreateAuctionModal({ onClose, onCreate }) {
               value={form.title}
               onChange={e => setForm({ ...form, title: e.target.value })}
               placeholder="Nombre de la obra"
+              maxLength={100}
+              required
             />
           </div>
 
@@ -171,6 +193,7 @@ export function CreateAuctionModal({ onClose, onCreate }) {
                   setPreviewUrl(e.target.value)
                 }}
                 placeholder="https://nostr.build/..."
+                maxLength={500}
                 style={{ marginTop: '8px' }}
               />
             )}
@@ -183,6 +206,7 @@ export function CreateAuctionModal({ onClose, onCreate }) {
               onChange={e => setForm({ ...form, description: e.target.value })}
               placeholder="Técnica, medidas, historia..."
               rows={3}
+              maxLength={1000}
             />
           </div>
 
@@ -194,6 +218,7 @@ export function CreateAuctionModal({ onClose, onCreate }) {
                 value={form.artistName}
                 onChange={e => setForm({ ...form, artistName: e.target.value })}
                 placeholder="Abstract Lai"
+                maxLength={100}
               />
             </div>
             <div className="form-group">
@@ -203,6 +228,7 @@ export function CreateAuctionModal({ onClose, onCreate }) {
                 value={form.lightningAddress}
                 onChange={e => setForm({ ...form, lightningAddress: e.target.value })}
                 placeholder="artista@getalby.com"
+                maxLength={100}
               />
             </div>
           </div>
@@ -215,7 +241,8 @@ export function CreateAuctionModal({ onClose, onCreate }) {
                 value={form.startPrice}
                 onChange={e => setForm({ ...form, startPrice: e.target.value })}
                 placeholder="10000"
-                min="1000"
+                min={1000}
+                max={999999999}
               />
             </div>
             <div className="form-group">
@@ -225,6 +252,8 @@ export function CreateAuctionModal({ onClose, onCreate }) {
                 value={form.reservePrice}
                 onChange={e => setForm({ ...form, reservePrice: e.target.value })}
                 placeholder="Mínimo para venta"
+                min={0}
+                max={999999999}
               />
             </div>
           </div>
