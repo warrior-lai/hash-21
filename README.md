@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.4.0-blue" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.5.0-blue" alt="Version">
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
   <img src="https://img.shields.io/badge/Bitcoin-Lightning-orange" alt="Lightning">
   <img src="https://img.shields.io/badge/Nostr-NIP--57-purple" alt="Nostr">
@@ -74,9 +74,11 @@ Hash21 no es una herramienta. Es un sistema que desde el día 1 está en movimie
 | 👤 **Sistema de Usuarios** | Roles (admin/artist/designer), registro abierto |
 | 📄 **Certificados PDF** | Diseño premium, QR verificable, listo para enmarcar |
 | ✍️ **Registro de Creadores** | Onboarding simple para artistas y diseñadores |
-| 🌍 **Bilingüe** | Español / English |
+| 🌍 **Bilingüe** | Español / English con toggle dinámico |
 | 📱 **Responsive** | Mobile + desktop |
-| ⚡ **Subastas** | Sobre nostr|
+| ⚡ **Subastas Nostr** | App descentralizada de subastas con pujas, comentarios e historial |
+| 🔐 **Login NIP-07/46** | Autenticación con extensión Nostr o Bunker remoto |
+| 👤 **Perfiles Kind 0** | Avatar y nombre del artista desde metadata Nostr |
 
 ---
 
@@ -85,6 +87,7 @@ Hash21 no es una herramienta. Es un sistema que desde el día 1 está en movimie
 | Recurso | URL |
 |---------|-----|
 | **Producción** | https://hash21.studio |
+| **Subastas** | https://subastas.hash21.studio |
 | **API Backend** | https://hash21-backend.vercel.app/api |
 | **Verificación** | https://hash21.studio/verify |
 | **Tienda** | https://hash21.studio/shop |
@@ -243,11 +246,14 @@ Sistema de subastas descentralizadas sobre el protocolo Nostr.
 │               subastas.hash21.studio                   │
 │                    (Vercel)                            │
 │                                                        │
-│  Stack: Vite + React                                   │
-│  ├── src/hooks/useNostr.js    (conexión relays)       │
-│  ├── src/hooks/useAuctions.js (CRUD subastas)        │
-│  ├── src/utils/nip05.js       (verificación NIP-05)  │
-│  └── src/utils/validation.js  (seguridad)            │
+│  Stack: Vite + React + Vitest                           │
+│  ├── src/hooks/useNostr.js        (conexión relays)   │
+│  ├── src/hooks/useAuctions.js     (CRUD subastas)    │
+│  ├── src/hooks/useAuctionDetails  (pujas/comentarios)│
+│  ├── src/utils/nip05.js           (verificación)     │
+│  ├── src/utils/profile.js         (Kind 0 metadata)  │
+│  ├── src/utils/validation.js      (seguridad)        │
+│  └── src/i18n/                    (ES/EN traducciones)│
 └─────────────────────────────────────────────────────┘
                          │
                          ▼
@@ -278,6 +284,8 @@ Sistema de subastas descentralizadas sobre el protocolo Nostr.
 |------|------|-------------|
 | **30020** | Subasta | Evento parameterized replaceable con datos de subasta |
 | **1021** | Puja | Bid en una subasta específica |
+| **1** | Comentario | Comentario en subasta (tag `e` + `t:hash21-comment`) |
+| **0** | Metadata | Perfil del artista (avatar, nombre, nip05, lud16) |
 | **1022** | Resultado | Cierre/ganador de subasta |
 
 ### Estructura de Evento de Subasta (Kind 30020)
@@ -413,12 +421,19 @@ Identidad soberana para artistas:
 - 📝 **Crear subasta con firma Nostr** — NIP-07 (Alby, nos2x)
 - 💰 **Pujar con firma Nostr** — Kind 1021
 - ✅ **NIP-05 verificación** — Badge dorado en artistas verificados
-- 🔐 **Login Nostr en admin/register** — Sin email requerido
+- 🔐 **Login Nostr en admin/register** — Sin email requerido (NIP-07)
+- 🔐 **Login con Bunker (NIP-46)** — Tercer método de login para signing remoto
 - 🛡️ **Seguridad** — CSP, rate limiting, validaciones, sesión 24h
+- 👤 **Perfil artista Kind 0** — Avatar, nombre y NIP-05 desde metadata Nostr
+- ↿ **Historial de pujas** — Lista de todas las pujas con perfil del pujador
+- 💬 **Comentarios** — Sistema de comentarios en cada subasta (Kind 1)
+- ⚡ **Pago Lightning** — Botón de pago directo al finalizar subasta
+- 🌐 **i18n ES/EN** — Toggle funcional con traducciones completas
+- 🖼️ **OG image** — Imagen de preview para compartir en redes
+- 🚨 **Página 404 custom** — Diseño consistente con la marca
+- 🧪 **Tests Vitest** — Cobertura para i18n, validación, NIP-05
 
 ##### Pendiente:
-- 🌐 **i18n toggle ES/EN** — Botón funcional (traducciones listas)
-- 🖼️ **OG image** — Imagen para compartir en redes
 - 🌙 **Dark mode toggle** — Tema oscuro opcional
 - 📱 **Service Worker** — PWA completo offline
 
