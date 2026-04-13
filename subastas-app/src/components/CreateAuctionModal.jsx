@@ -15,6 +15,8 @@ export function CreateAuctionModal({ onClose, onCreate }) {
     title: '',
     description: '',
     image: '',
+    artistName: '',
+    lightningAddress: '',
     startPrice: '10000',
     reservePrice: '',
     duration: 86400
@@ -93,6 +95,8 @@ export function CreateAuctionModal({ onClose, onCreate }) {
         title: form.title.trim(),
         description: form.description.trim(),
         image: form.image.trim(),
+        artistName: form.artistName.trim(),
+        lightningAddress: form.lightningAddress.trim(),
         startPrice: parseInt(form.startPrice),
         reservePrice: form.reservePrice ? parseInt(form.reservePrice) : 0,
         duration: form.duration
@@ -180,6 +184,27 @@ export function CreateAuctionModal({ onClose, onCreate }) {
               placeholder="Técnica, medidas, historia..."
               rows={3}
             />
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>Nombre del artista</label>
+              <input
+                type="text"
+                value={form.artistName}
+                onChange={e => setForm({ ...form, artistName: e.target.value })}
+                placeholder="Abstract Lai"
+              />
+            </div>
+            <div className="form-group">
+              <label>Lightning Address</label>
+              <input
+                type="text"
+                value={form.lightningAddress}
+                onChange={e => setForm({ ...form, lightningAddress: e.target.value })}
+                placeholder="artista@getalby.com"
+              />
+            </div>
           </div>
 
           <div className="form-row">

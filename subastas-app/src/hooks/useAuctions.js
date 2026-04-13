@@ -81,7 +81,7 @@ export function useAuctions(nostr) {
   }, [])  // Empty deps - uses ref
 
   // Create auction
-  const createAuction = useCallback(async ({ title, description, image, startPrice, reservePrice, duration }) => {
+  const createAuction = useCallback(async ({ title, description, image, artistName, lightningAddress, startPrice, reservePrice, duration }) => {
     if (typeof window.nostr === 'undefined') {
       throw new Error('Necesitás extensión Nostr (Alby)')
     }
@@ -92,25 +92,27 @@ export function useAuctions(nostr) {
     const now = Math.floor(Date.now() / 1000)
     const auctionId = `${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${now}`
 
+    const tags = [
+      ['d', auctionId],
+      ['t', 'hash21'],
+      ['title', title],
+      ['summary', description || ''],
+      ['image', image],
+      ['start_price', startPrice.toString()],
+      ['currency', 'sats'],
+      ['start_time', now.toString()],
+      ['end_time', (now + duration).toString()]
+    ]
+
+    if (artistName) tags.push(['artist', artistName])
+    if (lightningAddress) tags.push(['lnaddr', lightningAddress])
+    if (reservePrice) tags.push(['reserve_price', reservePrice.toString()])
+
     const event = {
       kind: 30020,
       created_at: now,
-      tags: [
-        ['d', auctionId],
-        ['t', 'hash21'],  // Tag to identify Hash21 auctions
-        ['title', title],
-        ['summary', description || ''],
-        ['image', image],
-        ['start_price', startPrice.toString()],
-        ['currency', 'sats'],
-        ['start_time', now.toString()],
-        ['end_time', (now + duration).toString()]
-      ],
+      tags,
       content: description || title
-    }
-
-    if (reservePrice) {
-      event.tags.push(['reserve_price', reservePrice.toString()])
     }
 
     // Sign event
