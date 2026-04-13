@@ -1,32 +1,35 @@
+import { useLang } from '../i18n'
 import './HowItWorks.css'
 
 export function HowItWorks() {
+  const { t } = useLang()
+  
   const steps = [
     {
       num: '1',
-      title: 'CONECTÁ NOSTR',
-      desc: 'Tu clave pública es tu identidad. Sin emails, sin contraseñas.'
+      title: t('how.step1.title'),
+      desc: t('how.step1.desc')
     },
     {
       num: '2',
-      title: 'EXPLORÁ SUBASTAS',
-      desc: 'Obras de artistas verificados. Cada subasta es un evento Nostr.'
+      title: t('how.step2.title'),
+      desc: t('how.step2.desc')
     },
     {
       num: '3',
-      title: 'PUJÁ Y FIRMÁ',
-      desc: 'Tu puja queda registrada en los relays, firmada con tu clave.'
+      title: t('how.step3.title'),
+      desc: t('how.step3.desc')
     },
     {
       num: '4',
-      title: 'PAGÁ DIRECTO',
-      desc: 'Lightning invoice directo al artista. Cero intermediarios.'
+      title: t('how.step4.title'),
+      desc: t('how.step4.desc')
     }
   ]
 
   return (
     <section className="how-it-works">
-      <h2>Cómo Funciona</h2>
+      <h2>{t('how.title')}</h2>
       <p className="how-subtitle">Protocolo abierto, pagos directos, verificación criptográfica</p>
       
       <div className="steps">

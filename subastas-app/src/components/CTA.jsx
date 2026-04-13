@@ -1,19 +1,22 @@
+import { useLang } from '../i18n'
 import './CTA.css'
 
 export function CTA({ onCreateClick, isConnected }) {
+  const { t } = useLang()
+  
   return (
     <section className="cta-section">
-      <h2>¿Listo para empezar?</h2>
-      <p>Creá tu primera subasta en menos de un minuto</p>
+      <h2>{t('cta.title')}</h2>
+      <p>{t('cta.subtitle')}</p>
       <div className="cta-buttons">
         <button 
           className="cta-btn" 
           onClick={() => document.getElementById('subastas')?.scrollIntoView({ behavior: 'smooth' })}
         >
-          Explorar Subastas
+          {t('cta.explore')}
         </button>
         <button className="cta-btn primary" onClick={onCreateClick}>
-          Crear Subasta
+          {t('cta.create')}
         </button>
       </div>
     </section>

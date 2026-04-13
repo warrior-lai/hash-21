@@ -1,14 +1,14 @@
+import { useLang } from '../i18n'
 import './Hero.css'
 
 export function Hero() {
+  const { t } = useLang()
+  
   return (
     <section className="hero">
       <span className="hero-label">NOSTR NATIVE AUCTIONS</span>
-      <h1>Subastas de Arte Descentralizadas</h1>
-      <p>
-        Pujá con Bitcoin Lightning. Firmá con tu clave Nostr. Sin intermediarios,
-        <br />sin custodia, sin confianza requerida.
-      </p>
+      <h1>{t('hero.title')}</h1>
+      <p>{t('hero.subtitle')}</p>
     </section>
   )
 }
