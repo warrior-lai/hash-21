@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useProfile } from '../utils/profile'
 import { useNip05Verification } from '../utils/nip05'
 import { useAuctionDetails, formatRelativeTime } from '../hooks/useAuctionDetails'
+import { useZapPayment } from '../hooks/useZapPayment'
 import './Modal.css'
 
 function formatTimeLeft(endTime) {
@@ -39,6 +40,8 @@ export function AuctionDetailModal({ auction, onClose, onBid, user }) {
   const [commentText, setCommentText] = useState('')
   const [postingComment, setPostingComment] = useState(false)
   const [activeTab, setActiveTab] = useState('bids') // 'bids' | 'comments'
+  
+  const zap = useZapPayment()
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -169,41 +172,133 @@ export function AuctionDetailModal({ auction, onClose, onBid, user }) {
 
             {isEnded && (
               <div style={{ background: '#f5f4f2', padding: '20px', borderRadius: '8px', textAlign: 'center' }}>
-                <p style={{ color: '#1a1a1a', fontSize: '14px', marginBottom: '12px', fontWeight: '500' }}>
-                  🎯 Subasta finalizada
-                </p>
                 
-                {lightningAddress ? (
+                {/* Payment completed */}
+                {zap.isPaid && (
                   <>
-                    <p style={{ color: '#8a8580', fontSize: '13px', marginBottom: '16px' }}>
-                      Pagar al artista: <strong style={{ color: '#9a7b4f' }}>{lightningAddress}</strong>
+                    <div style={{ fontSize: '48px', marginBottom: '12px' }}>✅</div>
+                    <p style={{ color: '#22c55e', fontSize: '16px', fontWeight: '500', marginBottom: '8px' }}>
+                      ¡Pago recibido!
                     </p>
-                    <button
-                      onClick={() => {
-                        const lnurl = `lightning:${lightningAddress}?amount=${auction.currentBid * 1000}`
-                        window.open(lnurl, '_blank')
-                      }}
-                      style={{
-                        background: '#9a7b4f',
-                        color: 'white',
-                        border: 'none',
-                        padding: '12px 24px',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        fontSize: '14px',
-                        fontWeight: '500'
-                      }}
-                    >
-                      ⚡ Pagar {auction.currentBid.toLocaleString()} sats
-                    </button>
-                    <p style={{ color: '#8a8580', fontSize: '11px', marginTop: '12px' }}>
-                      Copiá la dirección Lightning y pagá desde tu wallet
+                    <p style={{ color: '#8a8580', fontSize: '13px' }}>
+                      Gracias por tu compra. El artista ha sido notificado.
                     </p>
                   </>
-                ) : (
-                  <p style={{ color: '#8a8580', fontSize: '13px' }}>
-                    Contactá al artista para coordinar el pago
-                  </p>
+                )}
+
+                {/* Waiting for payment */}
+                {zap.isWaiting && (
+                  <>
+                    <p style={{ color: '#1a1a1a', fontSize: '14px', marginBottom: '16px', fontWeight: '500' }}>
+                      ⚡ Esperando pago...
+                    </p>
+                    
+                    {/* QR Code placeholder - would use qrcode lib */}
+                    <div style={{ 
+                      background: 'white', 
+                      padding: '16px', 
+                      borderRadius: '8px', 
+                      marginBottom: '16px',
+                      wordBreak: 'break-all',
+                      fontSize: '11px',
+                      fontFamily: 'monospace',
+                      maxHeight: '80px',
+                      overflow: 'auto'
+                    }}>
+                      {zap.invoice}
+                    </div>
+                    
+                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '12px' }}>
+                      <button
+                        onClick={() => navigator.clipboard.writeText(zap.invoice)}
+                        style={{
+                          background: 'transparent',
+                          color: '#9a7b4f',
+                          border: '1px solid #9a7b4f',
+                          padding: '8px 16px',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          fontSize: '12px'
+                        }}
+                      >
+                        📋 Copiar
+                      </button>
+                      <button
+                        onClick={() => window.open(`lightning:${zap.invoice}`, '_blank')}
+                        style={{
+                          background: '#9a7b4f',
+                          color: 'white',
+                          border: 'none',
+                          padding: '8px 16px',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          fontSize: '12px'
+                        }}
+                      >
+                        ⚡ Abrir Wallet
+                      </button>
+                    </div>
+                    
+                    <p style={{ color: '#8a8580', fontSize: '11px' }}>
+                      El pago se detectará automáticamente
+                    </p>
+                  </>
+                )}
+
+                {/* Initial state - show pay button */}
+                {!zap.isPaid && !zap.isWaiting && (
+                  <>
+                    <p style={{ color: '#1a1a1a', fontSize: '14px', marginBottom: '12px', fontWeight: '500' }}>
+                      🎯 Subasta finalizada
+                    </p>
+                    
+                    {lightningAddress ? (
+                      <>
+                        <p style={{ color: '#8a8580', fontSize: '13px', marginBottom: '16px' }}>
+                          Pagar al artista: <strong style={{ color: '#9a7b4f' }}>{lightningAddress}</strong>
+                        </p>
+                        <button
+                          onClick={async () => {
+                            try {
+                              await zap.createZapInvoice({
+                                lightningAddress,
+                                amount: auction.currentBid,
+                                auctionId: auction.id,
+                                auctionTitle: auction.title,
+                                recipientPubkey: auction.pubkey
+                              })
+                            } catch (e) {
+                              // Error already handled in hook
+                            }
+                          }}
+                          disabled={zap.isLoading}
+                          style={{
+                            background: '#9a7b4f',
+                            color: 'white',
+                            border: 'none',
+                            padding: '12px 24px',
+                            borderRadius: '8px',
+                            cursor: zap.isLoading ? 'wait' : 'pointer',
+                            fontSize: '14px',
+                            fontWeight: '500',
+                            opacity: zap.isLoading ? 0.7 : 1
+                          }}
+                        >
+                          {zap.isLoading ? 'Generando...' : `⚡ Pagar ${auction.currentBid.toLocaleString()} sats`}
+                        </button>
+                        
+                        {zap.error && (
+                          <p style={{ color: '#ef4444', fontSize: '12px', marginTop: '12px' }}>
+                            {zap.error}
+                          </p>
+                        )}
+                      </>
+                    ) : (
+                      <p style={{ color: '#8a8580', fontSize: '13px' }}>
+                        Contactá al artista para coordinar el pago
+                      </p>
+                    )}
+                  </>
                 )}
               </div>
             )}
