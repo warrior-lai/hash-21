@@ -1,0 +1,389 @@
+/* Dashboard Overlay */
+.dashboard-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.dashboard {
+  background: #faf9f7;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.dashboard-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  color: #8a8580;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.dashboard-close:hover {
+  background: #e5e0d8;
+  color: #1a1a1a;
+}
+
+/* Header */
+.dashboard-header {
+  padding: 32px 32px 24px;
+  border-bottom: 1px solid #e5e0d8;
+}
+
+.dashboard-user {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-avatar-lg {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e5e0d8;
+}
+
+.user-avatar-lg.placeholder {
+  background: #9a7b4f;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.dashboard-user h2 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 24px;
+  font-weight: 400;
+  margin: 0 0 4px;
+  color: #1a1a1a;
+}
+
+.user-pubkey {
+  font-size: 12px;
+  color: #8a8580;
+  font-family: monospace;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 24px 32px;
+}
+
+.stat-card {
+  background: white;
+  border: 1px solid #e5e0d8;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.stat-icon {
+  font-size: 20px;
+  opacity: 0.8;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #8a8580;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 32px;
+  font-weight: 400;
+  color: #1a1a1a;
+  line-height: 1;
+}
+
+.stat-sub {
+  font-size: 11px;
+  color: #8a8580;
+  margin-top: 4px;
+}
+
+/* Tabs */
+.dashboard-tabs {
+  display: flex;
+  border-bottom: 1px solid #e5e0d8;
+  padding: 0 32px;
+}
+
+.tab {
+  flex: 1;
+  padding: 16px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #8a8580;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.tab:hover {
+  color: #1a1a1a;
+}
+
+.tab.active {
+  color: #9a7b4f;
+  border-bottom-color: #9a7b4f;
+}
+
+.tab-count {
+  background: #e5e0d8;
+  color: #1a1a1a;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+}
+
+.tab.active .tab-count {
+  background: rgba(154, 123, 79, 0.15);
+  color: #9a7b4f;
+}
+
+/* Content */
+.dashboard-content {
+  padding: 24px 32px 32px;
+}
+
+.content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.content-header h3 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 20px;
+  font-weight: 400;
+  margin: 0;
+}
+
+.create-btn-sm {
+  background: #9a7b4f;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.create-btn-sm:hover {
+  background: #8a6b3f;
+}
+
+/* Auction Sections */
+.auction-section {
+  margin-bottom: 24px;
+}
+
+.auction-section h4 {
+  font-size: 12px;
+  font-weight: 500;
+  color: #8a8580;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-count {
+  background: #e5e0d8;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+}
+
+/* Auction Grid */
+.auction-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+/* Mini Card */
+.auction-mini-card {
+  background: white;
+  border: 1px solid #e5e0d8;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.auction-mini-card:hover {
+  border-color: #9a7b4f;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.mini-card-image {
+  position: relative;
+  aspect-ratio: 4/3;
+  background: #e5e0d8;
+}
+
+.mini-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mini-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  opacity: 0.5;
+}
+
+.mini-status {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.mini-status.active {
+  background: rgba(34, 197, 94, 0.9);
+  color: white;
+}
+
+.mini-status.ended {
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+}
+
+.mini-card-body {
+  padding: 12px;
+}
+
+.mini-card-body h5 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0 0 8px;
+  color: #1a1a1a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mini-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mini-bid {
+  font-size: 12px;
+  font-weight: 500;
+  color: #9a7b4f;
+}
+
+.mini-time {
+  font-size: 11px;
+  color: #8a8580;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.empty-icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state p {
+  color: #8a8580;
+  font-size: 14px;
+  margin: 0 0 20px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .dashboard {
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .dashboard-header,
+  .stats-grid,
+  .dashboard-tabs,
+  .dashboard-content {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .auction-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .content-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+}

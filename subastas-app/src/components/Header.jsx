@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useLang } from '../i18n'
 import './Header.css'
 
-export function Header({ nostr, onCreateClick }) {
+export function Header({ nostr, onCreateClick, onDashboardClick }) {
   const [showMenu, setShowMenu] = useState(false)
   const { lang, toggleLang, t } = useLang()
 
@@ -48,6 +48,9 @@ export function Header({ nostr, onCreateClick }) {
             </button>
             {showMenu && (
               <div className="dropdown">
+                <button onClick={() => { setShowMenu(false); onDashboardClick?.(); }}>
+                  🎨 Mis Subastas
+                </button>
                 <button onClick={nostr.logout}>SALIR</button>
               </div>
             )}

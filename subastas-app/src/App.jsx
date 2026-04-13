@@ -8,6 +8,7 @@ import { CTA } from './components/CTA'
 import { AuctionList } from './components/AuctionList'
 import { CreateAuctionModal } from './components/CreateAuctionModal'
 import { AuctionDetailModal } from './components/AuctionDetailModal'
+import { Dashboard } from './components/Dashboard'
 import './App.css'
 
 function App() {
@@ -15,12 +16,14 @@ function App() {
   const { auctions, loading, showAll, setShowAll, createAuction, placeBid } = useAuctions(nostr)
   const [showCreate, setShowCreate] = useState(false)
   const [selectedAuction, setSelectedAuction] = useState(null)
+  const [showDashboard, setShowDashboard] = useState(false)
 
   return (
     <div className="app">
       <Header 
         nostr={nostr} 
-        onCreateClick={() => setShowCreate(true)} 
+        onCreateClick={() => setShowCreate(true)}
+        onDashboardClick={() => setShowDashboard(true)}
       />
 
       <Hero />
@@ -54,6 +57,22 @@ function App() {
           user={nostr.user}
           onClose={() => setSelectedAuction(null)}
           onBid={placeBid}
+        />
+      )}
+
+      {showDashboard && nostr.user && (
+        <Dashboard
+          user={nostr.user}
+          auctions={auctions}
+          onClose={() => setShowDashboard(false)}
+          onCreateClick={() => {
+            setShowDashboard(false)
+            setShowCreate(true)
+          }}
+          onAuctionClick={(auction) => {
+            setShowDashboard(false)
+            setSelectedAuction(auction)
+          }}
         />
       )}
     </div>
