@@ -229,6 +229,132 @@ curl https://hash21-backend.vercel.app/api/verify?hash=de7c5e1b...
 
 ---
 
+## 🔨 Subastas Nostr (subastas.hash21.studio)
+
+Sistema de subastas descentralizadas sobre el protocolo Nostr.
+
+### Arquitectura
+
+```
+┌─────────────────────────────────────────────────────┐
+│                  SUBASTAS APP                         │
+│               subastas.hash21.studio                   │
+│                    (Vercel)                            │
+│                                                        │
+│  Stack: Vite + React                                   │
+│  ├── src/hooks/useNostr.js    (conexión relays)       │
+│  ├── src/hooks/useAuctions.js (CRUD subastas)        │
+│  ├── src/utils/nip05.js       (verificación NIP-05)  │
+│  └── src/utils/validation.js  (seguridad)            │
+└─────────────────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────┐
+│                   NOSTR RELAYS                         │
+│                                                        │
+│  wss://nos.lol                                         │
+│  wss://relay.primal.net                                │
+│  wss://relay.snort.social                              │
+│  wss://relay.damus.io                                  │
+└─────────────────────────────────────────────────────┘
+                         │
+                ┌────────┴────────┐
+                ▼                  ▼
+┌─────────────────────┐  ┌─────────────────────┐
+│   Extensión Nostr      │  │   Pagos Lightning   │
+│   (Alby / nos2x)       │  │   (Lightning Addr)  │
+│                        │  │                      │
+│  - Firma eventos       │  │  - Directo al        │
+│  - getPublicKey()      │  │    artista           │
+│  - signEvent()         │  │  - Zero custodia     │
+└─────────────────────┘  └─────────────────────┘
+```
+
+### Event Kinds
+
+| Kind | Tipo | Descripción |
+|------|------|-------------|
+| **30020** | Subasta | Evento parameterized replaceable con datos de subasta |
+| **1021** | Puja | Bid en una subasta específica |
+| **1022** | Resultado | Cierre/ganador de subasta |
+
+### Estructura de Evento de Subasta (Kind 30020)
+
+```json
+{
+  "kind": 30020,
+  "created_at": 1712973600,
+  "pubkey": "<artist_pubkey>",
+  "tags": [
+    ["d", "roatan-bitcoin-1712973600"],
+    ["t", "hash21"],
+    ["title", "Roatan Bitcoin"],
+    ["summary", "Acrílico sobre lienzo. 50x70cm..."],
+    ["image", "https://hash21.studio/img/roatan-bitcoin.jpg"],
+    ["artist", "Abstract Lai"],
+    ["nip05", "lai@hash21.studio"],
+    ["lnaddr", "abstractlai@getalby.com"],
+    ["start_price", "100000"],
+    ["currency", "sats"],
+    ["start_time", "1712973600"],
+    ["end_time", "1713578400"]
+  ],
+  "content": "Roatan Bitcoin - Acrílico sobre lienzo",
+  "sig": "<signature>"
+}
+```
+
+### Estructura de Evento de Puja (Kind 1021)
+
+```json
+{
+  "kind": 1021,
+  "created_at": 1712973700,
+  "pubkey": "<bidder_pubkey>",
+  "tags": [
+    ["e", "<auction_event_id>"],
+    ["amount", "150000"],
+    ["currency", "sats"]
+  ],
+  "content": "Bid 150000 sats",
+  "sig": "<signature>"
+}
+```
+
+### NIP-05 Verificación
+
+Los artistas con NIP-05 verificado muestran badge ✓ dorado:
+
+```
+1. Usuario crea subasta con nip05 tag
+2. App fetch: https://{domain}/.well-known/nostr.json?name={name}
+3. Compara pubkey registrada vs pubkey del evento
+4. Si coincide → badge ✓ verificado
+5. Cache de 5 minutos para evitar spam
+```
+
+### Seguridad Implementada
+
+| Medida | Descripción |
+|--------|-------------|
+| **CSP** | Content-Security-Policy en index.html |
+| **Headers** | X-Frame-Options, X-Content-Type-Options, Referrer-Policy |
+| **Rate Limit** | 1 minuto entre creación de subastas |
+| **Sesión 24h** | Expiración automática de localStorage |
+| **maxLength** | Todos los inputs limitados |
+| **URL Validation** | Solo http/https permitido |
+| **MIME Check** | Validación de tipo de archivo en uploads |
+
+### Links
+
+| Recurso | URL |
+|---------|-----|
+| **App Live** | https://subastas.hash21.studio |
+| **Código** | /subastas-app/ en este repo |
+| **Vercel** | Auto-deploy desde main |
+
+---
+
 ## ⚡ Zap System (NIP-57)
 
 Propinas Lightning directas al artista con detección automática de pago.
@@ -270,14 +396,29 @@ Sistema completo de pagos Lightning implementado:
 
 ---
 
-#### 🔜 #2 IDENTITY — Nostr Identity (Abril 2026)
-**Estado: Pendiente**
+#### ✅ #2 IDENTITY — Nostr Identity (Abril 2026)
+**Estado: LIVE**
 
 Identidad soberana para artistas:
 - 👤 **Login con Nostr (NIP-07)** — Sin email, sin password, tu clave es tu identidad
-- ✅ **NIP-05 verificado** — `artista@hash21.studio` como verificación
-- 🔐 **Firma de obras** — Cada obra firmada con la clave del artista
-- 🎭 **Perfil descentralizado** — Bio y links desde Nostr, no desde nuestra DB
+- ✅ **NIP-05 verificado** — Badge ✓ en subastas de artistas verificados
+- 🔐 **Firma de obras** — Cada subasta/puja firmada con la clave del artista
+- 🎭 **Subastas Descentralizadas** — Sistema completo de subastas sobre Nostr
+
+##### Implementado:
+- ⚡ **subastas.hash21.studio** — App React de subastas descentralizadas
+- 🔗 **Conexión a relays Nostr** — nos.lol, relay.primal.net, relay.snort.social
+- 📝 **Crear subasta con firma Nostr** — NIP-07 (Alby, nos2x)
+- 💰 **Pujar con firma Nostr** — Kind 1021
+- ✅ **NIP-05 verificación** — Badge dorado en artistas verificados
+- 🔐 **Login Nostr en admin/register** — Sin email requerido
+- 🛡️ **Seguridad** — CSP, rate limiting, validaciones, sesión 24h
+
+##### Pendiente:
+- 🌐 **i18n toggle ES/EN** — Botón funcional (traducciones listas)
+- 🖼️ **OG image** — Imagen para compartir en redes
+- 🌙 **Dark mode toggle** — Tema oscuro opcional
+- 📱 **Service Worker** — PWA completo offline
 
 ---
 
