@@ -996,7 +996,7 @@ body {
       <button id="lang-toggle" class="lang-btn" onclick="setLang(currentLang==='es'?'en':'es')">ES</button>
     </div>
     
-    <button type="button" style="width:100%;padding:16px;background:var(--gold);color:var(--bg);border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:16px;text-transform:uppercase;letter-spacing:1px;" onclick="console.log('Click Nostr btn');if(window.nostr){console.log('nostr found');window.nostr.getPublicKey().then(function(k){console.log('Got pubkey:',k);localStorage.setItem('nostr-pubkey',k);alert('Conectado: '+k.slice(0,8)+'...');location.reload()}).catch(function(e){console.error('Nostr error:',e);alert('Error: '+e.message)})}else{alert('No se detectó extensión Nostr')}">Iniciar con Nostr</button>
+    <button type="button" style="width:100%;padding:16px;background:var(--gold);color:var(--bg);border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:16px;text-transform:uppercase;letter-spacing:1px;" onclick="loginWithNostr()">Iniciar con Nostr</button>
     
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;"><div style="flex:1;height:1px;background:var(--border);"></div><span style="color:#666;font-size:12px;">o</span><div style="flex:1;height:1px;background:var(--border);"></div></div>
     
@@ -1292,7 +1292,14 @@ async function checkAuth() {
   const { data: { session } } = await sb.auth.getSession();
   document.getElementById('loading-screen').style.display = 'none';
   
+  // Check Nostr login
+  const nostrAuth = localStorage.getItem('hash21-auth');
+  const nostrPubkey = localStorage.getItem('nostr-pubkey');
+  
   if (session) {
+    await showApp();
+  } else if (nostrPubkey || nostrAuth) {
+    // Logged in with Nostr
     await showApp();
   } else {
     document.getElementById('login-screen').style.display = 'flex';
@@ -1323,8 +1330,30 @@ async function handleLogin(e) {
   await showApp();
 }
 
+async function loginWithNostr() {
+  if (typeof window.nostr === 'undefined') {
+    alert('Necesit\u00e1s una extensi\u00f3n Nostr (Alby o nos2x)');
+    return;
+  }
+  try {
+    const pubkey = await window.nostr.getPublicKey();
+    localStorage.setItem('nostr-pubkey', pubkey);
+    localStorage.setItem('hash21-auth', JSON.stringify({
+      method: 'nostr',
+      pubkey: pubkey,
+      loggedIn: true,
+      timestamp: Date.now()
+    }));
+    location.reload();
+  } catch (e) {
+    alert('Error: ' + e.message);
+  }
+}
+
 async function handleLogout() {
   await sb.auth.signOut();
+  localStorage.removeItem('nostr-pubkey');
+  localStorage.removeItem('hash21-auth');
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('admin-app').style.display = 'none';
 }

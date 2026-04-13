@@ -105,7 +105,7 @@
     
     <div class="error" id="error"></div>
     
-    <button type="button" style="width:100%;padding:16px;background:var(--gold);color:var(--bg);border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;margin-bottom:16px;letter-spacing:1px;" onclick="if(window.nostr){window.nostr.getPublicKey().then(k=>{localStorage.setItem('nostr-pubkey',k);alert('Conectado: '+k.slice(0,8)+'...');location.href='/admin'}).catch(e=>alert(e))}else if(window.NostrLogin){NostrLogin.init();document.dispatchEvent(new Event('nlLaunch'))}else{alert('Instalá Alby: getalby.com')}">Crear cuenta con Nostr</button>
+    <button type="button" style="width:100%;padding:16px;background:var(--gold);color:var(--bg);border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;margin-bottom:16px;letter-spacing:1px;" onclick="registerWithNostr()">Crear cuenta con Nostr</button>
     
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;"><div style="flex:1;height:1px;background:var(--border);"></div><span style="color:var(--text-dim);font-size:12px;">o</span><div style="flex:1;height:1px;background:var(--border);"></div></div>
     
@@ -119,6 +119,42 @@
   </div>
 
   <script>
+    async function registerWithNostr() {
+      if (typeof window.nostr === 'undefined') {
+        alert('Necesit\u00e1s una extensi\u00f3n Nostr (Alby o nos2x).\nInstal\u00e1 desde getalby.com')
+        return
+      }
+      
+      try {
+        const pubkey = await window.nostr.getPublicKey()
+        
+        // Save to localStorage
+        localStorage.setItem('nostr-pubkey', pubkey)
+        localStorage.setItem('hash21-auth', JSON.stringify({
+          method: 'nostr',
+          pubkey: pubkey,
+          loggedIn: true,
+          timestamp: Date.now()
+        }))
+        
+        // Register in backend
+        await fetch(`${API}/users`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            nostr_pubkey: pubkey, 
+            role: 'artist', 
+            status: 'active' 
+          })
+        }).catch(() => {}) // Ignore if fails
+        
+        // Redirect to admin
+        window.location.href = '/admin'
+      } catch (e) {
+        alert('Error: ' + e.message)
+      }
+    }
+
     const SUPABASE_URL = 'https://gxrstqszfzvwvoktsuqg.supabase.co';
     const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4cnN0cXN6Znp2d3Zva3RzdXFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTcyMDEsImV4cCI6MjA4OTc3MzIwMX0.vZv-Z1rRrWErjKnsWGzkrrfTaveZHlccXnw7u4iP_cc';
     const API = 'https://hash21-backend.vercel.app/api';
