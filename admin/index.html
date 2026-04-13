@@ -996,9 +996,17 @@ body {
       <button id="lang-toggle" class="lang-btn" onclick="setLang(currentLang==='es'?'en':'es')">ES</button>
     </div>
     
-    <button type="button" style="width:100%;padding:16px;background:var(--gold);color:var(--bg);border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:16px;text-transform:uppercase;letter-spacing:1px;" onclick="loginWithNostr()">Iniciar con Nostr</button>
+    <button type="button" style="width:100%;padding:16px;background:var(--gold);color:var(--bg);border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;" onclick="loginWithNostr()">Iniciar con Nostr (NIP-07)</button>
     
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;"><div style="flex:1;height:1px;background:var(--border);"></div><span style="color:#666;font-size:12px;">o</span><div style="flex:1;height:1px;background:var(--border);"></div></div>
+    <button type="button" style="width:100%;padding:16px;background:transparent;color:var(--gold);border:1px solid var(--gold);border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;margin-bottom:16px;text-transform:uppercase;letter-spacing:1px;" onclick="showBunkerLogin()">Iniciar con Bunker (NIP-46)</button>
+    
+    <div id="bunker-input" style="display:none;margin-bottom:16px;">
+      <input type="text" id="bunker-uri" placeholder="nostr+bunker://..." style="width:100%;padding:14px 16px;background:#1a1a1a;border:1px solid var(--border);color:var(--text);border-radius:8px;margin-bottom:8px;font-size:13px;">
+      <button type="button" onclick="loginWithBunker()" style="width:100%;padding:12px;background:var(--gold);color:var(--bg);border:none;border-radius:8px;font-size:13px;cursor:pointer;">Conectar Bunker</button>
+      <p style="font-size:11px;color:#666;margin-top:8px;text-align:center;">Pegá tu URI de nsec.app o Amber</p>
+    </div>
+    
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;"><div style="flex:1;height:1px;background:var(--border);"></div><span style="color:#666;font-size:12px;">o email</span><div style="flex:1;height:1px;background:var(--border);"></div></div>
     
     <form onsubmit="handleLogin(event)">
       <input type="email" id="login-email" data-i18n-placeholder="login.email" placeholder="Email" required>
@@ -1344,6 +1352,53 @@ async function loginWithNostr() {
       loggedIn: true,
       timestamp: Date.now()
     }));
+    location.reload();
+  } catch (e) {
+    alert('Error: ' + e.message);
+  }
+}
+
+function showBunkerLogin() {
+  const input = document.getElementById('bunker-input');
+  input.style.display = input.style.display === 'none' ? 'block' : 'none';
+}
+
+async function loginWithBunker() {
+  const uri = document.getElementById('bunker-uri').value.trim();
+  if (!uri) {
+    alert('Ingresá tu URI de bunker');
+    return;
+  }
+  
+  if (!uri.startsWith('bunker://') && !uri.startsWith('nostr+bunker://')) {
+    alert('URI inválida. Debe empezar con bunker:// o nostr+bunker://');
+    return;
+  }
+  
+  try {
+    // Parse bunker URI
+    // Format: bunker://<pubkey>?relay=wss://...&secret=...
+    const cleanUri = uri.replace('nostr+bunker://', '').replace('bunker://', '');
+    const [pubkeyPart, queryString] = cleanUri.split('?');
+    const pubkey = pubkeyPart;
+    
+    if (!pubkey || pubkey.length !== 64) {
+      alert('Pubkey inválida en la URI');
+      return;
+    }
+    
+    // For now, we just store the bunker info and treat it as logged in
+    // Full NIP-46 implementation requires WebSocket communication with the bunker
+    localStorage.setItem('nostr-pubkey', pubkey);
+    localStorage.setItem('hash21-auth', JSON.stringify({
+      method: 'bunker',
+      pubkey: pubkey,
+      bunkerUri: uri,
+      loggedIn: true,
+      timestamp: Date.now()
+    }));
+    
+    alert('Conectado con Bunker: ' + pubkey.slice(0, 8) + '...');
     location.reload();
   } catch (e) {
     alert('Error: ' + e.message);

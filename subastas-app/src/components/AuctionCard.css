@@ -74,7 +74,21 @@
   margin: 0 0 8px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+}
+
+.artist-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #e5e0d8;
+}
+
+.artist-name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .verified-badge {

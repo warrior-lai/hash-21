@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNip05Verification } from '../utils/nip05'
+import { useProfile, formatPubkey } from '../utils/profile'
 import './AuctionCard.css'
 
 function formatTimeLeft(endTime) {
@@ -20,7 +21,15 @@ function formatTimeLeft(endTime) {
 export function AuctionCard({ auction, onClick }) {
   const [timeLeft, setTimeLeft] = useState(formatTimeLeft(auction.endTime))
   const [imgError, setImgError] = useState(false)
-  const { verified } = useNip05Verification(auction.nip05, auction.pubkey)
+  const { profile } = useProfile(auction.pubkey)
+  
+  // Use profile nip05 if auction doesn't have one
+  const nip05 = auction.nip05 || profile?.nip05 || ''
+  const { verified } = useNip05Verification(nip05, auction.pubkey)
+  
+  // Display name: auction.artist > profile.displayName > profile.name > shortened pubkey
+  const artistName = auction.artist || profile?.displayName || profile?.name || formatPubkey(auction.pubkey)
+  const artistPicture = profile?.picture || ''
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -56,12 +65,20 @@ export function AuctionCard({ auction, onClick }) {
 
         <h3 className="auction-title">{auction.title}</h3>
         
-        {auction.artist && (
-          <p className="auction-artist">
-            {auction.artist}
+        <div className="auction-artist">
+          {artistPicture && (
+            <img 
+              src={artistPicture} 
+              alt={artistName}
+              className="artist-avatar"
+              onError={(e) => e.target.style.display = 'none'}
+            />
+          )}
+          <span className="artist-name">
+            {artistName}
             {verified && <span className="verified-badge" title="NIP-05 Verificado">✓</span>}
-          </p>
-        )}
+          </span>
+        </div>
 
         <div className="auction-meta">
           <div className="meta-item">

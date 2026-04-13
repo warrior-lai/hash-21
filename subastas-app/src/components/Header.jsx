@@ -20,7 +20,7 @@ export function Header({ nostr, onCreateClick }) {
     <header className="header">
       <div className="header-left">
         <a href="https://hash21.studio" className="back-link">← Galería</a>
-        <a href="/subastas/" className="logo">
+        <a href="https://hash21.studio" className="logo">
           HASH<span>21</span>
         </a>
       </div>

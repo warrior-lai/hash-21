@@ -105,9 +105,17 @@
     
     <div class="error" id="error"></div>
     
-    <button type="button" style="width:100%;padding:16px;background:var(--gold);color:var(--bg);border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;margin-bottom:16px;letter-spacing:1px;" onclick="registerWithNostr()">Crear cuenta con Nostr</button>
+    <button type="button" style="width:100%;padding:16px;background:var(--gold);color:var(--bg);border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;margin-bottom:12px;letter-spacing:1px;" onclick="registerWithNostr()">Crear cuenta con Nostr (NIP-07)</button>
     
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;"><div style="flex:1;height:1px;background:var(--border);"></div><span style="color:var(--text-dim);font-size:12px;">o</span><div style="flex:1;height:1px;background:var(--border);"></div></div>
+    <button type="button" style="width:100%;padding:16px;background:transparent;color:var(--gold);border:1px solid var(--gold);border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;margin-bottom:16px;letter-spacing:1px;" onclick="showBunkerInput()">Crear cuenta con Bunker (NIP-46)</button>
+    
+    <div id="bunker-input" style="display:none;margin-bottom:16px;">
+      <input type="text" id="bunker-uri" placeholder="bunker://... o nostr+bunker://..." style="width:100%;padding:14px 16px;background:#1a1a1a;border:1px solid var(--border);color:var(--text);border-radius:8px;margin-bottom:8px;font-size:13px;">
+      <button type="button" onclick="registerWithBunker()" style="width:100%;padding:12px;background:var(--gold);color:var(--bg);border:none;border-radius:8px;font-size:13px;cursor:pointer;">Conectar Bunker</button>
+      <p style="font-size:11px;color:#666;margin-top:8px;text-align:center;">Pegá tu URI de nsec.app o Amber</p>
+    </div>
+    
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;"><div style="flex:1;height:1px;background:var(--border);"></div><span style="color:var(--text-dim);font-size:12px;">o email</span><div style="flex:1;height:1px;background:var(--border);"></div></div>
     
     <form onsubmit="handleRegister(event)">
       <input type="email" id="email" placeholder="Email" required>
@@ -119,6 +127,60 @@
   </div>
 
   <script>
+    function showBunkerInput() {
+      const input = document.getElementById('bunker-input');
+      input.style.display = input.style.display === 'none' ? 'block' : 'none';
+    }
+
+    async function registerWithBunker() {
+      const uri = document.getElementById('bunker-uri').value.trim();
+      if (!uri) {
+        alert('Ingres\u00e1 tu URI de bunker');
+        return;
+      }
+      
+      if (!uri.startsWith('bunker://') && !uri.startsWith('nostr+bunker://')) {
+        alert('URI inv\u00e1lida. Debe empezar con bunker:// o nostr+bunker://');
+        return;
+      }
+      
+      try {
+        const cleanUri = uri.replace('nostr+bunker://', '').replace('bunker://', '');
+        const [pubkeyPart] = cleanUri.split('?');
+        const pubkey = pubkeyPart;
+        
+        if (!pubkey || pubkey.length !== 64) {
+          alert('Pubkey inv\u00e1lida en la URI');
+          return;
+        }
+        
+        localStorage.setItem('nostr-pubkey', pubkey);
+        localStorage.setItem('hash21-auth', JSON.stringify({
+          method: 'bunker',
+          pubkey: pubkey,
+          bunkerUri: uri,
+          loggedIn: true,
+          timestamp: Date.now()
+        }));
+        
+        // Register in backend
+        await fetch(`${API}/users`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            nostr_pubkey: pubkey, 
+            role: 'artist', 
+            status: 'active' 
+          })
+        }).catch(() => {});
+        
+        alert('Conectado con Bunker: ' + pubkey.slice(0, 8) + '...');
+        window.location.href = '/admin';
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
     async function registerWithNostr() {
       if (typeof window.nostr === 'undefined') {
         alert('Necesit\u00e1s una extensi\u00f3n Nostr (Alby o nos2x).\nInstal\u00e1 desde getalby.com')

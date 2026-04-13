@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { useProfile } from '../utils/profile'
+import { useNip05Verification } from '../utils/nip05'
 import './Modal.css'
 
 function formatTimeLeft(endTime) {
@@ -22,6 +24,15 @@ export function AuctionDetailModal({ auction, onClose, onBid, user }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [timeLeft, setTimeLeft] = useState(formatTimeLeft(auction.endTime))
+  const [showPayment, setShowPayment] = useState(false)
+  const [invoice, setInvoice] = useState('')
+  const [paymentStatus, setPaymentStatus] = useState('pending') // pending, paid, error
+  
+  const { profile } = useProfile(auction.pubkey)
+  const nip05 = auction.nip05 || profile?.nip05 || ''
+  const { verified } = useNip05Verification(nip05, auction.pubkey)
+  const artistName = auction.artist || profile?.displayName || profile?.name || auction.pubkey?.slice(0, 8) + '...'
+  const lightningAddress = auction.lnaddr || profile?.lud16 || ''
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -70,6 +81,39 @@ export function AuctionDetailModal({ auction, onClose, onBid, user }) {
 
           <div>
             <h2 className="auction-detail-title">{auction.title}</h2>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+              {profile?.picture && (
+                <img 
+                  src={profile.picture} 
+                  alt={artistName}
+                  style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }}
+                />
+              )}
+              <div>
+                <span style={{ fontSize: '13px', color: '#1a1a1a' }}>
+                  {artistName}
+                  {verified && (
+                    <span style={{ 
+                      display: 'inline-flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      width: '14px', 
+                      height: '14px', 
+                      background: '#9a7b4f', 
+                      color: 'white', 
+                      borderRadius: '50%', 
+                      fontSize: '9px', 
+                      marginLeft: '6px'
+                    }}>✓</span>
+                  )}
+                </span>
+                {nip05 && (
+                  <span style={{ fontSize: '11px', color: '#8a8580', display: 'block' }}>{nip05}</span>
+                )}
+              </div>
+            </div>
+            
             {auction.description && (
               <p className="auction-detail-desc">{auction.description}</p>
             )}
@@ -118,9 +162,45 @@ export function AuctionDetailModal({ auction, onClose, onBid, user }) {
             )}
 
             {isEnded && (
-              <p style={{ color: '#8a8580', fontSize: '13px', textAlign: 'center', padding: '16px', background: '#f5f4f2' }}>
-                Esta subasta ha finalizado
-              </p>
+              <div style={{ background: '#f5f4f2', padding: '20px', borderRadius: '8px', textAlign: 'center' }}>
+                <p style={{ color: '#1a1a1a', fontSize: '14px', marginBottom: '12px', fontWeight: '500' }}>
+                  🎯 Subasta finalizada
+                </p>
+                
+                {lightningAddress ? (
+                  <>
+                    <p style={{ color: '#8a8580', fontSize: '13px', marginBottom: '16px' }}>
+                      Pagar al artista: <strong style={{ color: '#9a7b4f' }}>{lightningAddress}</strong>
+                    </p>
+                    <button
+                      onClick={() => {
+                        // Open Lightning payment
+                        const lnurl = `lightning:${lightningAddress}?amount=${auction.currentBid * 1000}`
+                        window.open(lnurl, '_blank')
+                      }}
+                      style={{
+                        background: '#9a7b4f',
+                        color: 'white',
+                        border: 'none',
+                        padding: '12px 24px',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        fontWeight: '500'
+                      }}
+                    >
+                      ⚡ Pagar {auction.currentBid.toLocaleString()} sats
+                    </button>
+                    <p style={{ color: '#8a8580', fontSize: '11px', marginTop: '12px' }}>
+                      Copiá la dirección Lightning y pagá desde tu wallet
+                    </p>
+                  </>
+                ) : (
+                  <p style={{ color: '#8a8580', fontSize: '13px' }}>
+                    Contactá al artista para coordinar el pago
+                  </p>
+                )}
+              </div>
             )}
           </div>
         </div>
