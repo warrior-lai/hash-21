@@ -34,6 +34,7 @@ Una galería viva donde los artistas publican, certifican y venden sus obras y o
 
 - 📜 **Certificación on-chain** para garantizar existencia y permanencia
 - ⚡ **Pagos Lightning-native** para una economía sin fricción
+- **Sistema de subastas** descentralizadas sobre el protocolo Nostr
 
 Sin intermediarios. Sin permisos. Sin censura.
 
