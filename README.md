@@ -76,7 +76,7 @@ Hash21 no es una herramienta. Es un sistema que desde el día 1 está en movimie
 | ✍️ **Registro de Creadores** | Onboarding simple para artistas y diseñadores |
 | 🌍 **Bilingüe** | Español / English |
 | 📱 **Responsive** | Mobile + desktop |
-| ☑️ **Subastas* | Sobre nostr|
+| ⚡ **Subastas** | Sobre nostr|
 
 ---
 
