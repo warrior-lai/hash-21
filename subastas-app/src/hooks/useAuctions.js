@@ -58,6 +58,9 @@ export function useAuctions(nostr) {
           title: tags.title || 'Sin título',
           description: tags.summary || event.content || '',
           image: tags.image || '',
+          artist: tags.artist || '',
+          nip05: tags.nip05 || '',
+          lnaddr: tags.lnaddr || '',
           startPrice: parseInt(tags.start_price || '0'),
           currentBid: parseInt(tags.current_bid || tags.start_price || '0'),
           reservePrice: parseInt(tags.reserve_price || '0'),
@@ -81,7 +84,7 @@ export function useAuctions(nostr) {
   }, [])  // Empty deps - uses ref
 
   // Create auction
-  const createAuction = useCallback(async ({ title, description, image, artistName, lightningAddress, startPrice, reservePrice, duration }) => {
+  const createAuction = useCallback(async ({ title, description, image, artistName, nip05, lightningAddress, startPrice, reservePrice, duration }) => {
     if (typeof window.nostr === 'undefined') {
       throw new Error('Necesitás extensión Nostr (Alby)')
     }
@@ -105,6 +108,7 @@ export function useAuctions(nostr) {
     ]
 
     if (artistName) tags.push(['artist', artistName])
+    if (nip05) tags.push(['nip05', nip05])
     if (lightningAddress) tags.push(['lnaddr', lightningAddress])
     if (reservePrice) tags.push(['reserve_price', reservePrice.toString()])
 

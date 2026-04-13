@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNip05Verification } from '../utils/nip05'
 import './AuctionCard.css'
 
 function formatTimeLeft(endTime) {
@@ -19,6 +20,7 @@ function formatTimeLeft(endTime) {
 export function AuctionCard({ auction, onClick }) {
   const [timeLeft, setTimeLeft] = useState(formatTimeLeft(auction.endTime))
   const [imgError, setImgError] = useState(false)
+  const { verified } = useNip05Verification(auction.nip05, auction.pubkey)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -53,6 +55,13 @@ export function AuctionCard({ auction, onClick }) {
         </span>
 
         <h3 className="auction-title">{auction.title}</h3>
+        
+        {auction.artist && (
+          <p className="auction-artist">
+            {auction.artist}
+            {verified && <span className="verified-badge" title="NIP-05 Verificado">✓</span>}
+          </p>
+        )}
 
         <div className="auction-meta">
           <div className="meta-item">

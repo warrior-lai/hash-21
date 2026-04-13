@@ -17,6 +17,7 @@ export function CreateAuctionModal({ onClose, onCreate }) {
     description: '',
     image: '',
     artistName: '',
+    nip05: '',
     lightningAddress: '',
     startPrice: '10000',
     reservePrice: '',
@@ -115,6 +116,7 @@ export function CreateAuctionModal({ onClose, onCreate }) {
         description: form.description.trim(),
         image: form.image.trim(),
         artistName: form.artistName.trim(),
+        nip05: form.nip05.trim(),
         lightningAddress: form.lightningAddress.trim(),
         startPrice: parseInt(form.startPrice),
         reservePrice: form.reservePrice ? parseInt(form.reservePrice) : 0,
@@ -231,6 +233,18 @@ export function CreateAuctionModal({ onClose, onCreate }) {
                 maxLength={100}
               />
             </div>
+          </div>
+
+          <div className="form-group">
+            <label>NIP-05 (verificación)</label>
+            <input
+              type="text"
+              value={form.nip05}
+              onChange={e => setForm({ ...form, nip05: e.target.value })}
+              placeholder="nombre@dominio.com"
+              maxLength={100}
+            />
+            <span className="field-hint">Si tenés NIP-05 verificado, aparecerá el badge ✓</span>
           </div>
 
           <div className="form-row">

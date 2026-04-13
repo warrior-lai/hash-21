@@ -33,6 +33,7 @@
     "vitest": "^1.6.1"
   },
   "dependencies": {
-    "nostr-tools": "^2.23.3"
+    "nostr-tools": "^2.23.3",
+    "ws": "^8.20.0"
   }
 }
