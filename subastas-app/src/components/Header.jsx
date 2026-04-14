@@ -1,10 +1,15 @@
 import { useState } from 'react'
 import { useLang } from '../i18n'
+import { useProfile } from '../utils/profile'
 import './Header.css'
 
 export function Header({ nostr, onCreateClick, onDashboardClick }) {
   const [showMenu, setShowMenu] = useState(false)
   const { lang, toggleLang, t } = useLang()
+  const { profile } = useProfile(nostr.user?.pubkey)
+  
+  const userName = profile?.displayName || profile?.name || null
+  const userPicture = profile?.picture || null
 
   const statusText = nostr.status === 'connecting' 
     ? t('header.connecting')
@@ -44,7 +49,15 @@ export function Header({ nostr, onCreateClick, onDashboardClick }) {
         {nostr.user ? (
           <div className="user-menu">
             <button className="user-btn" onClick={() => setShowMenu(!showMenu)}>
-              🟢 {shortNpub}
+              {userPicture ? (
+                <img src={userPicture} alt="" className="user-avatar" />
+              ) : (
+                <span className="user-avatar-placeholder">
+                  {userName?.[0]?.toUpperCase() || '👤'}
+                </span>
+              )}
+              <span className="user-name">{userName || shortNpub}</span>
+              <span className="dropdown-arrow">▼</span>
             </button>
             {showMenu && (
               <div className="dropdown">
