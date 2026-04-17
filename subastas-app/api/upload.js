@@ -1,8 +1,13 @@
-// Vercel serverless function — proxies image upload to nostr.build
-// Avoids CORS issues when uploading from the browser
+// Vercel serverless proxy — uploads image to freeimage.host
+// Needed because image hosts don't support browser CORS
+
+import { Blob, FormData } from 'node:buffer'
+
+export const config = {
+  api: { bodyParser: { sizeLimit: '6mb' } }
+}
 
 export default async function handler(req, res) {
-  // CORS
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
@@ -11,29 +16,44 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   try {
-    // Vercel provides the body as a Buffer when we read from the stream
-    const chunks = []
-    for await (const chunk of req) {
-      chunks.push(chunk)
-    }
-    const body = Buffer.concat(chunks)
-
-    if (!body.length) {
-      return res.status(400).json({ error: 'No se recibió archivo' })
-    }
-
-    if (body.length > 10 * 1024 * 1024) {
-      return res.status(413).json({ error: 'Archivo muy grande (máx 10MB)' })
+    // With bodyParser enabled, req.body is a Buffer for binary content-types
+    const body = req.body
+    if (!body || !body.length) {
+      return res.status(400).json({ error: 'No file received' })
     }
 
     const contentType = req.headers['content-type'] || 'image/jpeg'
-    const ext = contentType.includes('png') ? 'png' : contentType.includes('webp') ? 'webp' : contentType.includes('gif') ? 'gif' : 'jpg'
 
-    // --- Try nostr.build using native FormData (Node 18+) ---
+    // --- freeimage.host (free, no auth, proven working) ---
     try {
       const blob = new Blob([body], { type: contentType })
       const fd = new FormData()
-      fd.append('file', blob, `artwork.${ext}`)
+      fd.append('source', blob, 'artwork.jpg')
+      fd.append('type', 'file')
+      fd.append('action', 'upload')
+
+      const r = await fetch('https://freeimage.host/api/1/upload?key=6d207e02198a847aa98d0a2a901485a5', {
+        method: 'POST',
+        body: fd
+      })
+
+      if (r.ok) {
+        const data = await r.json()
+        if (data?.image?.url) {
+          return res.status(200).json({ url: data.image.url })
+        }
+      }
+      const text = await r.text()
+      console.warn('[Upload] freeimage.host:', r.status, text.slice(0, 200))
+    } catch (e) {
+      console.warn('[Upload] freeimage.host error:', e.message)
+    }
+
+    // --- nostr.build (requires NIP-98 but try anyway for future compat) ---
+    try {
+      const blob = new Blob([body], { type: contentType })
+      const fd = new FormData()
+      fd.append('file', blob, 'artwork.jpg')
 
       const r = await fetch('https://nostr.build/api/v2/upload/files', {
         method: 'POST',
@@ -42,54 +62,17 @@ export default async function handler(req, res) {
 
       if (r.ok) {
         const data = await r.json()
-        const url = data?.status === 'success' && data?.data?.[0]?.url
-        if (url) return res.status(200).json({ url })
+        if (data?.status === 'success' && data?.data?.[0]?.url) {
+          return res.status(200).json({ url: data.data[0].url })
+        }
       }
-      console.warn('[Upload] nostr.build response:', r.status)
     } catch (e) {
       console.warn('[Upload] nostr.build error:', e.message)
     }
 
-    // --- Fallback: void.cat ---
-    try {
-      const r2 = await fetch('https://void.cat/upload', {
-        method: 'POST',
-        headers: { 'Content-Type': contentType },
-        body
-      })
-
-      if (r2.ok) {
-        const data = await r2.json()
-        if (data?.file?.url) return res.status(200).json({ url: data.file.url })
-      }
-      console.warn('[Upload] void.cat response:', r2.status)
-    } catch (e) {
-      console.warn('[Upload] void.cat error:', e.message)
-    }
-
-    // --- Fallback 2: nostrimg.com ---
-    try {
-      const blob = new Blob([body], { type: contentType })
-      const fd = new FormData()
-      fd.append('image', blob, `artwork.${ext}`)
-
-      const r3 = await fetch('https://nostrimg.com/api/upload', {
-        method: 'POST',
-        body: fd
-      })
-
-      if (r3.ok) {
-        const data = await r3.json()
-        if (data?.data?.link) return res.status(200).json({ url: data.data.link })
-      }
-    } catch (e) {
-      console.warn('[Upload] nostrimg error:', e.message)
-    }
-
-    return res.status(502).json({ error: 'No se pudo subir la imagen. Probá con una URL directa.' })
-
+    return res.status(502).json({ error: 'No se pudo subir la imagen' })
   } catch (e) {
     console.error('[Upload] Fatal:', e)
-    return res.status(500).json({ error: 'Error interno: ' + e.message })
+    return res.status(500).json({ error: e.message })
   }
 }
