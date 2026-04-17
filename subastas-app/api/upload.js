@@ -1,8 +1,16 @@
 // Vercel serverless proxy — uploads image to freeimage.host
-// Browser → /api/upload → freeimage.host (avoids CORS)
 
 export const config = {
-  api: { bodyParser: { sizeLimit: '6mb' } }
+  api: { bodyParser: false }
+}
+
+function readBody(req) {
+  return new Promise((resolve, reject) => {
+    const chunks = []
+    req.on('data', (chunk) => chunks.push(chunk))
+    req.on('end', () => resolve(Buffer.concat(chunks)))
+    req.on('error', reject)
+  })
 }
 
 export default async function handler(req, res) {
@@ -14,41 +22,42 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   try {
-    const body = req.body
-    if (!body || !body.length) {
+    const body = await readBody(req)
+
+    if (!body.length) {
       return res.status(400).json({ error: 'No file received' })
+    }
+
+    if (body.length > 6 * 1024 * 1024) {
+      return res.status(413).json({ error: 'Max 5MB' })
     }
 
     const contentType = req.headers['content-type'] || 'image/jpeg'
     const ext = contentType.includes('png') ? 'png' : contentType.includes('webp') ? 'webp' : 'jpg'
     const filename = `artwork.${ext}`
 
-    // Build multipart manually (no node:buffer FormData needed)
+    // Build multipart manually
     const boundary = '----Hash21' + Date.now()
     const parts = []
 
-    // File part
     parts.push(Buffer.from(
       `--${boundary}\r\n` +
       `Content-Disposition: form-data; name="source"; filename="${filename}"\r\n` +
       `Content-Type: ${contentType}\r\n\r\n`
     ))
-    parts.push(Buffer.isBuffer(body) ? body : Buffer.from(body))
+    parts.push(body)
     parts.push(Buffer.from('\r\n'))
 
-    // type field
     parts.push(Buffer.from(
       `--${boundary}\r\n` +
       `Content-Disposition: form-data; name="type"\r\n\r\nfile\r\n`
     ))
 
-    // action field
     parts.push(Buffer.from(
       `--${boundary}\r\n` +
       `Content-Disposition: form-data; name="action"\r\n\r\nupload\r\n`
     ))
 
-    // End boundary
     parts.push(Buffer.from(`--${boundary}--\r\n`))
 
     const multipartBody = Buffer.concat(parts)
@@ -57,7 +66,6 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': `multipart/form-data; boundary=${boundary}`,
-        'Content-Length': multipartBody.length.toString()
       },
       body: multipartBody
     })
@@ -68,8 +76,8 @@ export default async function handler(req, res) {
       return res.status(200).json({ url: data.image.url })
     }
 
-    console.error('[Upload] freeimage response:', JSON.stringify(data).slice(0, 500))
-    return res.status(502).json({ error: 'No se pudo subir la imagen' })
+    console.error('[Upload] freeimage:', r.status, JSON.stringify(data).slice(0, 300))
+    return res.status(502).json({ error: 'Upload failed: ' + (data?.error?.message || 'unknown') })
 
   } catch (e) {
     console.error('[Upload] Fatal:', e.message)
