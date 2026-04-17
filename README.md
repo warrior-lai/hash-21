@@ -16,11 +16,11 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.5.0-blue" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.6.0-blue" alt="Version">
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
   <img src="https://img.shields.io/badge/Bitcoin-Lightning-orange" alt="Lightning">
   <img src="https://img.shields.io/badge/Nostr-NIP--57-purple" alt="Nostr">
-  <img src="https://img.shields.io/badge/tests-59-brightgreen" alt="Tests">
+  <img src="https://img.shields.io/badge/tests-83-brightgreen" alt="Tests">
   <img src="https://img.shields.io/badge/coverage-70%25-yellowgreen" alt="Coverage">
 </p>
 
@@ -347,13 +347,17 @@ Los artistas con NIP-05 verificado muestran badge ✓ dorado:
 
 | Medida | Descripción |
 |--------|-------------|
-| **CSP** | Content-Security-Policy en index.html |
-| **Headers** | X-Frame-Options, X-Content-Type-Options, Referrer-Policy |
+| **CSP** | Content-Security-Policy estricto (connect-src, script-src, img-src) |
+| **Headers** | X-Frame-Options DENY, X-Content-Type-Options, Referrer-Policy, Permissions-Policy |
+| **XSS Prevention** | Sanitización de todos los datos de eventos Nostr (títulos, descripciones, URLs, perfiles) |
+| **URL Whitelist** | Solo `http:` y `https:` permitidos — bloqueados `javascript:`, `data:` en URLs de imagen/perfil |
+| **Encrypted Sessions** | Sesión cifrada con AES-GCM (Web Crypto API) en localStorage; key efímera en sessionStorage |
 | **Rate Limit** | 1 minuto entre creación de subastas |
-| **Sesión 24h** | Expiración automática de localStorage |
+| **Sesión 24h** | Expiración automática + cifrado |
 | **maxLength** | Todos los inputs limitados |
-| **URL Validation** | Solo http/https permitido |
 | **MIME Check** | Validación de tipo de archivo en uploads |
+| **Profile Sanitization** | Nombres, avatares y campos de perfil Kind 0 sanitizados antes de renderizar |
+| **Auto-reconnect** | Reconexión automática a relays si caen todos los WebSockets |
 
 ### Links
 
@@ -417,21 +421,26 @@ Identidad soberana para artistas:
 
 ##### Implementado:
 - ⚡ **subastas.hash21.studio** — App React de subastas descentralizadas
-- 🔗 **Conexión a relays Nostr** — nos.lol, relay.primal.net, relay.snort.social
+- 🔗 **Conexión a relays Nostr** — nos.lol, relay.primal.net, relay.snort.social, relay.damus.io
 - 📝 **Crear subasta con firma Nostr** — NIP-07 (Alby, nos2x)
 - 💰 **Pujar con firma Nostr** — Kind 1021
 - ✅ **NIP-05 verificación** — Badge dorado en artistas verificados
 - 🔐 **Login Nostr en admin/register** — Sin email requerido (NIP-07)
 - 🔐 **Login con Bunker (NIP-46)** — Tercer método de login para signing remoto
-- 🛡️ **Seguridad** — CSP, rate limiting, validaciones, sesión 24h
-- 👤 **Perfil artista Kind 0** — Avatar, nombre y NIP-05 desde metadata Nostr
+- 🛡️ **Seguridad hardened** — XSS prevention, encrypted sessions (AES-GCM), CSP estricto, URL sanitization
+- 👤 **Perfil artista Kind 0** — Avatar, nombre y NIP-05 desde metadata Nostr (sanitizado)
 - ↿ **Historial de pujas** — Lista de todas las pujas con perfil del pujador
 - 💬 **Comentarios** — Sistema de comentarios en cada subasta (Kind 1)
-- ⚡ **Pago Lightning** — Botón de pago directo al finalizar subasta
+- ⚡ **Pago Lightning** — Botón de pago directo al finalizar subasta con detección NIP-57
 - 🌐 **i18n ES/EN** — Toggle funcional con traducciones completas
 - 🖼️ **OG image** — Imagen de preview para compartir en redes
 - 🚨 **Página 404 custom** — Diseño consistente con la marca
-- 🧪 **Tests Vitest** — Cobertura para i18n, validación, NIP-05
+- 📷 **Upload de imágenes NIP-98** — Subida directa a nostr.build con firma Nostr (drag & drop, paste, preview)
+- 🔄 **Auto-reconnect** — Reconexión automática a relays caídos
+- 🧹 **Memory leak fix** — Subscribe cleanup correcto (remove event listeners)
+- 🧪 **Tests Vitest** — 24 tests: i18n, validación, NIP-05, auction details, sessions
+- 🎨 **Dashboard "Mis Subastas"** — Stats, tabs, mini cards con estado
+- 👤 **Header con avatar real** — Muestra avatar + nombre desde Kind 0
 
 ##### Pendiente:
 - 🌙 **Dark mode toggle** — Tema oscuro opcional
@@ -513,7 +522,7 @@ Plataforma completa multi-artista:
 |---------|-------------|-----------|--------|
 | **Autenticidad real** | Firma Nostr + identidad verificada + OP_RETURN en Bitcoin | 🔴 Alta | Roadmap |
 | **Autogestión artistas** | Registro público, login, editar perfil y obras | 🔴 Alta | En desarrollo |
-| **Upload imágenes** | Subir imágenes desde admin sin URL externa | 🔴 Alta | Endpoint listo |
+| **Upload imágenes NIP-98** | Subida a nostr.build con firma Nostr | 🔴 Alta | ✅ Live |
 | **Dashboard analytics** | Métricas por artista: views, zaps, ventas | 🟡 Media | Pendiente |
 | **Notificaciones** | Email y/o Telegram para eventos importantes | 🟡 Media | Pendiente |
 | **PWA** | App instalable en móvil desde el navegador | 🟢 Baja | Pendiente |
