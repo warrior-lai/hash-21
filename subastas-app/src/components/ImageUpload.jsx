@@ -19,14 +19,15 @@ export function ImageUpload({ onImageReady }) {
   const [urlInput, setUrlInput] = useState('')
   const fileInputRef = useRef(null)
   const abortRef = useRef(null)
+  const lastFileRef = useRef(null)
 
   // Notify parent when we have a valid URL
   useEffect(() => {
     onImageReady(hostedUrl)
   }, [hostedUrl, onImageReady])
 
-  // Upload file to our proxy
-  const uploadFile = useCallback(async (blob) => {
+  // Upload file directly to image hosts (no proxy needed)
+  const uploadFile = useCallback(async (file) => {
     setState(UPLOAD_STATES.UPLOADING)
     setError('')
 
@@ -35,29 +36,53 @@ export function ImageUpload({ onImageReady }) {
     const controller = new AbortController()
     abortRef.current = controller
 
-    try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        headers: { 'Content-Type': blob.type || 'image/jpeg' },
-        body: blob,
-        signal: controller.signal
-      })
-
-      if (!response.ok) {
-        const err = await response.json().catch(() => ({}))
-        throw new Error(err.error || 'Error al subir imagen')
+    const hosts = [
+      {
+        name: 'nostr.build',
+        upload: async (f, signal) => {
+          const fd = new FormData()
+          fd.append('file', f, f.name || 'artwork.jpg')
+          const r = await fetch('https://nostr.build/api/v2/upload/files', {
+            method: 'POST', body: fd, signal
+          })
+          if (!r.ok) throw new Error(`HTTP ${r.status}`)
+          const data = await r.json()
+          if (data?.status === 'success' && data?.data?.[0]?.url) return data.data[0].url
+          throw new Error('No URL in response')
+        }
+      },
+      {
+        name: 'nostrimg.com',
+        upload: async (f, signal) => {
+          const fd = new FormData()
+          fd.append('image', f, f.name || 'artwork.jpg')
+          const r = await fetch('https://nostrimg.com/api/upload', {
+            method: 'POST', body: fd, signal
+          })
+          if (!r.ok) throw new Error(`HTTP ${r.status}`)
+          const data = await r.json()
+          if (data?.data?.link) return data.data.link
+          throw new Error('No URL in response')
+        }
       }
+    ]
 
-      const data = await response.json()
-      if (!data?.url) throw new Error('No se recibió URL')
-
-      setHostedUrl(data.url)
-      setState(UPLOAD_STATES.SUCCESS)
-    } catch (e) {
-      if (e.name === 'AbortError') return
-      setError(e.message)
-      setState(UPLOAD_STATES.ERROR)
+    for (const host of hosts) {
+      try {
+        console.log(`[Upload] Trying ${host.name}...`)
+        const url = await host.upload(file, controller.signal)
+        console.log(`[Upload] Success via ${host.name}:`, url)
+        setHostedUrl(url)
+        setState(UPLOAD_STATES.SUCCESS)
+        return
+      } catch (e) {
+        if (e.name === 'AbortError') return
+        console.warn(`[Upload] ${host.name} failed:`, e.message)
+      }
     }
+
+    setError('No se pudo subir. Probá pegando una URL.')
+    setState(UPLOAD_STATES.ERROR)
   }, [])
 
   // Process a selected/dropped file
@@ -83,7 +108,8 @@ export function ImageUpload({ onImageReady }) {
     }
     reader.readAsDataURL(file)
 
-    // Start upload in parallel
+    // Save file ref for retry and start upload
+    lastFileRef.current = file
     uploadFile(file)
   }, [uploadFile])
 
@@ -150,12 +176,10 @@ export function ImageUpload({ onImageReady }) {
     onImageReady('')
   }
 
-  // Retry upload with the preview data
-  const retry = async () => {
-    if (!preview) return
-    const res = await fetch(preview)
-    const blob = await res.blob()
-    uploadFile(blob)
+  // Retry upload with the saved file
+  const retry = () => {
+    if (!lastFileRef.current) return
+    uploadFile(lastFileRef.current)
   }
 
   // IDLE state
