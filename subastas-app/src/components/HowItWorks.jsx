@@ -44,16 +44,28 @@ export function HowItWorks() {
 
       <div className="tech-footer">
         <div className="tech-item">
+          <span className="tech-label">PROTOCOLO</span>
+          <span className="tech-value">Nostr — 8 NIPs</span>
+        </div>
+        <div className="tech-item">
           <span className="tech-label">EVENTOS</span>
-          <span className="tech-value">Kind 30020, 1021, 1022</span>
+          <span className="tech-value">Kind 30020, 1021, 1, 0</span>
+        </div>
+        <div className="tech-item">
+          <span className="tech-label">IDENTIDAD</span>
+          <span className="tech-value">NIP-07 / NIP-46 / NIP-05</span>
         </div>
         <div className="tech-item">
           <span className="tech-label">PAGOS</span>
           <span className="tech-value">Lightning (NIP-57)</span>
         </div>
         <div className="tech-item">
+          <span className="tech-label">SEGURIDAD</span>
+          <span className="tech-value">NIP-98 / NIP-44 / AES-GCM</span>
+        </div>
+        <div className="tech-item">
           <span className="tech-label">CUSTODIA</span>
-          <span className="tech-value">Ninguna</span>
+          <span className="tech-value">Cero — P2P directo</span>
         </div>
       </div>
     </section>
