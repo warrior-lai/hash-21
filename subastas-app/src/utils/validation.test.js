@@ -51,25 +51,26 @@ describe('validation utils', () => {
   })
 
   describe('session management', () => {
-    it('saves and retrieves session', () => {
-      saveSession({ pubkey: 'abc123' })
-      const session = checkSession()
+    it('saves and retrieves session', async () => {
+      await saveSession({ pubkey: 'abc123' })
+      const session = await checkSession()
       expect(session).not.toBeNull()
       expect(session.pubkey).toBe('abc123')
     })
 
-    it('clears session', () => {
-      saveSession({ pubkey: 'abc123' })
+    it('clears session', async () => {
+      await saveSession({ pubkey: 'abc123' })
       clearSession()
-      expect(checkSession()).toBeNull()
+      expect(await checkSession()).toBeNull()
     })
 
-    it('returns null for expired session', () => {
+    it('returns null for expired session', async () => {
+      // Legacy plaintext format — checkSession handles migration
       localStorage.setItem('hash21-user', JSON.stringify({
         pubkey: 'abc',
         expiresAt: Date.now() - 1000
       }))
-      expect(checkSession()).toBeNull()
+      expect(await checkSession()).toBeNull()
     })
   })
 })

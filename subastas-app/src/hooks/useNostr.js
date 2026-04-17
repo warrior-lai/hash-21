@@ -101,18 +101,18 @@ export function useNostr() {
     const npub = nip19.npubEncode(pubkey)
     const userData = { pubkey, npub, method: 'extension' }
     setUser(userData)
-    saveSession(userData)
+    await saveSession(userData)
     return userData
   }, [])
 
   // Login with npub
-  const loginWithNpub = useCallback((npubInput) => {
+  const loginWithNpub = useCallback(async (npubInput) => {
     try {
       const { type, data } = nip19.decode(npubInput)
       if (type !== 'npub') throw new Error('Formato inválido')
       const userData = { pubkey: data, npub: npubInput, method: 'npub' }
       setUser(userData)
-      saveSession(userData)
+      await saveSession(userData)
       return userData
     } catch (e) {
       throw new Error('npub inválido')
@@ -198,10 +198,11 @@ export function useNostr() {
     console.log('[Nostr] useEffect mounting, calling connect()')
     connect()
 
-    const savedUser = checkSession()
-    if (savedUser) {
-      setUser(savedUser)
-    }
+    checkSession().then(savedUser => {
+      if (savedUser) {
+        setUser(savedUser)
+      }
+    })
 
     return () => {
       socketsRef.current.forEach(ws => ws.close())
