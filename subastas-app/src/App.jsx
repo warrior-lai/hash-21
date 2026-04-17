@@ -9,6 +9,7 @@ import { AuctionList } from './components/AuctionList'
 import { CreateAuctionModal } from './components/CreateAuctionModal'
 import { AuctionDetailModal } from './components/AuctionDetailModal'
 import { Dashboard } from './components/Dashboard'
+import { Footer } from './components/Footer'
 import './App.css'
 
 function App() {
@@ -43,6 +44,8 @@ function App() {
         onCreateClick={() => setShowCreate(true)}
         isConnected={!!nostr.user}
       />
+
+      <Footer />
 
       {showCreate && (
         <CreateAuctionModal
