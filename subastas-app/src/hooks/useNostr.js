@@ -120,15 +120,8 @@ export function useNostr() {
     clearSession()
   }, [])
 
-  // Publish event
-  const publish = useCallback(async (event) => {
-    if (typeof window.nostr === 'undefined') {
-      throw new Error('Necesitás extensión Nostr para firmar')
-    }
-
-    const signedEvent = await window.nostr.signEvent(event)
-    if (!signedEvent?.sig) throw new Error('Firma cancelada')
-
+  // Publish an already-signed event (no re-signing)
+  const publishSigned = useCallback(async (signedEvent) => {
     let published = 0
     const promises = socketsRef.current
       .filter(ws => ws.readyState === WebSocket.OPEN)
@@ -144,9 +137,20 @@ export function useNostr() {
 
     await Promise.all(promises)
     if (published === 0) throw new Error('No hay relays conectados')
-    
-    return signedEvent
   }, [])
+
+  // Publish event (signs first, then sends)
+  const publish = useCallback(async (event) => {
+    if (typeof window.nostr === 'undefined') {
+      throw new Error('Necesitás extensión Nostr para firmar')
+    }
+
+    const signedEvent = await window.nostr.signEvent(event)
+    if (!signedEvent?.sig) throw new Error('Firma cancelada')
+
+    await publishSigned(signedEvent)
+    return signedEvent
+  }, [publishSigned])
 
   // Subscribe to events
   const subscribe = useCallback((filters, onEvent) => {
@@ -208,6 +212,7 @@ export function useNostr() {
     loginWithNpub,
     logout,
     publish,
+    publishSigned,
     subscribe
   }
 }

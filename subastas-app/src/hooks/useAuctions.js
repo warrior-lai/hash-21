@@ -1,16 +1,43 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 
+// Upload base64 data:URL image to nostr.build and return the hosted URL
+async function uploadToNostrBuild(dataUrl) {
+  const res = await fetch(dataUrl)
+  const blob = await res.blob()
+  const formData = new FormData()
+  formData.append('file', blob, 'artwork.jpg')
+
+  const response = await fetch('https://nostr.build/api/v2/upload/files', {
+    method: 'POST',
+    body: formData
+  })
+
+  if (!response.ok) {
+    throw new Error('Error al subir imagen. Probá con una URL directa.')
+  }
+
+  const data = await response.json()
+  const url = data?.status === 'success' && data?.data?.[0]?.url
+  if (!url) throw new Error('No se obtuvo URL de la imagen subida')
+  return url
+}
+
 export function useAuctions(nostr) {
   const [auctions, setAuctions] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showAll, setShowAll] = useState(false)
   const nostrRef = useRef(nostr)
+  const showAllRef = useRef(showAll)
   
-  // Keep ref updated
+  // Keep refs updated
   useEffect(() => {
     nostrRef.current = nostr
   }, [nostr])
+
+  useEffect(() => {
+    showAllRef.current = showAll
+  }, [showAll])
 
   // Fetch auctions from relays
   const fetchAuctions = useCallback(() => {
@@ -31,7 +58,7 @@ export function useAuctions(nostr) {
     const newAuctions = []
 
     // Subscribe to Kind 30020 (auctions)
-    const filters = showAll 
+    const filters = showAllRef.current 
       ? [{ kinds: [30020], limit: 100 }]
       : [{ kinds: [30020], '#t': ['hash21'], limit: 50 }]
     
@@ -95,12 +122,18 @@ export function useAuctions(nostr) {
     const now = Math.floor(Date.now() / 1000)
     const auctionId = `${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${now}`
 
+    // If image is a data:URL, upload to nostr.build first
+    let imageUrl = image
+    if (image.startsWith('data:')) {
+      imageUrl = await uploadToNostrBuild(image)
+    }
+
     const tags = [
       ['d', auctionId],
       ['t', 'hash21'],
       ['title', title],
       ['summary', description || ''],
-      ['image', image],
+      ['image', imageUrl],
       ['start_price', startPrice.toString()],
       ['currency', 'sats'],
       ['start_time', now.toString()],
@@ -119,14 +152,14 @@ export function useAuctions(nostr) {
       content: description || title
     }
 
-    // Sign event
+    // Sign event via extension
     const signedEvent = await window.nostr.signEvent(event)
     if (!signedEvent?.sig) throw new Error('Firma cancelada')
     
-    // Publish to relays
+    // Publish the SIGNED event to relays (no double-signing)
     const n = nostrRef.current
-    if (n?.publish) {
-      await n.publish(event)
+    if (n?.publishSigned) {
+      await n.publishSigned(signedEvent)
     }
     
     // Add to local state immediately
@@ -135,7 +168,7 @@ export function useAuctions(nostr) {
       pubkey: signedEvent.pubkey,
       title,
       description,
-      image,
+      image: imageUrl,
       startPrice,
       currentBid: startPrice,
       reservePrice: reservePrice || 0,

@@ -168,7 +168,7 @@ export function CreateAuctionModal({ onClose, onCreate }) {
                 <>
                   <span className="upload-icon">↑</span>
                   <span className="upload-text">Click o arrastrá una imagen</span>
-                  <span className="upload-hint">PNG, JPG hasta 10MB</span>
+                  <span className="upload-hint">PNG, JPG hasta 5MB</span>
                 </>
               )}
             </div>
