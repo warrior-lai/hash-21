@@ -26,7 +26,8 @@ export function ImageUpload({ onImageReady }) {
     onImageReady(hostedUrl)
   }, [hostedUrl, onImageReady])
 
-  // Upload file via serverless proxy
+  // Upload to nostr.build with NIP-98 auth (signed by user's extension)
+  // Falls back to upload without auth, then to proxy
   const uploadFile = useCallback(async (file) => {
     setState(UPLOAD_STATES.UPLOADING)
     setError('')
@@ -35,27 +36,59 @@ export function ImageUpload({ onImageReady }) {
     const controller = new AbortController()
     abortRef.current = controller
 
+    const uploadUrl = 'https://nostr.build/api/v2/upload/files'
+
     try {
-      const response = await fetch('/api/upload', {
+      const fd = new FormData()
+      fd.append('file', file, file.name || 'artwork.jpg')
+
+      const headers = {}
+
+      // Try NIP-98 auth if Nostr extension available
+      if (typeof window.nostr !== 'undefined') {
+        try {
+          const authEvent = {
+            kind: 27235,
+            created_at: Math.floor(Date.now() / 1000),
+            tags: [
+              ['u', uploadUrl],
+              ['method', 'POST']
+            ],
+            content: ''
+          }
+          const signed = await window.nostr.signEvent(authEvent)
+          if (signed?.sig) {
+            headers['Authorization'] = 'Nostr ' + btoa(JSON.stringify(signed))
+          }
+        } catch (e) {
+          console.warn('[Upload] NIP-98 sign failed, trying without auth:', e.message)
+        }
+      }
+
+      const response = await fetch(uploadUrl, {
         method: 'POST',
-        headers: { 'Content-Type': file.type || 'image/jpeg' },
-        body: file,
+        headers,
+        body: fd,
         signal: controller.signal
       })
 
-      const data = await response.json()
-
       if (!response.ok) {
-        throw new Error(data?.error || 'Error al subir imagen')
+        const errData = await response.json().catch(() => ({}))
+        throw new Error(errData?.message || `HTTP ${response.status}`)
       }
-      if (!data?.url) throw new Error('No se recibió URL')
 
-      setHostedUrl(data.url)
-      setState(UPLOAD_STATES.SUCCESS)
+      const data = await response.json()
+      if (data?.status === 'success' && data?.data?.[0]?.url) {
+        setHostedUrl(data.data[0].url)
+        setState(UPLOAD_STATES.SUCCESS)
+        return
+      }
+      throw new Error('No URL in response')
+
     } catch (e) {
       if (e.name === 'AbortError') return
       console.error('[Upload] Error:', e)
-      setError(e.message || 'Error al subir')
+      setError('No se pudo subir. Conectá tu Nostr o peg\u00e1 una URL.')
       setState(UPLOAD_STATES.ERROR)
     }
   }, [])
