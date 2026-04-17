@@ -1,26 +1,45 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { sanitizeAuction } from '../utils/sanitize'
 
-// Upload base64 data:URL image to nostr.build and return the hosted URL
-async function uploadToNostrBuild(dataUrl) {
+// Upload image to a free Nostr-compatible image host
+// Tries nostr.build first, then void.cat as fallback
+async function uploadImage(dataUrl) {
   const res = await fetch(dataUrl)
   const blob = await res.blob()
-  const formData = new FormData()
-  formData.append('file', blob, 'artwork.jpg')
 
-  const response = await fetch('https://nostr.build/api/v2/upload/files', {
-    method: 'POST',
-    body: formData
-  })
-
-  if (!response.ok) {
-    throw new Error('Error al subir imagen. Probá con una URL directa.')
+  // Try nostr.build
+  try {
+    const fd1 = new FormData()
+    fd1.append('file', blob, 'artwork.jpg')
+    const r1 = await fetch('https://nostr.build/api/v2/upload/files', {
+      method: 'POST',
+      body: fd1
+    })
+    if (r1.ok) {
+      const data = await r1.json()
+      const url = data?.status === 'success' && data?.data?.[0]?.url
+      if (url) return url
+    }
+  } catch (e) {
+    console.warn('[Upload] nostr.build failed:', e.message)
   }
 
-  const data = await response.json()
-  const url = data?.status === 'success' && data?.data?.[0]?.url
-  if (!url) throw new Error('No se obtuvo URL de la imagen subida')
-  return url
+  // Fallback: void.cat
+  try {
+    const r2 = await fetch('https://void.cat/upload', {
+      method: 'POST',
+      body: blob,
+      headers: { 'Content-Type': blob.type || 'image/jpeg' }
+    })
+    if (r2.ok) {
+      const data = await r2.json()
+      if (data?.file?.url) return data.file.url
+    }
+  } catch (e) {
+    console.warn('[Upload] void.cat failed:', e.message)
+  }
+
+  throw new Error('No se pudo subir la imagen. Probá pegando una URL directa (nostr.build, imgur, etc.)')
 }
 
 export function useAuctions(nostr) {
@@ -126,7 +145,7 @@ export function useAuctions(nostr) {
     // If image is a data:URL, upload to nostr.build first
     let imageUrl = image
     if (image.startsWith('data:')) {
-      imageUrl = await uploadToNostrBuild(image)
+      imageUrl = await uploadImage(image)
     }
 
     const tags = [
