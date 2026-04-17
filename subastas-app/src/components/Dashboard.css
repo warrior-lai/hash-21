@@ -11,7 +11,7 @@
 }
 
 .dashboard {
-  background: #faf9f7;
+  background: var(--bg-secondary);
   border-radius: 12px;
   width: 100%;
   max-width: 800px;
@@ -29,7 +29,7 @@
   border: none;
   background: transparent;
   font-size: 24px;
-  color: #8a8580;
+  color: var(--text-secondary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -40,13 +40,13 @@
 
 .dashboard-close:hover {
   background: #e5e0d8;
-  color: #1a1a1a;
+  color: var(--text-primary);
 }
 
 /* Header */
 .dashboard-header {
   padding: 32px 32px 24px;
-  border-bottom: 1px solid #e5e0d8;
+  border: 1px solid var(--border);
 }
 
 .dashboard-user {
@@ -60,11 +60,11 @@
   height: 56px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #e5e0d8;
+  border: 1px solid var(--border);
 }
 
 .user-avatar-lg.placeholder {
-  background: #9a7b4f;
+  background: var(--accent);
   color: white;
   display: flex;
   align-items: center;
@@ -78,12 +78,12 @@
   font-size: 24px;
   font-weight: 400;
   margin: 0 0 4px;
-  color: #1a1a1a;
+  color: var(--text-primary);
 }
 
 .user-pubkey {
   font-size: 12px;
-  color: #8a8580;
+  color: var(--text-secondary);
   font-family: monospace;
 }
 
@@ -96,8 +96,8 @@
 }
 
 .stat-card {
-  background: white;
-  border: 1px solid #e5e0d8;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 20px;
   display: flex;
@@ -117,7 +117,7 @@
 
 .stat-label {
   font-size: 11px;
-  color: #8a8580;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 4px;
@@ -127,20 +127,20 @@
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 32px;
   font-weight: 400;
-  color: #1a1a1a;
+  color: var(--text-primary);
   line-height: 1;
 }
 
 .stat-sub {
   font-size: 11px;
-  color: #8a8580;
+  color: var(--text-secondary);
   margin-top: 4px;
 }
 
 /* Tabs */
 .dashboard-tabs {
   display: flex;
-  border-bottom: 1px solid #e5e0d8;
+  border: 1px solid var(--border);
   padding: 0 32px;
 }
 
@@ -152,7 +152,7 @@
   border-bottom: 2px solid transparent;
   font-size: 13px;
   font-weight: 500;
-  color: #8a8580;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
@@ -162,17 +162,17 @@
 }
 
 .tab:hover {
-  color: #1a1a1a;
+  color: var(--text-primary);
 }
 
 .tab.active {
-  color: #9a7b4f;
-  border-bottom-color: #9a7b4f;
+  color: var(--accent);
+  border-bottom-color: var(--accent);
 }
 
 .tab-count {
   background: #e5e0d8;
-  color: #1a1a1a;
+  color: var(--text-primary);
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 11px;
@@ -180,7 +180,7 @@
 
 .tab.active .tab-count {
   background: rgba(154, 123, 79, 0.15);
-  color: #9a7b4f;
+  color: var(--accent);
 }
 
 /* Content */
@@ -203,7 +203,7 @@
 }
 
 .create-btn-sm {
-  background: #9a7b4f;
+  background: var(--accent);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -226,7 +226,7 @@
 .auction-section h4 {
   font-size: 12px;
   font-weight: 500;
-  color: #8a8580;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin: 0 0 12px;
@@ -251,8 +251,8 @@
 
 /* Mini Card */
 .auction-mini-card {
-  background: white;
-  border: 1px solid #e5e0d8;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
@@ -260,7 +260,7 @@
 }
 
 .auction-mini-card:hover {
-  border-color: #9a7b4f;
+  border-color: var(--accent);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
@@ -316,7 +316,7 @@
   font-size: 14px;
   font-weight: 400;
   margin: 0 0 8px;
-  color: #1a1a1a;
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -331,12 +331,12 @@
 .mini-bid {
   font-size: 12px;
   font-weight: 500;
-  color: #9a7b4f;
+  color: var(--accent);
 }
 
 .mini-time {
   font-size: 11px;
-  color: #8a8580;
+  color: var(--text-secondary);
 }
 
 /* Empty State */
@@ -353,7 +353,7 @@
 }
 
 .empty-state p {
-  color: #8a8580;
+  color: var(--text-secondary);
   font-size: 14px;
   margin: 0 0 20px;
 }

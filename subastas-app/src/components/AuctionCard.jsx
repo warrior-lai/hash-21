@@ -42,7 +42,7 @@ export function AuctionCard({ auction, onClick }) {
   const isEnded = auction.status === 'ended'
 
   return (
-    <div className="auction-card" onClick={onClick}>
+    <div className="auction-card" onClick={onClick} role="article" aria-label={auction.title}>
       <div className="auction-image">
         {!imgError && auction.image ? (
           <img 

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { NostrOnboarding } from './NostrOnboarding'
 import './Modal.css'
 
 const LOGIN_METHODS = {
@@ -66,11 +67,11 @@ export function LoginModal({ onClose, onLoginExtension, onLoginBunker, onLoginNp
   if (method === LOGIN_METHODS.CHOOSE) {
     return (
       <div className="modal-overlay" onClick={onClose}>
-        <div className="modal login-modal" onClick={e => e.stopPropagation()}>
+        <div className="modal login-modal" onClick={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
           <button className="modal-close" onClick={onClose}>×</button>
 
           <div className="login-header">
-            <h2>Conectar Nostr</h2>
+            <h2 id="login-modal-title">Conectar Nostr</h2>
             <p className="modal-subtitle">Elegí cómo querés firmar</p>
           </div>
 
@@ -131,32 +132,16 @@ export function LoginModal({ onClose, onLoginExtension, onLoginBunker, onLoginNp
     )
   }
 
-  // Extension not found
+  // Extension not found — show NostrOnboarding
   if (method === LOGIN_METHODS.EXTENSION) {
     return (
       <div className="modal-overlay" onClick={onClose}>
-        <div className="modal login-modal" onClick={e => e.stopPropagation()}>
+        <div className="modal login-modal" onClick={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="login-onboarding-title">
           <button className="modal-close" onClick={onClose}>×</button>
-
-          <div className="login-header">
-            <button className="login-back" onClick={() => { setMethod(LOGIN_METHODS.CHOOSE); setError('') }}>← Volver</button>
-            <h2>Extensión Nostr</h2>
-          </div>
-
-          <div className="login-instructions">
-            <p>No se detectó extensión Nostr en tu browser.</p>
-            <div className="login-extension-options">
-              <a href="https://getalby.com" target="_blank" rel="noopener noreferrer" className="login-extension-link">
-                <strong>⚡ Alby</strong>
-                <span>La más popular. Wallet + signing.</span>
-              </a>
-              <a href="https://github.com/niccokunzmann/nos2x#installing" target="_blank" rel="noopener noreferrer" className="login-extension-link">
-                <strong>🔐 nos2x</strong>
-                <span>Liviana, solo signing.</span>
-              </a>
-            </div>
-            <p className="login-hint">Después de instalar, recargá la página y volvé a conectar.</p>
-          </div>
+          <NostrOnboarding
+            onBack={() => { setMethod(LOGIN_METHODS.CHOOSE); setError('') }}
+            titleId="login-onboarding-title"
+          />
         </div>
       </div>
     )
@@ -166,12 +151,12 @@ export function LoginModal({ onClose, onLoginExtension, onLoginBunker, onLoginNp
   if (method === LOGIN_METHODS.BUNKER) {
     return (
       <div className="modal-overlay" onClick={onClose}>
-        <div className="modal login-modal" onClick={e => e.stopPropagation()}>
+        <div className="modal login-modal" onClick={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="login-bunker-title">
           <button className="modal-close" onClick={onClose}>×</button>
 
           <div className="login-header">
             <button className="login-back" onClick={() => { setMethod(LOGIN_METHODS.CHOOSE); setError('') }}>← Volver</button>
-            <h2>Bunker Remoto</h2>
+            <h2 id="login-bunker-title">Bunker Remoto</h2>
             <p className="modal-subtitle">Tu clave nunca toca el browser</p>
           </div>
 
@@ -217,12 +202,12 @@ export function LoginModal({ onClose, onLoginExtension, onLoginBunker, onLoginNp
   if (method === LOGIN_METHODS.NPUB) {
     return (
       <div className="modal-overlay" onClick={onClose}>
-        <div className="modal login-modal" onClick={e => e.stopPropagation()}>
+        <div className="modal login-modal" onClick={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="login-npub-title">
           <button className="modal-close" onClick={onClose}>×</button>
 
           <div className="login-header">
             <button className="login-back" onClick={() => { setMethod(LOGIN_METHODS.CHOOSE); setError('') }}>← Volver</button>
-            <h2>Solo lectura</h2>
+            <h2 id="login-npub-title">Solo lectura</h2>
             <p className="modal-subtitle">Podés ver pero no firmar</p>
           </div>
 

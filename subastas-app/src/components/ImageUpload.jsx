@@ -196,6 +196,7 @@ export function ImageUpload({ onImageReady }) {
       <div className="img-upload">
         <div
           className={`img-upload-dropzone ${dragActive ? 'drag-active' : ''}`}
+          aria-label="Arrastrá una imagen o hacé click para subir"
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
@@ -275,7 +276,7 @@ export function ImageUpload({ onImageReady }) {
         )}
 
         {/* Remove button */}
-        <button type="button" className="img-upload-remove" onClick={reset}>×</button>
+        <button type="button" className="img-upload-remove" onClick={reset} aria-label="Eliminar imagen">×</button>
       </div>
     </div>
   )

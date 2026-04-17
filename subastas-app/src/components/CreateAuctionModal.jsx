@@ -94,10 +94,10 @@ export function CreateAuctionModal({ onClose, onCreate }) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={e => e.stopPropagation()}>
+      <div className="modal" onClick={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="create-auction-title">
         <button className="modal-close" onClick={onClose}>×</button>
         
-        <h2>Crear Subasta</h2>
+        <h2 id="create-auction-title">Crear Subasta</h2>
         <p className="modal-subtitle">Publicá tu obra en 1 minuto</p>
 
         <form onSubmit={handleSubmit}>

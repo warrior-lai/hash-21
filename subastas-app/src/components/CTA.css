@@ -1,7 +1,7 @@
 .cta-section {
   padding: 80px 24px;
   text-align: center;
-  background: #faf9f7;
+  background: var(--bg-secondary);
   border-top: 1px solid #e5e2de;
 }
 
@@ -9,13 +9,13 @@
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 32px;
   font-weight: 400;
-  color: #1a1a1a;
+  color: var(--text-primary);
   margin: 0 0 12px;
 }
 
 .cta-section p {
   font-size: 14px;
-  color: #8a8580;
+  color: var(--text-secondary);
   margin: 0 0 32px;
 }
 
@@ -34,7 +34,7 @@
   text-decoration: none;
   border: 1px solid #1a1a1a;
   background: transparent;
-  color: #1a1a1a;
+  color: var(--text-primary);
   cursor: pointer;
   font-family: inherit;
   transition: all 0.2s;
@@ -46,8 +46,8 @@
 }
 
 .cta-btn.primary {
-  background: #9a7b4f;
-  border-color: #9a7b4f;
+  background: var(--accent);
+  border-color: var(--accent);
   color: white;
 }
 

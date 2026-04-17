@@ -76,7 +76,7 @@ export function AuctionDetailModal({ auction, onClose, onBid, user }) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: '560px' }}>
+      <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: '560px' }} role="dialog" aria-modal="true" aria-labelledby="auction-detail-title">
         <button className="modal-close" onClick={onClose}>×</button>
 
         <div className="auction-detail">
@@ -89,7 +89,7 @@ export function AuctionDetailModal({ auction, onClose, onBid, user }) {
           )}
 
           <div>
-            <h2 className="auction-detail-title">{auction.title}</h2>
+            <h2 id="auction-detail-title" className="auction-detail-title">{auction.title}</h2>
             
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
               {profile?.picture && (

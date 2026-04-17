@@ -1,4 +1,6 @@
-// Vercel serverless proxy — uploads image to freeimage.host
+// Vercel serverless proxy — fallback image upload
+// Primary method: NIP-98 direct to nostr.build from browser
+// This proxy is a fallback for users without Nostr extension
 
 export const config = {
   api: { bodyParser: false }

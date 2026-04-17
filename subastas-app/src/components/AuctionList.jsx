@@ -13,7 +13,7 @@ export function AuctionList({ auctions, loading, showAll, onToggleShowAll, onSel
   })
 
   return (
-    <section className="auction-list">
+    <section className="auction-list" role="region" aria-label="Subastas">
       <div className="list-header">
         <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
           <h2>Subastas</h2>
@@ -57,7 +57,7 @@ export function AuctionList({ auctions, loading, showAll, onToggleShowAll, onSel
           <p style={{fontSize: '13px', marginTop: '8px', color: '#8a8580'}}>Sé el primero en crear una</p>
         </div>
       ) : (
-        <div className="auction-grid">
+        <div className="auction-grid" role="list">
           {filtered.map(auction => (
             <AuctionCard
               key={auction.id}

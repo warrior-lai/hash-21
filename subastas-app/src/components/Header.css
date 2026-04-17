@@ -4,9 +4,9 @@
   left: 0;
   right: 0;
   height: 56px;
-  background: rgba(255, 255, 255, 0.98);
+  background: var(--card-bg);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid #e5e2de;
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -21,14 +21,14 @@
 }
 
 .back-link {
-  color: #8a8580;
+  color: var(--text-secondary);
   text-decoration: none;
   font-size: 12px;
   transition: color 0.2s;
 }
 
 .back-link:hover {
-  color: #9a7b4f;
+  color: var(--accent);
 }
 
 .logo {
@@ -36,12 +36,12 @@
   font-size: 18px;
   font-weight: 400;
   letter-spacing: 3px;
-  color: #1a1a1a;
+  color: var(--text-primary);
   text-decoration: none;
 }
 
 .logo span {
-  color: #9a7b4f;
+  color: var(--accent);
 }
 
 .header-right {
@@ -52,16 +52,30 @@
 
 .lang-btn {
   background: transparent;
-  border: 1px solid #e5e2de;
+  border: 1px solid var(--border);
   padding: 6px 12px;
   font-size: 10px;
   letter-spacing: 1px;
   cursor: pointer;
-  color: #1a1a1a;
+  color: var(--text-primary);
 }
 
 .lang-btn:hover {
-  border-color: #1a1a1a;
+  border-color: var(--text-primary);
+}
+
+.theme-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  line-height: 1;
+  transition: border-color 0.2s;
+}
+
+.theme-btn:hover {
+  border-color: var(--text-primary);
 }
 
 .relay-status {
@@ -69,7 +83,7 @@
   align-items: center;
   gap: 8px;
   font-size: 11px;
-  color: #8a8580;
+  color: var(--text-secondary);
 }
 
 .relay-dot {
@@ -98,18 +112,18 @@
   font-size: 11px;
   letter-spacing: 1px;
   cursor: pointer;
-  color: #1a1a1a;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
 .create-btn:hover {
-  color: #9a7b4f;
+  color: var(--accent);
 }
 
 .connect-btn {
   background: transparent;
-  border: 1px solid #e5e2de;
-  color: #1a1a1a;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
   padding: 8px 16px;
   font-size: 11px;
   letter-spacing: 0.5px;
@@ -119,7 +133,7 @@
 }
 
 .connect-btn:hover {
-  border-color: #1a1a1a;
+  border-color: var(--text-primary);
 }
 
 .connect-btn:disabled {
@@ -136,18 +150,18 @@
   align-items: center;
   gap: 10px;
   background: transparent;
-  border: 1px solid #e5e2de;
+  border: 1px solid var(--border);
   border-radius: 24px;
   padding: 6px 14px 6px 6px;
   font-size: 13px;
   cursor: pointer;
   font-family: inherit;
-  color: #1a1a1a;
+  color: var(--text-primary);
   transition: all 0.2s;
 }
 
 .user-btn:hover {
-  border-color: #9a7b4f;
+  border-color: var(--accent);
 }
 
 .user-avatar {
@@ -161,7 +175,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #9a7b4f;
+  background: var(--accent);
   color: white;
   display: flex;
   align-items: center;
@@ -180,7 +194,7 @@
 
 .dropdown-arrow {
   font-size: 8px;
-  color: #8a8580;
+  color: var(--text-secondary);
   margin-left: 4px;
 }
 
@@ -189,8 +203,8 @@
   top: 100%;
   right: 0;
   margin-top: 8px;
-  background: white;
-  border: 1px solid #e5e2de;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.12);
   min-width: 180px;
@@ -208,16 +222,16 @@
   text-align: left;
   font-size: 13px;
   cursor: pointer;
-  color: #1a1a1a;
+  color: var(--text-primary);
   transition: background 0.15s;
 }
 
 .dropdown button:hover {
-  background: #f5f4f2;
+  background: var(--bg-tertiary);
 }
 
 .dropdown button:last-child {
-  border-top: 1px solid #e5e2de;
+  border-top: 1px solid var(--border);
   color: #dc2626;
 }
 

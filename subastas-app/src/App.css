@@ -1,3 +1,31 @@
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #faf9f7;
+  --bg-tertiary: #f5f4f2;
+  --text-primary: #1a1a1a;
+  --text-secondary: #8a8580;
+  --accent: #9a7b4f;
+  --accent-hover: #8a6b3f;
+  --border: #e5e0d8;
+  --border-light: #d4cfc8;
+  --card-bg: #ffffff;
+  --overlay: rgba(0, 0, 0, 0.5);
+}
+
+html.dark {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #141414;
+  --bg-tertiary: #1e1e1e;
+  --text-primary: #e5e5e5;
+  --text-secondary: #8a8580;
+  --accent: #c4a06a;
+  --accent-hover: #d4b07a;
+  --border: #2a2a2a;
+  --border-light: #333333;
+  --card-bg: #141414;
+  --overlay: rgba(0, 0, 0, 0.7);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -6,8 +34,8 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #faf9f7;
-  color: #1a1a1a;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   font-size: 14px;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;

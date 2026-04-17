@@ -1,0 +1,124 @@
+.nostr-onboarding {
+  text-align: left;
+}
+
+.nostr-onboarding-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 16px 0 8px;
+}
+
+.nostr-onboarding-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.nostr-onboarding-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.nostr-onboarding-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 8px;
+}
+
+.nostr-onboarding-card > p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.nostr-onboarding-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.nostr-onboarding-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.nostr-onboarding-step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.nostr-onboarding-step strong {
+  display: block;
+  font-size: 13px;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.nostr-onboarding-step p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.nostr-onboarding-step a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nostr-onboarding-step a:hover {
+  text-decoration: underline;
+}
+
+.nostr-onboarding-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.nostr-onboarding-btn-primary {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.nostr-onboarding-btn-primary:hover {
+  opacity: 0.9;
+}
+
+.nostr-onboarding-link {
+  font-size: 13px;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.nostr-onboarding-link:hover {
+  text-decoration: underline;
+}
