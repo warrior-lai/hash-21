@@ -1,0 +1,229 @@
+/* === Image Upload Component === */
+
+.img-upload {
+  margin-bottom: 4px;
+}
+
+/* Dropzone */
+.img-upload-dropzone {
+  border: 2px dashed #d4cfc8;
+  border-radius: 12px;
+  padding: 32px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #faf9f7;
+}
+
+.img-upload-dropzone:hover {
+  border-color: #9a7b4f;
+  background: #f5f3ef;
+}
+
+.img-upload-dropzone.drag-active {
+  border-color: #9a7b4f;
+  background: rgba(154, 123, 79, 0.08);
+  transform: scale(1.01);
+}
+
+.img-upload-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.img-upload-text {
+  font-size: 14px;
+  color: #1a1a1a;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.img-upload-hint {
+  font-size: 11px;
+  color: #8a8580;
+}
+
+/* URL toggle button */
+.img-upload-url-toggle {
+  background: none;
+  border: none;
+  color: #9a7b4f;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 8px 0;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.img-upload-url-toggle:hover {
+  text-decoration: underline;
+}
+
+/* URL input form */
+.img-upload-url-form {
+  display: flex;
+  gap: 8px;
+}
+
+.img-upload-url-form input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #d4cfc8;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.img-upload-url-form input:focus {
+  outline: none;
+  border-color: #9a7b4f;
+}
+
+.img-upload-url-form button {
+  padding: 10px 20px;
+  background: #9a7b4f;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.img-upload-url-form button:hover {
+  background: #8a6b3f;
+}
+
+/* Preview container */
+.img-upload-preview-container {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f0ede8;
+}
+
+.img-upload-preview {
+  width: 100%;
+  max-height: 280px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Uploading overlay */
+.img-upload-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.img-upload-overlay.error {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* Spinner */
+.img-upload-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: img-spin 0.8s linear infinite;
+}
+
+@keyframes img-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Success badge */
+.img-upload-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.img-upload-badge.success {
+  background: rgba(34, 197, 94, 0.9);
+  color: white;
+}
+
+/* Error state */
+.img-upload-error-icon {
+  font-size: 28px;
+}
+
+.img-upload-error-text {
+  font-size: 13px;
+  max-width: 240px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.img-upload-error-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.img-upload-error-actions button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  border: none;
+}
+
+.img-upload-error-actions button:first-child {
+  background: white;
+  color: #1a1a1a;
+}
+
+.img-upload-error-actions button:last-child {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* Remove button */
+.img-upload-remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.img-upload-remove:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* General error text */
+.img-upload-error {
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 8px;
+  text-align: center;
+}

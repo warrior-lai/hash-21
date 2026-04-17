@@ -1,5 +1,6 @@
-import { useState, useRef } from 'react'
-import { validateImageUrl, validateFile, checkRateLimit, setLastPublish } from '../utils/validation'
+import { useState, useRef, useCallback } from 'react'
+import { validateImageUrl, checkRateLimit, setLastPublish } from '../utils/validation'
+import { ImageUpload } from './ImageUpload'
 import './Modal.css'
 
 const DURATIONS = [
@@ -25,49 +26,10 @@ export function CreateAuctionModal({ onClose, onCreate }) {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [showUrlInput, setShowUrlInput] = useState(false)
-  const [dragActive, setDragActive] = useState(false)
-  const [previewUrl, setPreviewUrl] = useState('')
-  const fileInputRef = useRef(null)
-
-  const handleDrag = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActive(true)
-    } else if (e.type === 'dragleave') {
-      setDragActive(false)
-    }
-  }
-
-  const handleDrop = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragActive(false)
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFile(e.dataTransfer.files[0])
-    }
-  }
-
-  const handleFile = (file) => {
-    try {
-      validateFile(file)
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setPreviewUrl(e.target.result)
-        setForm({ ...form, image: e.target.result })
-      }
-      reader.readAsDataURL(file)
-    } catch (err) {
-      setError(err.message)
-    }
-  }
-
-  const handleFileInput = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      handleFile(e.target.files[0])
-    }
-  }
+  // ImageUpload gives us the final hosted URL
+  const handleImageReady = useCallback((url) => {
+    setForm(prev => ({ ...prev, image: url }))
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -78,12 +40,11 @@ export function CreateAuctionModal({ onClose, onCreate }) {
       return
     }
     if (!form.image.trim()) {
-      setError('Ingresá URL de la imagen')
+      setError('Subí o pegá una imagen primero')
       return
     }
-    // Validate URL if it's not a data URL (uploaded file)
-    if (!form.image.startsWith('data:') && !validateImageUrl(form.image)) {
-      setError('URL inválida. Debe ser http:// o https://')
+    if (!validateImageUrl(form.image)) {
+      setError('La imagen todavía se está subiendo, esperá un momento')
       return
     }
     if (!form.startPrice || parseInt(form.startPrice) < 1000) {
@@ -154,51 +115,7 @@ export function CreateAuctionModal({ onClose, onCreate }) {
 
           <div className="form-group">
             <label>Imagen de la obra</label>
-            <div 
-              className={`upload-area ${dragActive ? 'drag-active' : ''} ${previewUrl ? 'has-preview' : ''}`}
-              onDragEnter={handleDrag}
-              onDragLeave={handleDrag}
-              onDragOver={handleDrag}
-              onDrop={handleDrop}
-              onClick={() => fileInputRef.current?.click()}
-            >
-              {previewUrl ? (
-                <img src={previewUrl} alt="Preview" className="upload-preview" />
-              ) : (
-                <>
-                  <span className="upload-icon">↑</span>
-                  <span className="upload-text">Click o arrastrá una imagen</span>
-                  <span className="upload-hint">PNG, JPG hasta 5MB</span>
-                </>
-              )}
-            </div>
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileInput}
-              accept="image/*"
-              style={{ display: 'none' }}
-            />
-            <button 
-              type="button" 
-              className="url-toggle"
-              onClick={() => setShowUrlInput(!showUrlInput)}
-            >
-              o pegá una URL
-            </button>
-            {showUrlInput && (
-              <input
-                type="url"
-                value={form.image}
-                onChange={e => {
-                  setForm({ ...form, image: e.target.value })
-                  setPreviewUrl(e.target.value)
-                }}
-                placeholder="https://nostr.build/..."
-                maxLength={500}
-                style={{ marginTop: '8px' }}
-              />
-            )}
+            <ImageUpload onImageReady={handleImageReady} />
           </div>
 
           <div className="form-group">

@@ -122,11 +122,8 @@ export function useAuctions(nostr) {
     const now = Math.floor(Date.now() / 1000)
     const auctionId = `${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${now}`
 
-    // If image is a data:URL, upload to nostr.build first
-    let imageUrl = image
-    if (image.startsWith('data:')) {
-      imageUrl = await uploadImage(image)
-    }
+    // ImageUpload component already provides a hosted URL
+    const imageUrl = image
 
     const tags = [
       ['d', auctionId],
