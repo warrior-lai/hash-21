@@ -1,45 +1,25 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { sanitizeAuction } from '../utils/sanitize'
 
-// Upload image to a free Nostr-compatible image host
-// Tries nostr.build first, then void.cat as fallback
+// Upload image via our serverless proxy (avoids CORS issues)
 async function uploadImage(dataUrl) {
   const res = await fetch(dataUrl)
   const blob = await res.blob()
 
-  // Try nostr.build
-  try {
-    const fd1 = new FormData()
-    fd1.append('file', blob, 'artwork.jpg')
-    const r1 = await fetch('https://nostr.build/api/v2/upload/files', {
-      method: 'POST',
-      body: fd1
-    })
-    if (r1.ok) {
-      const data = await r1.json()
-      const url = data?.status === 'success' && data?.data?.[0]?.url
-      if (url) return url
-    }
-  } catch (e) {
-    console.warn('[Upload] nostr.build failed:', e.message)
+  const response = await fetch('/api/upload', {
+    method: 'POST',
+    headers: { 'Content-Type': blob.type || 'image/jpeg' },
+    body: blob
+  })
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}))
+    throw new Error(err.error || 'No se pudo subir la imagen. Probá pegando una URL directa.')
   }
 
-  // Fallback: void.cat
-  try {
-    const r2 = await fetch('https://void.cat/upload', {
-      method: 'POST',
-      body: blob,
-      headers: { 'Content-Type': blob.type || 'image/jpeg' }
-    })
-    if (r2.ok) {
-      const data = await r2.json()
-      if (data?.file?.url) return data.file.url
-    }
-  } catch (e) {
-    console.warn('[Upload] void.cat failed:', e.message)
-  }
-
-  throw new Error('No se pudo subir la imagen. Probá pegando una URL directa (nostr.build, imgur, etc.)')
+  const data = await response.json()
+  if (!data?.url) throw new Error('No se obtuvo URL de la imagen')
+  return data.url
 }
 
 export function useAuctions(nostr) {
