@@ -129,14 +129,18 @@ function fetchFromRelay(relayUrl, auctionId) {
     const bids = []
     const comments = []
     let resolved = false
+    let eoseCount = 0
+    const EXPECTED_EOSE = 2 // bids + comments
 
-    const timeout = setTimeout(() => {
+    const finish = () => {
       if (!resolved) {
         resolved = true
         ws.close()
         resolve({ bids, comments })
       }
-    }, 5000)
+    }
+
+    const timeout = setTimeout(finish, 5000)
 
     ws.onopen = () => {
       // Request bids (Kind 1021 with 'e' tag)
@@ -179,12 +183,11 @@ function fetchFromRelay(relayUrl, auctionId) {
             })
           }
         } else if (data[0] === 'EOSE') {
-          // Both subscriptions done
-          if (data[1] === 'comments') {
+          // Wait for BOTH subscriptions to finish
+          eoseCount++
+          if (eoseCount >= EXPECTED_EOSE) {
             clearTimeout(timeout)
-            resolved = true
-            ws.close()
-            resolve({ bids, comments })
+            finish()
           }
         }
       } catch (e) {
@@ -194,10 +197,7 @@ function fetchFromRelay(relayUrl, auctionId) {
 
     ws.onerror = () => {
       clearTimeout(timeout)
-      if (!resolved) {
-        resolved = true
-        resolve({ bids, comments })
-      }
+      finish()
     }
   })
 }

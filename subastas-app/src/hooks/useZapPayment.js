@@ -209,8 +209,64 @@ function checkRelayForZap(relayUrl, auctionId) {
 }
 
 // Helper: Extract payment hash from bolt11 invoice
+// The payment hash is a 52-char base32 field after the amount in bolt11
 function extractPaymentHash(invoice) {
-  // Simple extraction - payment hash is usually in the invoice
-  // For proper decoding would need a bolt11 library
-  return null
+  if (!invoice) return null
+  try {
+    // bolt11 invoices encode the payment hash in the tagged fields
+    // Tag 'p' (payment hash) = data type 1, 52 chars (256 bits in base32)
+    // We look for it by decoding the bech32 data
+    const lnPrefix = invoice.toLowerCase()
+    
+    // Strip 'lightning:' prefix if present
+    const clean = lnPrefix.startsWith('lightning:') ? lnPrefix.slice(10) : lnPrefix
+    
+    // Find the separator '1' (last occurrence before data)
+    const sepIdx = clean.lastIndexOf('1')
+    if (sepIdx === -1) return null
+    
+    const dataPart = clean.slice(sepIdx + 1)
+    // Remove the 104-char signature + 6-char checksum from the end
+    const withoutSig = dataPart.slice(0, -110)
+    
+    // Skip the timestamp (7 chars in base32)
+    let pos = 7
+    const BECH32_CHARS = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l'
+    
+    const b32ToInt = (c) => BECH32_CHARS.indexOf(c)
+    
+    while (pos < withoutSig.length) {
+      // Read type (5 bits)
+      const type = b32ToInt(withoutSig[pos])
+      pos++
+      
+      // Read data length (10 bits = 2 base32 chars)
+      if (pos + 1 >= withoutSig.length) break
+      const dataLen = b32ToInt(withoutSig[pos]) * 32 + b32ToInt(withoutSig[pos + 1])
+      pos += 2
+      
+      if (type === 1 && dataLen === 52) {
+        // Payment hash: convert 52 base32 chars (260 bits) to 32 bytes hex
+        const hashChars = withoutSig.slice(pos, pos + 52)
+        // Convert base32 to bits
+        let bits = ''
+        for (const c of hashChars) {
+          bits += b32ToInt(c).toString(2).padStart(5, '0')
+        }
+        // Take first 256 bits (32 bytes)
+        let hex = ''
+        for (let i = 0; i < 256; i += 8) {
+          hex += parseInt(bits.slice(i, i + 8), 2).toString(16).padStart(2, '0')
+        }
+        return hex
+      }
+      
+      pos += dataLen
+    }
+    
+    return null
+  } catch (e) {
+    console.warn('[Zap] Failed to extract payment hash:', e)
+    return null
+  }
 }

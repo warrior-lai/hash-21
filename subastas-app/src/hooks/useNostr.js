@@ -69,6 +69,11 @@ export function useNostr() {
           const idx = connected.indexOf(url)
           if (idx > -1) connected.splice(idx, 1)
           setConnectedRelays([...connected])
+          // If all relays dropped, auto-reconnect after 3s
+          if (connected.length === 0 && resolved) {
+            setStatus('disconnected')
+            reconnectTimeoutRef.current = setTimeout(connect, 3000)
+          }
         }
       } catch (e) {
         console.error('WebSocket error:', url, e)
@@ -155,6 +160,7 @@ export function useNostr() {
   // Subscribe to events
   const subscribe = useCallback((filters, onEvent) => {
     const subId = Math.random().toString(36).slice(2)
+    const handlers = []
     
     socketsRef.current
       .filter(ws => ws.readyState === WebSocket.OPEN)
@@ -171,13 +177,18 @@ export function useNostr() {
         }
         
         ws.addEventListener('message', handler)
+        handlers.push({ ws, handler })
       })
 
+    // Cleanup: remove listeners AND close subscription
     return () => {
+      handlers.forEach(({ ws, handler }) => {
+        ws.removeEventListener('message', handler)
+      })
       socketsRef.current
         .filter(ws => ws.readyState === WebSocket.OPEN)
         .forEach(ws => {
-          ws.send(JSON.stringify(['CLOSE', subId]))
+          try { ws.send(JSON.stringify(['CLOSE', subId])) } catch {}
         })
     }
   }, [])
