@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { sanitizeAuction } from '../utils/sanitize'
 
 // Upload base64 data:URL image to nostr.build and return the hosted URL
 async function uploadToNostrBuild(dataUrl) {
@@ -79,7 +80,7 @@ export function useAuctions(nostr) {
         const endTime = parseInt(tags.end_time || '0')
         const status = endTime > now ? 'active' : 'ended'
 
-        const auction = {
+        const auction = sanitizeAuction({
           id: event.id,
           pubkey: event.pubkey,
           title: tags.title || 'Sin título',
@@ -95,7 +96,7 @@ export function useAuctions(nostr) {
           endTime,
           status,
           bids: []
-        }
+        })
 
         newAuctions.push(auction)
         setAuctions([...newAuctions].sort((a, b) => b.startTime - a.startTime))

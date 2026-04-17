@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { fetchProfile } from '../utils/profile'
+import { sanitizeText } from '../utils/sanitize'
 
 const RELAYS = [
   'wss://nos.lol',
@@ -178,7 +179,7 @@ function fetchFromRelay(relayUrl, auctionId) {
             comments.push({
               id: event.id,
               pubkey: event.pubkey,
-              content: event.content,
+              content: sanitizeText(event.content, 2000),
               createdAt: event.created_at
             })
           }

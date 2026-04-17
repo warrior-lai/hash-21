@@ -1,5 +1,6 @@
 // Fetch Nostr profile (Kind 0) for a pubkey
 import { useState, useEffect } from 'react'
+import { sanitizeProfile } from './sanitize'
 
 const profileCache = new Map()
 const CACHE_TTL = 10 * 60 * 1000 // 10 minutes
@@ -66,7 +67,7 @@ function fetchFromRelay(relayUrl, pubkey) {
           ws.close()
           
           const content = JSON.parse(data[2].content)
-          resolve({
+          resolve(sanitizeProfile({
             name: content.name || content.display_name || '',
             displayName: content.display_name || content.name || '',
             picture: content.picture || '',
@@ -74,7 +75,7 @@ function fetchFromRelay(relayUrl, pubkey) {
             nip05: content.nip05 || '',
             lud16: content.lud16 || content.lud06 || '',
             banner: content.banner || ''
-          })
+          }))
         } else if (data[0] === 'EOSE') {
           // End of stored events - no profile found
           clearTimeout(timeout)
