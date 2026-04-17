@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { nip19 } from 'nostr-tools'
 import { checkSession, saveSession, clearSession } from '../utils/validation'
+import { getBunker, resetBunker } from '../utils/nip46'
 
 const RELAYS = [
   'wss://nos.lol',
@@ -119,10 +120,35 @@ export function useNostr() {
     }
   }, [])
 
+  // Login with bunker (NIP-46)
+  const loginWithBunker = useCallback(async (bunkerUri) => {
+    const bunker = getBunker()
+    const { pubkey } = await bunker.connect(bunkerUri)
+    const npub = nip19.npubEncode(pubkey)
+    const userData = { pubkey, npub, method: 'bunker', bunkerUri }
+    setUser(userData)
+    await saveSession(userData)
+
+    // Expose bunker as window.nostr so existing sign flows work
+    window._hash21Bunker = bunker
+    window.nostr = {
+      getPublicKey: () => Promise.resolve(pubkey),
+      signEvent: (event) => bunker.signEvent(event)
+    }
+
+    return userData
+  }, [])
+
   // Logout
   const logout = useCallback(() => {
     setUser(null)
     clearSession()
+    resetBunker()
+    // Restore original window.nostr if we overwrote it
+    if (window._hash21Bunker) {
+      delete window.nostr
+      delete window._hash21Bunker
+    }
   }, [])
 
   // Publish an already-signed event (no re-signing)
@@ -221,6 +247,7 @@ export function useNostr() {
     connect,
     reconnect,
     loginWithExtension,
+    loginWithBunker,
     loginWithNpub,
     logout,
     publish,

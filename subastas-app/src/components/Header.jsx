@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { useLang } from '../i18n'
 import { useProfile } from '../utils/profile'
+import { LoginModal } from './LoginModal'
+import './LoginModal.css'
 import './Header.css'
 
 export function Header({ nostr, onCreateClick, onDashboardClick }) {
   const [showMenu, setShowMenu] = useState(false)
+  const [showLogin, setShowLogin] = useState(false)
   const { lang, toggleLang, t } = useLang()
   const { profile } = useProfile(nostr.user?.pubkey)
   
@@ -71,11 +74,20 @@ export function Header({ nostr, onCreateClick, onDashboardClick }) {
         ) : (
           <button 
             className="connect-btn"
-            onClick={nostr.loginWithExtension}
-            disabled={nostr.status !== 'connected'}
+            onClick={() => setShowLogin(true)}
           >
             {t('header.connect')}
           </button>
+        )}
+
+        {showLogin && (
+          <LoginModal
+            onClose={() => setShowLogin(false)}
+            onLoginExtension={nostr.loginWithExtension}
+            onLoginBunker={nostr.loginWithBunker}
+            onLoginNpub={nostr.loginWithNpub}
+            nostrStatus={nostr.status}
+          />
         )}
       </div>
     </header>
