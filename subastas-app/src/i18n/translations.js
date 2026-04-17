@@ -9,7 +9,7 @@ export const translations = {
     
     // Hero
     'hero.title': 'Subastas descentralizadas',
-    'hero.subtitle': 'Comprá y vendé arte único con Bitcoin. Sin intermediarios.',
+    'hero.subtitle': 'Pujá con Bitcoin Lightning. Firmá con tu clave Nostr. Sin intermediarios.',
     'hero.cta': 'Explorar Subastas',
     
     // Auctions
@@ -108,7 +108,7 @@ export const translations = {
     
     // Hero
     'hero.title': 'Decentralized Auctions',
-    'hero.subtitle': 'Buy and sell unique art with Bitcoin. No middlemen.',
+    'hero.subtitle': 'Bid with Bitcoin Lightning. Sign with your Nostr key. No middlemen.',
     'hero.cta': 'Explore Auctions',
     
     // Auctions
