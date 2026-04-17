@@ -16,11 +16,11 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.6.0-blue" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.7.0-blue" alt="Version">
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
   <img src="https://img.shields.io/badge/Bitcoin-Lightning-orange" alt="Lightning">
   <img src="https://img.shields.io/badge/Nostr-NIP--57-purple" alt="Nostr">
-  <img src="https://img.shields.io/badge/tests-83-brightgreen" alt="Tests">
+  <img src="https://img.shields.io/badge/tests-80-brightgreen" alt="Tests">
   <img src="https://img.shields.io/badge/coverage-70%25-yellowgreen" alt="Coverage">
 </p>
 
@@ -79,6 +79,9 @@ Hash21 no es una herramienta. Es un sistema que desde el día 1 está en movimie
 | ⚡ **Subastas Nostr** | App descentralizada de subastas con pujas, comentarios e historial |
 | 🔐 **Login NIP-07/46** | Autenticación con extensión Nostr o Bunker remoto |
 | 👤 **Perfiles Kind 0** | Avatar y nombre del artista desde metadata Nostr |
+| 🌙 **Dark Mode** | Toggle 🌙/☀️ con persistencia + detección de sistema |
+| ♿ **Accesibilidad** | ARIA roles, labels, modal dialogs, keyboard navigation |
+| 🎓 **Onboarding Nostr** | Guía paso a paso para usuarios sin extensión |
 
 ---
 
@@ -359,6 +362,29 @@ Los artistas con NIP-05 verificado muestran badge ✓ dorado:
 | **Profile Sanitization** | Nombres, avatares y campos de perfil Kind 0 sanitizados antes de renderizar |
 | **Auto-reconnect** | Reconexión automática a relays si caen todos los WebSockets |
 
+### NIPs Implementados (8)
+
+| NIP | Uso | Archivo |
+|-----|-----|--------|
+| **NIP-01** | Protocolo base (eventos, relays, subscripciones) | useNostr.js, useAuctions.js |
+| **NIP-07** | Login con extensión browser (window.nostr) | useNostr.js, LoginModal |
+| **NIP-05** | Verificación de identidad (badge ✓) | nip05.js |
+| **NIP-19** | Encoding npub/nsec | useNostr.js |
+| **NIP-44** | Encriptación (comunicación con bunker) | nip46.js |
+| **NIP-46** | Bunker remoto (firma desde dispositivo móvil) | nip46.js, LoginModal |
+| **NIP-57** | Zaps (detección de pagos Lightning) | useZapPayment.js |
+| **NIP-98** | Auth HTTP para upload de imágenes | ImageUpload.jsx |
+
+### Accesibilidad (a11y)
+
+| Mejora | Detalle |
+|--------|---------|
+| **ARIA Roles** | banner, article, region, dialog, menu |
+| **ARIA Labels** | Todos los botones e inputs interactivos |
+| **Modal Dialogs** | role=dialog + aria-modal |
+| **Dropdown** | aria-expanded para estado del menú |
+| **Landmarks** | Secciones navegables por screen readers |
+
 ### Links
 
 | Recurso | URL |
@@ -442,8 +468,11 @@ Identidad soberana para artistas:
 - 🎨 **Dashboard "Mis Subastas"** — Stats, tabs, mini cards con estado
 - 👤 **Header con avatar real** — Muestra avatar + nombre desde Kind 0
 
+- 🌙 **Dark mode** — CSS variables + toggle en header + persistencia localStorage + system preference
+- ♿ **Accesibilidad** — ARIA roles, labels, dialog modals, keyboard navigation
+- 🎓 **Onboarding Nostr** — Guía "\u00bfQu\u00e9 es Nostr?" para usuarios sin extensión (3 pasos)
+
 ##### Pendiente:
-- 🌙 **Dark mode toggle** — Tema oscuro opcional
 - 📱 **Service Worker** — PWA completo offline
 
 ---
@@ -526,7 +555,7 @@ Plataforma completa multi-artista:
 | **Dashboard analytics** | Métricas por artista: views, zaps, ventas | 🟡 Media | Pendiente |
 | **Notificaciones** | Email y/o Telegram para eventos importantes | 🟡 Media | Pendiente |
 | **PWA** | App instalable en móvil desde el navegador | 🟢 Baja | Pendiente |
-| **Dark/Light mode** | Toggle de tema en la UI | 🟢 Baja | Pendiente |
+| **Dark/Light mode** | Toggle de tema con CSS variables | 🟢 Baja | ✅ Live |
 | **Múltiples idiomas** | Más allá de ES/EN (PT, DE, etc) | 🟢 Baja | Pendiente |
 
 ---
