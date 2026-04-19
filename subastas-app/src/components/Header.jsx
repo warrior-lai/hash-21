@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useLang } from '../i18n'
 import { useProfile } from '../utils/profile'
-import { useDarkMode } from '../hooks/useDarkMode'
 import { LoginModal } from './LoginModal'
 import './LoginModal.css'
 import './Header.css'
@@ -10,7 +9,6 @@ export function Header({ nostr, onCreateClick, onDashboardClick }) {
   const [showMenu, setShowMenu] = useState(false)
   const [showLogin, setShowLogin] = useState(false)
   const { lang, toggleLang, t } = useLang()
-  const { isDark, toggleDarkMode } = useDarkMode()
   const { profile } = useProfile(nostr.user?.pubkey)
   
   const userName = profile?.displayName || profile?.name || null
@@ -42,10 +40,6 @@ export function Header({ nostr, onCreateClick, onDashboardClick }) {
           {lang === 'es' ? 'EN' : 'ES'}
         </button>
 
-        <button className="theme-btn" onClick={toggleDarkMode} title={isDark ? 'Light mode' : 'Dark mode'}>
-          {isDark ? '☀️' : '🌙'}
-        </button>
-        
         <div className="relay-status">
           <span className="relay-dot" data-status={nostr.status} />
           <span>{statusText}</span>
