@@ -50,7 +50,9 @@ export function AuctionDetailModal({ auction, onClose, onBid, user }) {
     return () => clearInterval(interval)
   }, [auction.endTime])
 
-  const minBid = auction.currentBid + 1000
+  // Use highest bid from relay data, fallback to auction's stored currentBid
+  const highestBid = bids.length > 0 ? bids[0].amount : auction.currentBid
+  const minBid = highestBid + 1000
   const isEnded = auction.endTime <= Math.floor(Date.now() / 1000)
 
   const handleBid = async () => {
@@ -133,7 +135,7 @@ export function AuctionDetailModal({ auction, onClose, onBid, user }) {
                   Puja actual
                 </div>
                 <div style={{ fontSize: '20px', fontWeight: '500', color: '#9a7b4f' }}>
-                  ⚡ {auction.currentBid.toLocaleString()} sats
+                  ⚡ {highestBid.toLocaleString()} sats
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
@@ -262,7 +264,7 @@ export function AuctionDetailModal({ auction, onClose, onBid, user }) {
                             try {
                               await zap.createZapInvoice({
                                 lightningAddress,
-                                amount: auction.currentBid,
+                                amount: highestBid,
                                 auctionId: auction.id,
                                 auctionTitle: auction.title,
                                 recipientPubkey: auction.pubkey
@@ -284,7 +286,7 @@ export function AuctionDetailModal({ auction, onClose, onBid, user }) {
                             opacity: zap.isLoading ? 0.7 : 1
                           }}
                         >
-                          {zap.isLoading ? 'Generando...' : `⚡ Pagar ${auction.currentBid.toLocaleString()} sats`}
+                          {zap.isLoading ? 'Generando...' : `⚡ Pagar ${highestBid.toLocaleString()} sats`}
                         </button>
                         
                         {zap.error && (
@@ -350,7 +352,7 @@ export function AuctionDetailModal({ auction, onClose, onBid, user }) {
                         ⚡ Puja más alta
                       </div>
                       <div style={{ fontSize: '18px', fontWeight: '500', color: '#9a7b4f' }}>
-                        {bids.length > 0 ? bids[0].amount.toLocaleString() : auction.currentBid.toLocaleString()} sats
+                        {highestBid.toLocaleString()} sats
                       </div>
                     </div>
                     <div style={{ background: '#f5f4f2', padding: '16px', borderRadius: '8px', textAlign: 'center' }}>

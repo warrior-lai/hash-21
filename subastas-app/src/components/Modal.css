@@ -10,6 +10,14 @@
   justify-content: center;
   z-index: 200;
   padding: 20px;
+  overflow-y: auto;
+}
+
+/* When modal is taller than viewport, scroll instead of cutting top */
+@supports (align-items: safe center) {
+  .modal-overlay {
+    align-items: safe center;
+  }
 }
 
 .modal {
@@ -21,6 +29,7 @@
   padding: 32px;
   position: relative;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  margin: auto;
 }
 
 .modal-close {
