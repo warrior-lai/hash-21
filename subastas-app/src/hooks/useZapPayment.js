@@ -40,8 +40,8 @@ export function useZapPayment() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          lnAddress: lightningAddress,
-          amount: amount, // sats (backend handles conversion)
+          target: lightningAddress,
+          amount: amount, // sats
           comment: `Pago subasta: ${auctionTitle}`,
           eventId: auctionId,
           recipientPubkey
