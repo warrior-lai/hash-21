@@ -41,7 +41,7 @@ export function useZapPayment() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           lnAddress: lightningAddress,
-          amount: amount * 1000, // Convert sats to millisats
+          amount: amount, // sats (backend handles conversion)
           comment: `Pago subasta: ${auctionTitle}`,
           eventId: auctionId,
           recipientPubkey
