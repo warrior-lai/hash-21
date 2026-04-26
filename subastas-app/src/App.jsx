@@ -10,6 +10,7 @@ import { CreateAuctionModal } from './components/CreateAuctionModal'
 import { AuctionDetailModal } from './components/AuctionDetailModal'
 import { Dashboard } from './components/Dashboard'
 import { Footer } from './components/Footer'
+import { LoginModal } from './components/LoginModal'
 import './App.css'
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
   const [showCreate, setShowCreate] = useState(false)
   const [selectedAuction, setSelectedAuction] = useState(null)
   const [showDashboard, setShowDashboard] = useState(false)
+  const [showLogin, setShowLogin] = useState(false)
 
   return (
     <div className="app">
@@ -25,6 +27,7 @@ function App() {
         nostr={nostr} 
         onCreateClick={() => setShowCreate(true)}
         onDashboardClick={() => setShowDashboard(true)}
+        onConnectClick={() => setShowLogin(true)}
       />
 
       <Hero />
@@ -60,6 +63,16 @@ function App() {
           user={nostr.user}
           onClose={() => setSelectedAuction(null)}
           onBid={placeBid}
+        />
+      )}
+
+      {showLogin && (
+        <LoginModal
+          onClose={() => setShowLogin(false)}
+          onLoginExtension={nostr.loginWithExtension}
+          onLoginBunker={nostr.loginWithBunker}
+          onLoginNpub={nostr.loginWithNpub}
+          nostrStatus={nostr.status}
         />
       )}
 
